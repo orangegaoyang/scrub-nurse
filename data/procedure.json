@@ -1,0 +1,72 @@
+{
+  "procedure_name": "门诊小手术",
+  "procedure_name_en": "Minor Excision",
+  "instruments": [
+    {
+      "id": "scalpel",
+      "name_cn": "手术刀",
+      "name_en": "Scalpel",
+      "category": "cutting",
+      "purpose": "切皮",
+      "color_r": 0.90,
+      "color_g": 0.20,
+      "color_b": 0.20,
+      "slot_index": 0
+    },
+    {
+      "id": "hemostat",
+      "name_cn": "止血钳",
+      "name_en": "Hemostat",
+      "category": "clamping",
+      "purpose": "止血",
+      "color_r": 0.20,
+      "color_g": 0.50,
+      "color_b": 0.90,
+      "slot_index": 1
+    },
+    {
+      "id": "forceps",
+      "name_cn": "组织镊",
+      "name_en": "Tissue Forceps",
+      "category": "grasping",
+      "purpose": "夹持组织",
+      "color_r": 0.20,
+      "color_g": 0.80,
+      "color_b": 0.30,
+      "slot_index": 2
+    },
+    {
+      "id": "scissors",
+      "name_cn": "组织剪",
+      "name_en": "Tissue Scissors",
+      "category": "cutting",
+      "purpose": "分离切除",
+      "color_r": 0.95,
+      "color_g": 0.75,
+      "color_b": 0.15,
+      "slot_index": 3
+    },
+    {
+      "id": "needle_holder",
+      "name_cn": "持针器",
+      "name_en": "Needle Holder",
+      "category": "suturing",
+      "purpose": "缝合",
+      "color_r": 0.65,
+      "color_g": 0.30,
+      "color_b": 0.80,
+      "slot_index": 4
+    },
+    {
+      "id": "gauze",
+      "name_cn": "纱布",
+      "name_en": "Gauze",
+      "category": "dressing",
+      "purpose": "包扎",
+      "color_r": 0.92,
+      "color_g": 0.92,
+      "color_b": 0.92,
+      "slot_index": 5
+    }
+  ]
+}

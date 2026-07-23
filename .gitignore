@@ -1,0 +1,17 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+/builds/
+
+# Mono / C# (if used later)
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS / editor
+.DS_Store
+*.swp
+*~
+
+# Logs
+*.log
