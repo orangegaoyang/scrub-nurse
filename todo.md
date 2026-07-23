@@ -14,20 +14,22 @@
 - [x] headless 运行无运行时错误,autoload 加载 procedure.json 成功
 
 ## 阶段 1:第一人称相机
-- [ ] player.tscn:CharacterBody3D + CollisionShape3D(胶囊)+ Camera3D
-- [ ] player_controller.gd:鼠标看(俯仰限制)+ 指针锁定 + Esc 释放
-- [ ] player_controller.gd:WASD 移动
-- [ ] player_controller.gd:交互 RayCast3D(从相机发射)
-- [ ] 在 main.tscn 接入玩家,能在房间里看/走
+- [x] player.tscn:CharacterBody3D + CollisionShape3D(胶囊)+ Camera3D
+- [x] player_controller.gd:鼠标看(俯仰限制)+ 指针锁定 + Esc 释放
+- [x] player_controller.gd:WASD 移动
+- [x] player_controller.gd:交互 RayCast3D(从相机发射)+ HoldPoint
+- [x] 在 main.tscn 接入玩家,能在房间里看/走
 
 ## 阶段 2:器械台与器械
-- [ ] instrument_table.tscn:台面 + 6 个槽位(Area3D + 碰撞)
-- [ ] table_slot.gd:槽位元数据(index)+ 高亮
-- [ ] instrument.tscn:盒体 Mesh + RigidBody3D + Area3D + 元数据
-- [ ] instrument.gd:id/name/category/purpose/color/slot_index
-- [ ] cart.tscn:推车(准备阶段器械来源区)
-- [ ] pickup_system.gd:点击拾取 → reparent 到相机附着节点
-- [ ] 在 main.tscn 摆好器械台,6 件器械放推车,能拾取附着
+- [x] instrument_table.tscn:台面 + SlotsParent/TrayParent
+- [x] table_slot.gd:槽位元数据(index)+ 反馈(绿/红)
+- [x] instrument.tscn:盒体 Mesh + RigidBody3D + NameLabel
+- [x] instrument.gd:id/name/category/purpose/color/slot_index + 状态机
+- [x] cart/tray:TrayParent 作为器械散乱来源区
+- [x] pickup_system.gd:点击拾取 → reparent 到 HoldPoint
+- [x] 在 main.tscn 摆好器械台,6 件器械放 tray,能拾取附着
+- [x] 放置到正确槽位判定(对绿/错红闪)
+- [x] 全部归位正确 → 进入 COUNTDOWN(占位)
 
 ## 阶段 3:准备阶段逻辑
 - [ ] GameState 阶段机:PREP 状态

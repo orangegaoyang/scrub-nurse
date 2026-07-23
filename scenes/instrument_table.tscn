@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_table"]
+size = Vector3(2.4, 0.9, 1.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_table"]
+size = Vector3(2.4, 0.9, 1.4)
+
+[sub_resource type="StandardMaterial3D" id="Mat_table"]
+albedo_color = Color(0.78, 0.80, 0.82, 1)
+
+[node name="Table" type="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_table")
+material_override = SubResource("Mat_table")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_table")
+
+[node name="SlotsParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.4)
+
+[node name="TrayParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.4)

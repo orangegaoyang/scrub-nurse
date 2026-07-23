@@ -38,6 +38,7 @@ func reset() -> void:
 
 
 func start_countdown() -> void:
+	prep_completed.emit()
 	current_phase = Phase.COUNTDOWN
 
 

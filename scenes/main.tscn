@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/instrument_table.tscn" id="3_table"]
+[ext_resource type="Script" path="res://scripts/pickup_system.gd" id="4_pickup"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(8, 0.2, 6)
@@ -30,5 +32,10 @@ material_override = SubResource("Mat_floor")
 [node name="FloorCollision" type="CollisionShape3D" parent="Floor"]
 shape = SubResource("BoxShape3D_floor")
 
+[node name="Table" parent="." instance=ExtResource("3_table")]
+
 [node name="Player" parent="." instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2)
+
+[node name="PickupSystem" type="Node" parent="."]
+script = ExtResource("4_pickup")
