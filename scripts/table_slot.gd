@@ -28,3 +28,7 @@ func set_feedback(correct: bool) -> void:
 		outline.material_override = mat
 		await get_tree().create_timer(0.3).timeout
 		outline.material_override = null
+
+
+func clear_feedback() -> void:
+	outline.material_override = null

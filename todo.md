@@ -32,30 +32,29 @@
 - [x] 全部归位正确 → 进入 COUNTDOWN(占位)
 
 ## 阶段 3:准备阶段逻辑
-- [ ] GameState 阶段机:PREP 状态
-- [ ] 准备阶段:点击器械 → 点击槽位放入
-- [ ] table_slot.gd 判定:位置/顺序对错(绿/红反馈)
-- [ ] ui/prep_card.tscn:摆放规范卡(6 槽位 + 顺序)
-- [ ] 全部正确 → 自动进入 COUNTDOWN
-- [ ] ui/countdown.tscn:3-2-1 倒计时 → 进入 SURGERY
-- [ ] 验证:能玩通"准备 → 倒计时"
+- [x] GameState 阶段机:PREP 状态
+- [x] 准备阶段:点击器械 → 点击槽位放入
+- [x] table_slot.gd 判定:位置/顺序对错(绿/红反馈)
+- [x] ui/prep_card.tscn:摆放规范卡(6 槽位 + 顺序)
+- [x] 全部正确 → 自动进入 COUNTDOWN
+- [x] ui/countdown.tscn:3-2-1 倒计时 → 进入 SURGERY
+- [x] 验证:能玩通"准备 → 倒计时"
 
 ## 阶段 4:知识注入
-- [ ] ProcedureData 从 data/procedure.json 加载器械百科
-- [ ] 拾起器械时 UI 显示名称 + 用途
-- [ ] 验证:拾起每件器械显示正确信息
+- [x] ProcedureData 从 data/procedure.json 加载器械百科
+- [x] 拾起器械时 UI 显示名称(held 时 NameLabel 显示)
+- [ ] 拾起时显示用途(purpose)——待补
 
-## 阶段 5:术中递送(MVP 完成)
-- [ ] surgeon.tscn:医生手(伸/收/拒绝动画)
-- [ ] surgeon_demand.gd:6 步线性需求队列 + 图标/文字/语音提示
-- [ ] 触碰交付:附着器械 Area3D 与医生手 Area3D 重叠 → 交付
-- [ ] 正确:医生接住 → 使用 → 归还
-- [ ] 错误:医生手拒绝/推开 → 器械回到玩家手中
-- [ ] return_system.gd:触碰取回 → 放回原槽位判定
-- [ ] 超时扣分
-- [ ] ui/hud.tscn:计分/计时
-- [ ] ui/result.tscn:6 步完成 → 星级 + 用时 + 正确率
-- [ ] 验证:能玩通"准备 → 术中 → 结算"全流程
+## 阶段 5:术中递送(MVP 完成中)
+- [x] surgeon.tscn:医生手(伸/收/拒绝动画)
+- [x] surgeon_demand.gd:6 步线性需求队列(DEMANDING→USING→RETURNING)
+- [x] 触碰交付:附着器械 DeliveryArea 与医生手 HandArea 重叠 → 交付
+- [x] 正确:医生接住 → 使用 → 归还
+- [x] 错误:医生手拒绝/收回 → 器械回到玩家手中(拒绝冷却防刷)
+- [x] surgery_system.gd:从槽位拾取 → 递送 → 触碰取回 → 放回原槽位
+- [x] ui/hud.tscn:计分/计时/当前需求
+- [x] ui/result.tscn:6 步完成 → 星级 + 用时 + 正确率 + 重新开始
+- [ ] 验证:能玩通"准备 → 术中 → 结算"全流程(需实机测试)
 
 ## 阶段 6:打磨
 - [ ] 器械归位/递送/拒绝动画

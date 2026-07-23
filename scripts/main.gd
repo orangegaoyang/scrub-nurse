@@ -10,6 +10,8 @@ const SLOT_X_POSITIONS: Array[float] = [-1.0, -0.6, -0.2, 0.2, 0.6, 1.0]
 @onready var table: Node3D = $Table
 @onready var slots_parent: Node3D = $Table/SlotsParent
 @onready var tray_parent: Node3D = $Table/TrayParent
+@onready var prep_card: Control = $UI/PrepCard
+@onready var countdown: Control = $UI/Countdown
 
 
 func _ready() -> void:
@@ -43,8 +45,16 @@ func _spawn_tray_instruments() -> void:
 func _on_phase_changed(new_phase: int) -> void:
 	match new_phase:
 		GameState.Phase.COUNTDOWN:
-			print("Prep complete -> countdown (surgery not implemented yet)")
+			prep_card.visible = false
+			_run_countdown()
 		GameState.Phase.SURGERY:
-			print("Surgery started")
+			prep_card.visible = false
 		GameState.Phase.RESULT:
-			print("Result")
+			pass
+
+
+func _run_countdown() -> void:
+	countdown.run()
+	await countdown.finished
+	if GameState.current_phase == GameState.Phase.COUNTDOWN:
+		GameState.start_surgery()

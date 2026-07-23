@@ -1,9 +1,15 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/instrument_table.tscn" id="3_table"]
 [ext_resource type="Script" path="res://scripts/pickup_system.gd" id="4_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/surgeon.tscn" id="5_surgeon"]
+[ext_resource type="Script" path="res://scripts/surgery_system.gd" id="6_surgery"]
+[ext_resource type="PackedScene" path="res://scenes/ui/prep_card.tscn" id="7_prepcard"]
+[ext_resource type="PackedScene" path="res://scenes/ui/countdown.tscn" id="8_countdown"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="9_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="10_result"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(8, 0.2, 6)
@@ -34,8 +40,23 @@ shape = SubResource("BoxShape3D_floor")
 
 [node name="Table" parent="." instance=ExtResource("3_table")]
 
+[node name="Surgeon" parent="." instance=ExtResource("5_surgeon")]
+
 [node name="Player" parent="." instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2)
 
 [node name="PickupSystem" type="Node" parent="."]
 script = ExtResource("4_pickup")
+
+[node name="SurgerySystem" type="Node" parent="."]
+script = ExtResource("6_surgery")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="PrepCard" parent="UI" instance=ExtResource("7_prepcard")]
+
+[node name="Countdown" parent="UI" instance=ExtResource("8_countdown")]
+
+[node name="HUD" parent="UI" instance=ExtResource("9_hud")]
+
+[node name="Result" parent="UI" instance=ExtResource("10_result")]

@@ -2,7 +2,7 @@ class_name Instrument
 extends RigidBody3D
 ## A single surgical instrument. Metadata loaded from ProcedureData.
 
-enum State { IN_TRAY, HELD, IN_SLOT }
+enum State { IN_TRAY, HELD, IN_SLOT, IN_SURGEON }
 
 @export var instrument_id: String = ""
 var def  # ProcedureData.InstrumentDef (untyped to access inner class fields)
