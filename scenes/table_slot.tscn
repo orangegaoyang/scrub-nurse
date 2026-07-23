@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/table_slot.gd" id="1_slot"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_slot"]
-size = Vector3(0.32, 0.06, 0.32)
+size = Vector3(0.32, 0.25, 0.32)
 
 [sub_resource type="BoxMesh" id="BoxMesh_slot"]
 size = Vector3(0.32, 0.02, 0.32)

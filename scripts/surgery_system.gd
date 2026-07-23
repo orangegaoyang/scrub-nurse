@@ -1,20 +1,28 @@
 extends Node
-## Surgery system: pickup from slot, deliver by touch, take back, replace.
+## Surgery system: pickup from slot, follow cursor, deliver by touching hand,
+## take back, replace in original slot.
 
 var player: CharacterBody3D
-var hold_point: Node3D
+var held_parent: Node3D
 var held_instrument: Instrument = null
 var surgeon: Surgeon
-var hud: Control
+var _deliver_triggered: bool = false
 
 
 func _ready() -> void:
 	player = get_parent().get_node("Player")
-	hold_point = player.get_node("Camera3D/HoldPoint")
+	held_parent = get_parent().get_node("HeldParent")
 	surgeon = get_parent().get_node("Surgeon")
-	hud = get_parent().get_node("UI/HUD")
 	player.interact_pressed.connect(_on_interact)
 	GameState.phase_changed.connect(_on_phase_changed)
+
+
+func _process(_delta: float) -> void:
+	if GameState.current_phase != GameState.Phase.SURGERY:
+		return
+	if held_instrument != null:
+		held_instrument.global_position = player.get_cursor_point() + Vector3(0, 0.05, 0)
+		_check_delivery()
 
 
 func _on_phase_changed(new_phase: int) -> void:
@@ -23,7 +31,26 @@ func _on_phase_changed(new_phase: int) -> void:
 
 
 func _start_demand(id: String) -> void:
+	_deliver_triggered = false
 	surgeon.start_demand(id)
+
+
+func _check_delivery() -> void:
+	if held_instrument == null or not surgeon.is_demanding() or _deliver_triggered:
+		return
+	if player.get_cursor_collider() == surgeon.get_hand_area():
+		_deliver_triggered = true
+		_deliver(held_instrument)
+
+
+func _deliver(inst: Instrument) -> void:
+	var accepted: bool = surgeon.try_receive(inst)
+	if accepted:
+		held_instrument = null
+		inst.collision_layer = 1  # surgeon holds it; allow cursor to hit for take-back
+		GameState.surgery_correct += 1
+		GameState.current_demand_index += 1
+		GameState.score_updated.emit()
 
 
 func _on_interact(target: Node) -> void:
@@ -49,21 +76,22 @@ func _pick_up_from_slot(inst: Instrument) -> void:
 		slot.current_instrument = null
 		slot.clear_feedback()
 	inst.set_state(Instrument.State.HELD)
-	inst.reparent(hold_point)
-	inst.transform = Transform3D.IDENTITY
-	inst.rotation_degrees.x = 15.0
-	_connect_delivery(inst)
+	inst.reparent(held_parent)
+	inst.collision_layer = 0
+	inst.freeze = true
+	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
+	_deliver_triggered = false
 
 
 func _take_back(inst: Instrument) -> void:
 	held_instrument = inst
 	surgeon.take_back()
 	inst.set_state(Instrument.State.HELD)
-	inst.reparent(hold_point)
-	inst.transform = Transform3D.IDENTITY
-	inst.rotation_degrees.x = 15.0
-	_connect_delivery(inst)
-	# Demand index was already advanced on delivery; start next if any remain.
+	inst.reparent(held_parent)
+	inst.collision_layer = 0
+	inst.freeze = true
+	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
+	_deliver_triggered = false
 	if GameState.current_demand_index < ProcedureData.demand_sequence.size():
 		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index))
 
@@ -71,49 +99,16 @@ func _take_back(inst: Instrument) -> void:
 func _place_in_slot(slot: TableSlot) -> void:
 	var inst: Instrument = held_instrument
 	if slot.can_accept(inst):
-		_disconnect_delivery(inst)
 		held_instrument = null
 		inst.set_state(Instrument.State.IN_SLOT)
 		inst.reparent(slot)
 		inst.transform = Transform3D.IDENTITY
 		inst.position = Vector3(0, 0.04, 0)
+		inst.collision_layer = 1
 		slot.occupied = true
 		slot.current_instrument = inst
 		slot.set_feedback(true)
-		# If all demands fulfilled, surgery is complete after final replace.
 		if GameState.current_demand_index >= ProcedureData.demand_sequence.size():
 			GameState.finish_surgery()
 	else:
 		slot.set_feedback(false)
-
-
-# ---- Delivery by touch ----
-
-func _connect_delivery(inst: Instrument) -> void:
-	var da: Area3D = inst.get_node("DeliveryArea")
-	if not da.area_entered.is_connected(_on_held_delivery_entered):
-		da.area_entered.connect(_on_held_delivery_entered)
-
-
-func _disconnect_delivery(inst: Instrument) -> void:
-	if inst == null or not inst.has_node("DeliveryArea"):
-		return
-	var da: Area3D = inst.get_node("DeliveryArea")
-	if da.area_entered.is_connected(_on_held_delivery_entered):
-		da.area_entered.disconnect(_on_held_delivery_entered)
-
-
-func _on_held_delivery_entered(area: Area3D) -> void:
-	if held_instrument == null:
-		return
-	if not surgeon.is_demanding():
-		return
-	if area == surgeon.get_hand_area():
-		var inst: Instrument = held_instrument
-		var accepted: bool = surgeon.try_receive(inst)
-		if accepted:
-			_disconnect_delivery(inst)
-			held_instrument = null
-			GameState.surgery_correct += 1
-			GameState.current_demand_index += 1
-			GameState.score_updated.emit()
