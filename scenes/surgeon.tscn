@@ -12,11 +12,11 @@ size = Vector3(0.22, 0.18, 0.22)
 albedo_color = Color(0.95, 0.78, 0.66, 1)
 
 [node name="Surgeon" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3, 0, 0.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, -0.3)
 script = ExtResource("1_surg")
 
 [node name="HandPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.5, 0)
 
 [node name="HandMesh" type="MeshInstance3D" parent="HandPivot"]
 mesh = SubResource("BoxMesh_hand")
