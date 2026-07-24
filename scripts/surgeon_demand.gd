@@ -1,21 +1,22 @@
 class_name Surgeon
 extends Node3D
-## Surgeon hand: demand state machine (DEMANDING -> USING -> RETURNING).
+## Surgeon hand: enters from the right side. Demand state machine.
 
 enum State { IDLE, DEMANDING, USING, RETURNING }
 
 signal demand_changed(instrument_id: String)
+signal returning_instrument(instrument_id: String)
 
 var state: int = State.IDLE
 var current_demand_id: String = ""
-var held_instrument: Instrument = null  # instrument held by surgeon
+var held_instrument: Instrument = null
 
 @onready var hand_pivot: Node3D = $HandPivot
 @onready var hand_area: Area3D = $HandPivot/HandArea
 @onready var held_anchor: Node3D = $HandPivot/HeldAnchor
 
-const HAND_EXTENDED_Z: float = 0.8   # toward player (local)
-const HAND_RETRACTED_Z: float = -0.4
+const HAND_EXTENDED_X: float = -0.8   # toward the table/player (left)
+const HAND_RETRACTED_X: float = 0.3   # off to the side
 const USE_DURATION: float = 1.8
 
 var _reject_cooldown: bool = false
@@ -77,6 +78,7 @@ func _use_after_delay() -> void:
 	if state == State.USING:
 		state = State.RETURNING
 		_extend_hand()
+		returning_instrument.emit(current_demand_id)
 
 
 func take_back() -> void:
@@ -87,9 +89,9 @@ func take_back() -> void:
 
 func _extend_hand() -> void:
 	var tw := create_tween()
-	tw.tween_property(hand_pivot, "position:z", HAND_EXTENDED_Z, 0.3)
+	tw.tween_property(hand_pivot, "position:x", HAND_EXTENDED_X, 0.3)
 
 
 func _retract_hand() -> void:
 	var tw := create_tween()
-	tw.tween_property(hand_pivot, "position:z", HAND_RETRACTED_Z, 0.3)
+	tw.tween_property(hand_pivot, "position:x", HAND_RETRACTED_X, 0.3)
