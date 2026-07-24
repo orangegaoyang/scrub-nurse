@@ -15,7 +15,7 @@ var held_instrument: Instrument = null
 @onready var hand_area: Area3D = $HandPivot/HandArea
 @onready var held_anchor: Node3D = $HandPivot/HeldAnchor
 
-const HAND_EXTENDED_X: float = -1.0   # toward the table/player (left), into view
+const HAND_EXTENDED_X: float = -1.4   # toward the table/player (left), into view
 const HAND_RETRACTED_X: float = 0.3   # off to the right (out of view)
 const USE_DURATION: float = 1.8
 
