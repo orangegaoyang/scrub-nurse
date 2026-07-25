@@ -9,9 +9,15 @@ extends Control
 func _ready() -> void:
 	visible = false
 	_build_list()
+	GameState.phase_changed.connect(_on_phase_changed)
 	var pack: Node = get_node_or_null("/root/Main/MayoStand/Pack")
 	if pack:
 		pack.opened.connect(_on_pack_opened)
+
+
+func _on_phase_changed(new_phase: int) -> void:
+	if new_phase == GameState.Phase.RESULT:
+		visible = false
 
 
 func _build_list() -> void:
