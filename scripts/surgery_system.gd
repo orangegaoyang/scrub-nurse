@@ -57,6 +57,7 @@ func _deliver(inst: Instrument) -> void:
 	if accepted:
 		held_instrument = null
 		inst.collision_layer = 1  # surgeon holds it; allow cursor to hit for take-back
+		GameState.set_held(null)
 		GameState.surgery_correct += 1
 		GameState.current_demand_index += 1
 		GameState.score_updated.emit()
@@ -90,6 +91,7 @@ func _pick_up_from_slot(inst: Instrument) -> void:
 	inst.freeze = true
 	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
 	_deliver_triggered = false
+	GameState.set_held(inst)
 
 
 func _take_back(inst: Instrument) -> void:
@@ -101,6 +103,7 @@ func _take_back(inst: Instrument) -> void:
 	inst.freeze = true
 	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
 	_deliver_triggered = false
+	GameState.set_held(inst)
 	if GameState.current_demand_index < ProcedureData.demand_sequence.size():
 		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index))
 
@@ -117,6 +120,7 @@ func _place_in_slot(slot: TableSlot) -> void:
 		slot.occupied = true
 		slot.current_instrument = inst
 		slot.set_feedback(true)
+		GameState.set_held(null)
 		if GameState.current_demand_index >= ProcedureData.demand_sequence.size():
 			GameState.finish_surgery()
 	else:

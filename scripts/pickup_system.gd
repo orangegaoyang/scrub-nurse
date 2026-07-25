@@ -35,6 +35,7 @@ func _pick_up(inst: Instrument) -> void:
 	inst.collision_layer = 0
 	inst.freeze = true
 	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
+	GameState.set_held(inst)
 
 
 func _place_in_slot(slot: TableSlot) -> void:
@@ -49,6 +50,7 @@ func _place_in_slot(slot: TableSlot) -> void:
 		slot.occupied = true
 		slot.current_instrument = inst
 		slot.set_feedback(true)
+		GameState.set_held(null)
 		GameState.prep_correct += 1
 		GameState.score_updated.emit()
 		if GameState.prep_correct >= ProcedureData.demand_sequence.size():

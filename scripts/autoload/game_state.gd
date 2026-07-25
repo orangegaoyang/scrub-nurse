@@ -5,6 +5,7 @@ signal phase_changed(new_phase: int)
 signal prep_completed()
 signal surgery_step_completed(step_index: int)
 signal score_updated()
+signal held_changed(instrument)
 
 enum Phase { PREP, COUNTDOWN, SURGERY, RESULT }
 
@@ -23,6 +24,9 @@ var surgery_start_time: float = 0.0
 var surgery_elapsed: float = 0.0
 var current_demand_index: int = 0
 
+# Currently held instrument (null when nothing held)
+var held_instrument = null
+
 const TOTAL_STEPS: int = 6
 
 
@@ -34,7 +38,13 @@ func reset() -> void:
 	surgery_start_time = 0.0
 	surgery_elapsed = 0.0
 	current_demand_index = 0
+	set_held(null)
 	score_updated.emit()
+
+
+func set_held(inst) -> void:
+	held_instrument = inst
+	held_changed.emit(inst)
 
 
 func start_countdown() -> void:

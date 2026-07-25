@@ -30,7 +30,7 @@ func set_state(s: int) -> void:
 	state = s
 	match s:
 		State.HELD:
-			label.visible = true
+			label.visible = false  # name+purpose shown on the HUD card instead
 		_:
 			label.visible = false
 

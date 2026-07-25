@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="9_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="10_result"]
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
+[ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(8, 0.2, 6)
@@ -62,3 +63,5 @@ script = ExtResource("6_surgery")
 [node name="Result" parent="UI" instance=ExtResource("10_result")]
 
 [node name="InstrumentList" parent="UI" instance=ExtResource("11_list")]
+
+[node name="HeldInfo" parent="UI" instance=ExtResource("12_held")]
