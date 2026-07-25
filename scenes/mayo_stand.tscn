@@ -1,0 +1,103 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/pack.gd" id="1_pack"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_steel"]
+albedo_color = Color(0.82, 0.83, 0.85, 1)
+metallic = 1.0
+metallic_specular = 0.5
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Mat_wrap"]
+albedo_color = Color(0.25, 0.45, 0.75, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_paper"]
+albedo_color = Color(0.96, 0.96, 0.92, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="Mesh_base"]
+top_radius = 0.28
+bottom_radius = 0.28
+height = 0.06
+
+[sub_resource type="CylinderMesh" id="Mesh_pole"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.9
+
+[sub_resource type="BoxMesh" id="Mesh_tray"]
+size = Vector3(1.6, 0.04, 0.6)
+
+[sub_resource type="BoxShape3D" id="Shape_tray"]
+size = Vector3(1.6, 0.04, 0.6)
+
+[sub_resource type="BoxMesh" id="Mesh_wrap"]
+size = Vector3(0.7, 0.12, 0.4)
+
+[sub_resource type="BoxShape3D" id="Shape_pack"]
+size = Vector3(0.72, 0.18, 0.42)
+
+[sub_resource type="BoxMesh" id="Mesh_paperbg"]
+size = Vector3(0.42, 0.002, 0.3)
+
+[node name="MayoStand" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("Mesh_base")
+material_override = SubResource("Mat_steel")
+
+[node name="Pole" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("Mesh_pole")
+material_override = SubResource("Mat_steel")
+
+[node name="Tray" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.93, 0)
+mesh = SubResource("Mesh_tray")
+material_override = SubResource("Mat_steel")
+
+[node name="TrayCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.93, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision"]
+shape = SubResource("Shape_tray")
+
+[node name="SlotsParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, -0.2)
+
+[node name="InstrumentsParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.96, 0.05)
+
+[node name="PaperBg" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.962, 0.25)
+mesh = SubResource("Mesh_paperbg")
+material_override = SubResource("Mat_paper")
+
+[node name="Paper" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.966, 0.25)
+rotation_degrees = Vector3(-90, 0, 0)
+modulate = Color(0.1, 0.1, 0.1, 1)
+outline_modulate = Color(1, 1, 1, 1)
+text = "器械清单"
+font_size = 22
+outline_size = 3
+width = 1200
+visible = false
+
+[node name="Pack" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.05)
+script = ExtResource("1_pack")
+
+[node name="WrapMesh" type="MeshInstance3D" parent="Pack"]
+mesh = SubResource("Mesh_wrap")
+material_override = SubResource("Mat_wrap")
+
+[node name="PackArea" type="Area3D" parent="Pack"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pack/PackArea"]
+shape = SubResource("Shape_pack")
