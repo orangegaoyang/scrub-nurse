@@ -11,6 +11,7 @@ const SLOT_X_POSITIONS: Array[float] = [-0.6, -0.36, -0.12, 0.12, 0.36, 0.6]
 @onready var slots_parent: Node3D = $MayoStand/SlotsParent
 @onready var instruments_parent: Node3D = $MayoStand/InstrumentsParent
 @onready var pack: Node = $MayoStand/Pack
+@onready var camera: Camera3D = $Camera3D
 
 
 func _ready() -> void:
@@ -20,6 +21,8 @@ func _ready() -> void:
 	_spawn_instruments(true)
 	player.interact_pressed.connect(_on_interact)
 	pack.opened.connect(_on_pack_opened)
+	# Fixed angled view: look at the tray / bed area (Mayo in front, surgeon beyond).
+	camera.look_at(Vector3(0.0, 0.7, 0.2))
 
 
 func _spawn_slots() -> void:

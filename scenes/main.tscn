@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://btvswaevhuxqg"]
 
 [ext_resource type="Script" uid="uid://dtcou6adocxjo" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="PackedScene" uid="uid://cfcuosconte85" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/mayo_stand.tscn" id="3_mayo"]
 [ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/pickup_system.gd" id="4_pickup"]
 [ext_resource type="PackedScene" path="res://scenes/surgeon.tscn" id="5_surgeon"]
@@ -60,6 +60,11 @@ mesh = SubResource("BoxMesh_bed")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1092295183]
 environment = SubResource("Env_1")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 2.4, 0.4)
+fov = 40.0
+current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1815950793]
 transform = Transform3D(0.90630776, -0.34618863, 0.24240388, 0, 0.57357645, 0.81915206, -0.42261827, -0.74240386, 0.5198368, 0, 6, -0.5)
