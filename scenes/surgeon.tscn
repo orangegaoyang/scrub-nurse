@@ -24,7 +24,7 @@ size = Vector3(0.28, 0.3, 0.28)
 albedo_color = Color(0.96, 0.82, 0.7, 1)
 
 [node name="Surgeon" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, -1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0, -1.4)
 rotation_degrees = Vector3(0, 164, 0)
 script = ExtResource("1_surg")
 
