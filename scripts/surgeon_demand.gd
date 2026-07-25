@@ -27,11 +27,12 @@ func _ready() -> void:
 	_retract_hand()
 
 
-func start_demand(id: String) -> void:
+func start_demand(id: String, hand_already_out: bool = false) -> void:
 	current_demand_id = id
 	state = State.DEMANDING
 	held_instrument = null
-	_extend_hand()
+	if not hand_already_out:
+		_extend_hand()
 	demand_changed.emit(id)
 
 
@@ -83,9 +84,10 @@ func _use_after_delay() -> void:
 		returning_instrument.emit(current_demand_id)
 
 
-func take_back() -> void:
+func take_back(keep_hand_out: bool = false) -> void:
 	held_instrument = null
-	_retract_hand()
+	if not keep_hand_out:
+		_retract_hand()
 	state = State.IDLE
 
 

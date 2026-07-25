@@ -35,23 +35,16 @@ func _process(_delta: float) -> void:
 
 func _on_phase_changed(new_phase: int) -> void:
 	if new_phase == GameState.Phase.SURGERY:
-		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index), false)
+		_schedule_demand(ProcedureData.get_demand_at(GameState.current_demand_index), FIRST_DEMAND_DELAY, false)
 
 
-func _start_demand(id: String, after_return: bool) -> void:
+func _schedule_demand(id: String, delay: float, keep_hand_out: bool) -> void:
 	_deliver_triggered = false
 	_awaiting_demand = true
-	var delay: float
-	if not after_return:
-		delay = FIRST_DEMAND_DELAY
-	elif randf() < RETURN_LONG_PAUSE_CHANCE:
-		delay = randf_range(RETURN_DELAY_LONG_MIN, RETURN_DELAY_LONG_MAX)
-	else:
-		delay = randf_range(RETURN_DELAY_SHORT_MIN, RETURN_DELAY_SHORT_MAX)
 	await get_tree().create_timer(delay).timeout
 	_awaiting_demand = false
 	if GameState.current_phase == GameState.Phase.SURGERY and not surgeon.is_demanding():
-		surgeon.start_demand(id)
+		surgeon.start_demand(id, keep_hand_out)
 
 
 func _check_delivery() -> void:
@@ -108,7 +101,17 @@ func _pick_up_from_slot(inst: Instrument) -> void:
 
 func _take_back(inst: Instrument) -> void:
 	held_instrument = inst
-	surgeon.take_back()
+	var has_next: bool = GameState.current_demand_index < ProcedureData.demand_sequence.size()
+	var keep_hand_out: bool = false
+	var delay: float = 0.0
+	if has_next:
+		var long_pause: bool = randf() < RETURN_LONG_PAUSE_CHANCE
+		keep_hand_out = not long_pause
+		if long_pause:
+			delay = randf_range(RETURN_DELAY_LONG_MIN, RETURN_DELAY_LONG_MAX)
+		else:
+			delay = randf_range(RETURN_DELAY_SHORT_MIN, RETURN_DELAY_SHORT_MAX)
+	surgeon.take_back(keep_hand_out)
 	inst.set_state(Instrument.State.HELD)
 	inst.reparent(held_parent)
 	inst.collision_layer = 0
@@ -116,8 +119,8 @@ func _take_back(inst: Instrument) -> void:
 	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
 	_deliver_triggered = false
 	GameState.set_held(inst)
-	if GameState.current_demand_index < ProcedureData.demand_sequence.size():
-		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index), true)
+	if has_next:
+		_schedule_demand(ProcedureData.get_demand_at(GameState.current_demand_index), delay, keep_hand_out)
 
 
 func _place_in_slot(slot: TableSlot) -> void:
