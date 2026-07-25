@@ -8,6 +8,10 @@ enum State { IN_TRAY, HELD, IN_SLOT, IN_SURGEON }
 # coloured box mesh so unmodelled instruments still work.
 const MODELS: Dictionary = {
 	"scalpel": preload("res://assets/models/scalpel.glb"),
+	"hemostat": preload("res://assets/models/hemostat.glb"),
+	"forceps": preload("res://assets/models/forceps.glb"),
+	"scissors": preload("res://assets/models/scissors.glb"),
+	"needle_holder": preload("res://assets/models/needle_holder.glb"),
 }
 
 @export var instrument_id: String = ""

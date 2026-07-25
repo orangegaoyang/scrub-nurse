@@ -15,3 +15,7 @@ mono_crash.*.json
 
 # Logs
 *.log
+
+# Large source assets (regenerate extracted models via tools/process_instruments.py)
+assets/surgical_instruments_collection.glb
+assets/surgical_instruments_collection.glb.import
