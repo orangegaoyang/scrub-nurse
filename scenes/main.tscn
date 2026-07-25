@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
 [ext_resource type="PackedScene" path="res://assets/charite_university_hospital_-_operating_room.glb" id="13_room"]
+[ext_resource type="PackedScene" path="res://assets/models/back_table.glb" id="14_table"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(8, 0.2, 6)
@@ -47,6 +48,10 @@ glow_enabled = false
 script = ExtResource("1_main")
 
 [node name="OperatingRoom" parent="." instance=ExtResource("13_room")]
+
+[node name="BackTable" parent="." instance=ExtResource("14_table")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0, 0.6)
+rotation_degrees = Vector3(0, 90, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Env_1")
