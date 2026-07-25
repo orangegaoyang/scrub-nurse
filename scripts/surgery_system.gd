@@ -2,11 +2,15 @@ extends Node
 ## Surgery system: pickup from slot, follow cursor, deliver by touching hand,
 ## take back, replace in original slot.
 
+const DEMAND_DELAY_MIN: float = 1.5
+const DEMAND_DELAY_MAX: float = 4.0
+
 var player: CharacterBody3D
 var held_parent: Node3D
 var held_instrument: Instrument = null
 var surgeon: Surgeon
 var _deliver_triggered: bool = false
+var _awaiting_demand: bool = false
 
 
 func _ready() -> void:
@@ -32,7 +36,12 @@ func _on_phase_changed(new_phase: int) -> void:
 
 func _start_demand(id: String) -> void:
 	_deliver_triggered = false
-	surgeon.start_demand(id)
+	_awaiting_demand = true
+	var delay: float = randf_range(DEMAND_DELAY_MIN, DEMAND_DELAY_MAX)
+	await get_tree().create_timer(delay).timeout
+	_awaiting_demand = false
+	if GameState.current_phase == GameState.Phase.SURGERY and not surgeon.is_demanding():
+		surgeon.start_demand(id)
 
 
 func _check_delivery() -> void:

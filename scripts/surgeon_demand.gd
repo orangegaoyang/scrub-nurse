@@ -6,6 +6,7 @@ enum State { IDLE, DEMANDING, USING, RETURNING }
 
 signal demand_changed(instrument_id: String)
 signal returning_instrument(instrument_id: String)
+signal hand_retracted()
 
 var state: int = State.IDLE
 var current_demand_id: String = ""
@@ -71,6 +72,7 @@ func _reject() -> void:
 	_reject_cooldown = false
 	if state == State.DEMANDING:
 		_extend_hand()
+		demand_changed.emit(current_demand_id)
 
 
 func _use_after_delay() -> void:
@@ -95,3 +97,4 @@ func _extend_hand() -> void:
 func _retract_hand() -> void:
 	var tw := create_tween()
 	tw.tween_property(hand_pivot, "position:x", HAND_RETRACTED_X, 0.3)
+	hand_retracted.emit()
