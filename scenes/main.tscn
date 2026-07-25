@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://btvswaevhuxqg"]
 
 [ext_resource type="Script" uid="uid://dtcou6adocxjo" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://cfcuosconte85" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/mayo_stand.tscn" id="3_mayo"]
 [ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/pickup_system.gd" id="4_pickup"]
 [ext_resource type="PackedScene" path="res://scenes/surgeon.tscn" id="5_surgeon"]
@@ -51,11 +51,10 @@ size = Vector3(8, 0.2, 6)
 script = ExtResource("1_main")
 
 [node name="OperatingRoom" parent="." unique_id=2143120371 instance=ExtResource("13_room")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-scale = Vector3(0.54, 0.54, 0.54)
+transform = Transform3D(0.54, 0, 0, 0, 0.54, 0, 0, 0, 0.54, 0, 0, 0)
 
 [node name="Bed" type="MeshInstance3D" parent="." unique_id=27235424]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013, 0.689, 0.034)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013, 0.8826051, 0.034)
 material_override = SubResource("Mat_bed")
 mesh = SubResource("BoxMesh_bed")
 
@@ -67,7 +66,7 @@ transform = Transform3D(0.90630776, -0.34618863, 0.24240388, 0, 0.57357645, 0.81
 light_energy = 1.2
 
 [node name="SurgeryLamp" type="SpotLight3D" parent="." unique_id=2002452323]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2.0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2, 0)
 light_energy = 5.0
 shadow_enabled = true
 spot_range = 6.0
@@ -84,16 +83,16 @@ mesh = SubResource("BoxMesh_floor")
 shape = SubResource("BoxShape3D_floor")
 
 [node name="MayoStand" parent="." unique_id=1893074552 instance=ExtResource("3_mayo")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.9680054, 0.44189453, 0.9728006)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.41484195, 0, 0.4712066)
 
 [node name="Surgeon" parent="." unique_id=168145495 instance=ExtResource("5_surgeon")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.1593628, 0.6968994, -0.33615804)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.76256776, -0.018, -0.336)
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=1859080663]
 
 [node name="Player" parent="." unique_id=835150170 instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 0, 0.973)
-rotation_degrees = Vector3(0, -90, 0)
+transform = Transform3D(-4.371139e-08, 0.05059294, 0.99871933, 0, 0.99871933, -0.05059294, -1, -2.2114877e-09, -4.3655408e-08, 1.4, 0, 0.2)
+up_direction = Vector3(0, 0.7071068, 0.7071068)
 
 [node name="PickupSystem" type="Node" parent="." unique_id=360781667]
 script = ExtResource("4_pickup")
