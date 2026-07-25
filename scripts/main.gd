@@ -11,7 +11,6 @@ const SLOT_X_POSITIONS: Array[float] = [-0.6, -0.36, -0.12, 0.12, 0.36, 0.6]
 @onready var slots_parent: Node3D = $MayoStand/SlotsParent
 @onready var instruments_parent: Node3D = $MayoStand/InstrumentsParent
 @onready var pack: Node = $MayoStand/Pack
-@onready var countdown: Control = $UI/Countdown
 
 
 func _ready() -> void:
@@ -63,16 +62,7 @@ func _on_pack_opened() -> void:
 
 func _on_phase_changed(new_phase: int) -> void:
 	match new_phase:
-		GameState.Phase.COUNTDOWN:
-			_run_countdown()
 		GameState.Phase.SURGERY:
 			pass
 		GameState.Phase.RESULT:
 			pass
-
-
-func _run_countdown() -> void:
-	countdown.run()
-	await countdown.finished
-	if GameState.current_phase == GameState.Phase.COUNTDOWN:
-		GameState.start_surgery()
