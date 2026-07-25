@@ -21,8 +21,8 @@ func _ready() -> void:
 	_spawn_instruments(true)
 	player.interact_pressed.connect(_on_interact)
 	pack.opened.connect(_on_pack_opened)
-	# Fixed angled view: look at the tray / bed area (Mayo in front, surgeon beyond).
-	camera.look_at(Vector3(0.0, 0.7, 0.2))
+	# Fixed angled view: straight on to the Mayo tray (surgeon visible beyond).
+	camera.look_at(Vector3(0.415, 0.88, 0.471))
 
 
 func _spawn_slots() -> void:

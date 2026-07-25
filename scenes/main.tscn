@@ -62,7 +62,7 @@ mesh = SubResource("BoxMesh_bed")
 environment = SubResource("Env_1")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 2.4, 0.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 2.2, 0.471)
 fov = 40.0
 current = true
 
