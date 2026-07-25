@@ -36,10 +36,13 @@ organizer/
 │   ├── instrument.tscn        # 单件器械(RigidBody3D + 元数据)
 │   ├── surgeon.tscn           # 医生手(需求触发 + 归还 + 拒绝)
 │   └── ui/
-│       ├── prep_card.tscn     # 摆放规范卡
-│       ├── hud.tscn           # 计分/计时
+│       ├── prep_card.tscn     # (未用,规范卡已合并进 instrument_list)
+│       ├── instrument_list.tscn # 器械清单(左上方,打开手术包后显示,结算隐藏)
+│       ├── held_info.tscn     # 持物信息卡(顶部中央,名称+用途,淡入淡出)
+│       ├── start_button.tscn  # "摆放完成，开始手术"按钮(替代 3-2-1 倒计时)
+│       ├── hud.tscn           # 正确/错误(右上)+ 递送/取回提示(底部)
 │       ├── result.tscn        # 结算
-│       └── countdown.tscn     # 3-2-1 倒计时
+│       └── countdown.tscn     # (已弃用,保留文件)
 ├── scripts/
 │   ├── main.gd                # 流程:准备→倒计时→术中→结算
 │   ├── player_controller.gd   # 第一人称移动 + 鼠标看 + 指针锁定 + 交互射线
@@ -84,11 +87,22 @@ organizer/
 PREP → COUNTDOWN → SURGERY → RESULT
 ```
 - `PREP`:准备阶段,整理器械台
-- `COUNTDOWN`:3-2-1 自动倒计时(准备全部正确后触发)
+- `COUNTDOWN`:就绪态(全部摆放正确后进入);显示"摆放完成，开始手术"按钮,点击后进入术中。**已取消 3-2-1 倒计时**
 - `SURGERY`:术中递送循环
 - `RESULT`:结算
 
-信号:`phase_changed(new_phase)`
+信号:`phase_changed(new_phase)`、`held_changed(instrument)`、`score_updated()`、`prep_completed()`
+
+## 场景布局(main.tscn)
+- 玩家(护士)立于 Mayo 台前,第一人称面向台面(-Z)
+- **Mayo 台**:病人左手侧,稍偏左 `(-0.3, 0, -0.6)`;6 槽位 + 器械散放区
+- **医生**:站在病人右手侧、Mayo 对面偏右 `(1.0, 0, -1.4)`,旋转约 164° 面向护士;躯干+头+手
+- 医生手:平时在病人腹部(低位 y≈0.9),需求时抬到腰位(y≈1.05)并略前伸
+- 术区/无菌布:暂未做(后续 6B 美术)
+
+## 术中需求节奏(surgery_system.gd)
+- 手术开始后首件需求:1.0s
+- 取回器械后下一件:80% 概率 0.2–0.8s(**连续递送,医生手保持伸出**),20% 概率 3–6s 停顿(手收回)
 
 ## 关键交互实现要点
 
