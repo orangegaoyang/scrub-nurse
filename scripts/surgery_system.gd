@@ -2,8 +2,8 @@ extends Node
 ## Surgery system: pickup from slot, follow cursor, deliver by touching hand,
 ## take back, replace in original slot.
 
-const DEMAND_DELAY_MIN: float = 1.5
-const DEMAND_DELAY_MAX: float = 4.0
+const DEMAND_DELAY_MIN: float = 0.8
+const DEMAND_DELAY_MAX: float = 5.0
 
 var player: CharacterBody3D
 var held_parent: Node3D
