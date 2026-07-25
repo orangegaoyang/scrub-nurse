@@ -2,8 +2,12 @@ extends Node
 ## Surgery system: pickup from slot, follow cursor, deliver by touching hand,
 ## take back, replace in original slot.
 
-const DEMAND_DELAY_MIN: float = 3.0
-const DEMAND_DELAY_MAX: float = 10.0
+const FIRST_DEMAND_DELAY: float = 1.5
+const RETURN_DELAY_SHORT_MIN: float = 1.0
+const RETURN_DELAY_SHORT_MAX: float = 3.0
+const RETURN_DELAY_LONG_MIN: float = 4.0
+const RETURN_DELAY_LONG_MAX: float = 8.0
+const RETURN_LONG_PAUSE_CHANCE: float = 0.3
 
 var player: CharacterBody3D
 var held_parent: Node3D
@@ -31,13 +35,19 @@ func _process(_delta: float) -> void:
 
 func _on_phase_changed(new_phase: int) -> void:
 	if new_phase == GameState.Phase.SURGERY:
-		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index))
+		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index), false)
 
 
-func _start_demand(id: String) -> void:
+func _start_demand(id: String, after_return: bool) -> void:
 	_deliver_triggered = false
 	_awaiting_demand = true
-	var delay: float = randf_range(DEMAND_DELAY_MIN, DEMAND_DELAY_MAX)
+	var delay: float
+	if not after_return:
+		delay = FIRST_DEMAND_DELAY
+	elif randf() < RETURN_LONG_PAUSE_CHANCE:
+		delay = randf_range(RETURN_DELAY_LONG_MIN, RETURN_DELAY_LONG_MAX)
+	else:
+		delay = randf_range(RETURN_DELAY_SHORT_MIN, RETURN_DELAY_SHORT_MAX)
 	await get_tree().create_timer(delay).timeout
 	_awaiting_demand = false
 	if GameState.current_phase == GameState.Phase.SURGERY and not surgeon.is_demanding():
@@ -105,7 +115,7 @@ func _take_back(inst: Instrument) -> void:
 	_deliver_triggered = false
 	GameState.set_held(inst)
 	if GameState.current_demand_index < ProcedureData.demand_sequence.size():
-		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index))
+		_start_demand(ProcedureData.get_demand_at(GameState.current_demand_index), true)
 
 
 func _place_in_slot(slot: TableSlot) -> void:
