@@ -16,8 +16,8 @@ var held_instrument: Instrument = null
 @onready var hand_area: Area3D = $HandPivot/HandArea
 @onready var held_anchor: Node3D = $HandPivot/HeldAnchor
 
-const HAND_EXTENDED_POS: Vector3 = Vector3(0, 1.6, -0.3)   # raised up, toward player
-const HAND_RETRACTED_POS: Vector3 = Vector3(0, 0.5, 0.0)   # lowered at surgeon's side
+const HAND_EXTENDED_POS: Vector3 = Vector3(0, 1.75, -0.45)  # raised up, reaching toward player
+const HAND_RETRACTED_POS: Vector3 = Vector3(0.3, 0.95, 0.0)  # resting at surgeon's side
 const USE_DURATION: float = 1.8
 
 var _reject_cooldown: bool = false
