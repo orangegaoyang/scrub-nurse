@@ -38,3 +38,12 @@ func set_state(s: int) -> void:
 func show_name(v: bool) -> void:
 	if state != State.HELD:
 		label.visible = v
+
+
+func play_reject() -> void:
+	## Spring scale punch to convey "rejected / bounce back" feedback.
+	scale = Vector3.ONE
+	var tw := create_tween()
+	tw.tween_property(self, "scale", Vector3.ONE * 1.18, 0.08).set_ease(Tween.EASE_OUT)
+	tw.tween_property(self, "scale", Vector3.ONE * 0.92, 0.06)
+	tw.tween_property(self, "scale", Vector3.ONE, 0.10).set_ease(Tween.EASE_OUT)

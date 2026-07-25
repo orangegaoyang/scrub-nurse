@@ -57,3 +57,4 @@ func _place_in_slot(slot: TableSlot) -> void:
 			GameState.start_countdown()
 	else:
 		slot.set_feedback(false)
+		inst.play_reject()

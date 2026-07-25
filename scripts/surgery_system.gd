@@ -2,12 +2,12 @@ extends Node
 ## Surgery system: pickup from slot, follow cursor, deliver by touching hand,
 ## take back, replace in original slot.
 
-const FIRST_DEMAND_DELAY: float = 1.5
-const RETURN_DELAY_SHORT_MIN: float = 1.0
-const RETURN_DELAY_SHORT_MAX: float = 3.0
-const RETURN_DELAY_LONG_MIN: float = 4.0
-const RETURN_DELAY_LONG_MAX: float = 8.0
-const RETURN_LONG_PAUSE_CHANCE: float = 0.3
+const FIRST_DEMAND_DELAY: float = 1.0
+const RETURN_DELAY_SHORT_MIN: float = 0.2
+const RETURN_DELAY_SHORT_MAX: float = 0.8
+const RETURN_DELAY_LONG_MIN: float = 3.0
+const RETURN_DELAY_LONG_MAX: float = 6.0
+const RETURN_LONG_PAUSE_CHANCE: float = 0.2
 
 var player: CharacterBody3D
 var held_parent: Node3D
@@ -71,6 +71,8 @@ func _deliver(inst: Instrument) -> void:
 		GameState.surgery_correct += 1
 		GameState.current_demand_index += 1
 		GameState.score_updated.emit()
+	else:
+		inst.play_reject()
 
 
 func _on_interact(target: Node) -> void:
@@ -135,3 +137,4 @@ func _place_in_slot(slot: TableSlot) -> void:
 			GameState.finish_surgery()
 	else:
 		slot.set_feedback(false)
+		inst.play_reject()
