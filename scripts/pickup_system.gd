@@ -52,6 +52,7 @@ func _place_in_slot(slot: TableSlot) -> void:
 		slot.set_feedback(true)
 		GameState.set_held(null)
 		GameState.prep_correct += 1
+		GameState.prep_item_secured.emit(inst.instrument_id)
 		GameState.score_updated.emit()
 		if GameState.prep_correct >= ProcedureData.demand_sequence.size():
 			GameState.start_countdown()

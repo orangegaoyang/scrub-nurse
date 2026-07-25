@@ -3,6 +3,7 @@ extends Node
 
 signal phase_changed(new_phase: int)
 signal prep_completed()
+signal prep_item_secured(instrument_id: String)
 signal surgery_step_completed(step_index: int)
 signal score_updated()
 signal held_changed(instrument)
