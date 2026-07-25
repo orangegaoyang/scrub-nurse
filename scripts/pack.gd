@@ -19,8 +19,7 @@ func open() -> void:
 	if _opened:
 		return
 	_opened = true
-	area.set_deferred("monitorable", false)
-	area.input_pickable = false
+	area.set_deferred("collision_layer", 0)
 	var tw := create_tween()
 	tw.set_parallel(true)
 	tw.tween_property(wrap, "scale:y", 0.01, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
