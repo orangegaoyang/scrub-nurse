@@ -24,8 +24,8 @@ size = Vector3(0.28, 0.3, 0.28)
 albedo_color = Color(0.96, 0.82, 0.7, 1)
 
 [node name="Surgeon" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0, 0.8)
-rotation_degrees = Vector3(0, 96, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, -1.4)
+rotation_degrees = Vector3(0, 164, 0)
 script = ExtResource("1_surg")
 
 [node name="Torso" type="MeshInstance3D" parent="."]
@@ -39,7 +39,7 @@ mesh = SubResource("BoxMesh_head")
 material_override = SubResource("Mat_head")
 
 [node name="HandPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.95, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.3)
 
 [node name="HandMesh" type="MeshInstance3D" parent="HandPivot"]
 mesh = SubResource("BoxMesh_hand")
