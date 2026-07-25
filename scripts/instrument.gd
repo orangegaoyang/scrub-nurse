@@ -4,6 +4,12 @@ extends RigidBody3D
 
 enum State { IN_TRAY, HELD, IN_SLOT, IN_SURGEON }
 
+# Per-id 3D models (Blender-generated GLB). Ids not listed fall back to the
+# coloured box mesh so unmodelled instruments still work.
+const MODELS: Dictionary = {
+	"scalpel": preload("res://assets/models/scalpel.glb"),
+}
+
 @export var instrument_id: String = ""
 var def  # ProcedureData.InstrumentDef (untyped to access inner class fields)
 var state: int = State.IN_TRAY
@@ -18,12 +24,23 @@ func setup(p_id: String) -> void:
 	if def == null:
 		push_error("Instrument: unknown id %s" % p_id)
 		return
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = def.color
-	mesh.material_override = mat
 	label.text = def.name_cn
 	label.visible = false
 	freeze = true  # no physics simulation for MVP
+	_apply_model()
+
+
+func _apply_model() -> void:
+	if MODELS.has(instrument_id):
+		# Use the real model; hide the placeholder box.
+		mesh.visible = false
+		var model: Node3D = MODELS[instrument_id].instantiate()
+		add_child(model)
+	else:
+		# Fallback: coloured box.
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = def.color
+		mesh.material_override = mat
 
 
 func set_state(s: int) -> void:
