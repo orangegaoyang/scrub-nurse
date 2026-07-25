@@ -16,8 +16,8 @@ var held_instrument: Instrument = null
 @onready var hand_area: Area3D = $HandPivot/HandArea
 @onready var held_anchor: Node3D = $HandPivot/HeldAnchor
 
-const HAND_EXTENDED_X: float = -1.4   # toward the table/player (left), into view
-const HAND_RETRACTED_X: float = 0.3   # off to the right (out of view)
+const HAND_EXTENDED_POS: Vector3 = Vector3(0, 1.6, -0.3)   # raised up, toward player
+const HAND_RETRACTED_POS: Vector3 = Vector3(0, 0.5, 0.0)   # lowered at surgeon's side
 const USE_DURATION: float = 1.8
 
 var _reject_cooldown: bool = false
@@ -91,10 +91,10 @@ func take_back() -> void:
 
 func _extend_hand() -> void:
 	var tw := create_tween()
-	tw.tween_property(hand_pivot, "position:x", HAND_EXTENDED_X, 0.3)
+	tw.tween_property(hand_pivot, "position", HAND_EXTENDED_POS, 0.3).set_ease(Tween.EASE_OUT)
 
 
 func _retract_hand() -> void:
 	var tw := create_tween()
-	tw.tween_property(hand_pivot, "position:x", HAND_RETRACTED_X, 0.3)
+	tw.tween_property(hand_pivot, "position", HAND_RETRACTED_POS, 0.3).set_ease(Tween.EASE_IN)
 	hand_retracted.emit()
