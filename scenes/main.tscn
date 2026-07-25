@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
 [ext_resource type="PackedScene" path="res://assets/charite_university_hospital_-_operating_room.glb" id="13_room"]
-[ext_resource type="PackedScene" path="res://assets/models/back_table.glb" id="14_table"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(8, 0.2, 6)
@@ -22,6 +21,13 @@ size = Vector3(8, 0.2, 6)
 
 [sub_resource type="StandardMaterial3D" id="Mat_floor"]
 albedo_color = Color(0.82, 0.84, 0.86, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bed"]
+size = Vector3(0.7, 0.7, 2.0)
+
+[sub_resource type="StandardMaterial3D" id="Mat_bed"]
+albedo_color = Color(0.95, 0.95, 0.95, 1)
+roughness = 0.8
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
 sky_top_color = Color(0.85, 0.9, 0.95, 1)
@@ -49,9 +55,10 @@ script = ExtResource("1_main")
 
 [node name="OperatingRoom" parent="." instance=ExtResource("13_room")]
 
-[node name="BackTable" parent="." instance=ExtResource("14_table")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0, 0.6)
-rotation_degrees = Vector3(0, 90, 0)
+[node name="Bed" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0.35, -1.2)
+mesh = SubResource("BoxMesh_bed")
+material_override = SubResource("Mat_bed")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Env_1")
