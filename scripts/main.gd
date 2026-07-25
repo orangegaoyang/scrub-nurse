@@ -11,27 +11,16 @@ const SLOT_X_POSITIONS: Array[float] = [-0.6, -0.36, -0.12, 0.12, 0.36, 0.6]
 @onready var slots_parent: Node3D = $MayoStand/SlotsParent
 @onready var instruments_parent: Node3D = $MayoStand/InstrumentsParent
 @onready var pack: Node = $MayoStand/Pack
-@onready var paper: Label3D = $MayoStand/Paper
 @onready var countdown: Control = $UI/Countdown
 
 
 func _ready() -> void:
 	GameState.reset()
 	GameState.phase_changed.connect(_on_phase_changed)
-	_populate_paper()
 	_spawn_slots()
 	_spawn_instruments(true)
 	player.interact_pressed.connect(_on_interact)
 	pack.opened.connect(_on_pack_opened)
-
-
-func _populate_paper() -> void:
-	var lines: Array[String] = []
-	lines.append("器械清单")
-	for i in range(ProcedureData.demand_sequence.size()):
-		var def = ProcedureData.get_instrument(ProcedureData.demand_sequence[i])
-		lines.append("%d. %s — %s" % [i + 1, def.name_cn, def.purpose])
-	paper.text = "\n".join(lines)
 
 
 func _spawn_slots() -> void:
