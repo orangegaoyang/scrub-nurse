@@ -18,7 +18,7 @@ import bpy
 import math
 
 SRC = "assets/surgical_instruments_collection.glb"
-TARGET_LEN = 0.22  # normalised length (m) along the long axis
+TARGET_LEN = 0.40  # normalised length (m) along the long axis
 
 TARGETS = {
     "scalpel": "Scalpel handle Nr. 3",
