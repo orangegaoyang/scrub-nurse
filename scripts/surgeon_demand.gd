@@ -1,6 +1,7 @@
 class_name Surgeon
 extends Node3D
-## Surgeon hand: enters from the right side. Demand state machine.
+## Surgeon: a rigged doctor model that plays a "Reach" arm animation when
+## demanding / returning an instrument. The HandArea sits at the reach pose.
 
 enum State { IDLE, DEMANDING, USING, RETURNING }
 
@@ -8,23 +9,33 @@ signal demand_changed(instrument_id: String)
 signal returning_instrument(instrument_id: String)
 signal hand_retracted()
 
+const REACH_ANIM := "Reach"
+
 var state: int = State.IDLE
 var current_demand_id: String = ""
 var held_instrument: Instrument = null
 
-@onready var hand_pivot: Node3D = $HandPivot
-@onready var hand_area: Area3D = $HandPivot/HandArea
-@onready var held_anchor: Node3D = $HandPivot/HeldAnchor
-
-const HAND_EXTENDED_POS: Vector3 = Vector3(0, 1.05, -0.3)  # raised to waist, pulled back half
-const HAND_RETRACTED_POS: Vector3 = Vector3(0, 0.9, -0.3)   # resting at patient's abdomen
+@onready var hand_area: Area3D = $HandArea
+@onready var held_anchor: Node3D = $HeldAnchor
+@onready var anim: AnimationPlayer = _find_anim()
 const USE_DURATION: float = 1.8
 
 var _reject_cooldown: bool = false
 
 
+func _find_anim() -> AnimationPlayer:
+	var n := get_node_or_null("DoctorModel")
+	if n:
+		var ap := n.find_child("AnimationPlayer", true, false)
+		if ap:
+			return ap
+	return null
+
+
 func _ready() -> void:
-	_retract_hand()
+	if anim and anim.has_animation(REACH_ANIM):
+		anim.play(REACH_ANIM)
+		anim.seek(0.0, true)   # start parked in the rest pose
 
 
 func start_demand(id: String, hand_already_out: bool = false) -> void:
@@ -32,7 +43,7 @@ func start_demand(id: String, hand_already_out: bool = false) -> void:
 	state = State.DEMANDING
 	held_instrument = null
 	if not hand_already_out:
-		_extend_hand()
+		_play_reach(true)
 	demand_changed.emit(id)
 
 
@@ -56,7 +67,7 @@ func try_receive(inst: Instrument) -> bool:
 		inst.set_state(Instrument.State.IN_SURGEON)
 		inst.reparent(held_anchor)
 		inst.transform = Transform3D.IDENTITY
-		_retract_hand()
+		_play_reach(false)   # pull hand back to use
 		state = State.USING
 		_use_after_delay()
 		return true
@@ -67,12 +78,13 @@ func try_receive(inst: Instrument) -> bool:
 
 func _reject() -> void:
 	GameState.record_wrong()
-	_retract_hand()
+	_play_reach(false)   # hand comes back
+	hand_retracted.emit()
 	_reject_cooldown = true
 	await get_tree().create_timer(0.6).timeout
 	_reject_cooldown = false
 	if state == State.DEMANDING:
-		_extend_hand()
+		_play_reach(true)
 		demand_changed.emit(current_demand_id)
 
 
@@ -80,23 +92,22 @@ func _use_after_delay() -> void:
 	await get_tree().create_timer(USE_DURATION).timeout
 	if state == State.USING:
 		state = State.RETURNING
-		_extend_hand()
+		_play_reach(true)   # extend hand to give the instrument back
 		returning_instrument.emit(current_demand_id)
 
 
 func take_back(keep_hand_out: bool = false) -> void:
 	held_instrument = null
-	if not keep_hand_out:
-		_retract_hand()
 	state = State.IDLE
+	if not keep_hand_out:
+		_play_reach(false)
+		hand_retracted.emit()
 
 
-func _extend_hand() -> void:
-	var tw := create_tween()
-	tw.tween_property(hand_pivot, "position", HAND_EXTENDED_POS, 0.3).set_ease(Tween.EASE_OUT)
-
-
-func _retract_hand() -> void:
-	var tw := create_tween()
-	tw.tween_property(hand_pivot, "position", HAND_RETRACTED_POS, 0.3).set_ease(Tween.EASE_IN)
-	hand_retracted.emit()
+func _play_reach(extend: bool) -> void:
+	if anim == null or not anim.has_animation(REACH_ANIM):
+		return
+	if extend:
+		anim.play(REACH_ANIM, 0.15)
+	else:
+		anim.play_backwards(REACH_ANIM, 0.15)

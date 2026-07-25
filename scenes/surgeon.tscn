@@ -1,56 +1,23 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/surgeon_demand.gd" id="1_surg"]
+[ext_resource type="PackedScene" path="res://assets/models/doctor.glb" id="2_doctor"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hand"]
-size = Vector3(0.6, 0.5, 0.6)
-
-[sub_resource type="BoxMesh" id="BoxMesh_hand"]
-size = Vector3(0.26, 0.22, 0.26)
-
-[sub_resource type="StandardMaterial3D" id="Mat_hand"]
-albedo_color = Color(0.95, 0.78, 0.66, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_torso"]
-size = Vector3(0.55, 0.8, 0.32)
-
-[sub_resource type="StandardMaterial3D" id="Mat_gown"]
-albedo_color = Color(0.35, 0.55, 0.72, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_head"]
-size = Vector3(0.28, 0.3, 0.28)
-
-[sub_resource type="StandardMaterial3D" id="Mat_head"]
-albedo_color = Color(0.96, 0.82, 0.7, 1)
+size = Vector3(0.35, 0.35, 0.35)
 
 [node name="Surgeon" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0, -1.4)
-rotation_degrees = Vector3(0, 164, 0)
 script = ExtResource("1_surg")
 
-[node name="Torso" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
-mesh = SubResource("BoxMesh_torso")
-material_override = SubResource("Mat_gown")
+[node name="DoctorModel" parent="." instance=ExtResource("2_doctor")]
 
-[node name="Head" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.62, 0)
-mesh = SubResource("BoxMesh_head")
-material_override = SubResource("Mat_head")
-
-[node name="HandPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.3)
-
-[node name="HandMesh" type="MeshInstance3D" parent="HandPivot"]
-mesh = SubResource("BoxMesh_hand")
-material_override = SubResource("Mat_hand")
-
-[node name="HandArea" type="Area3D" parent="HandPivot"]
+[node name="HandArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.076, 1.389, -0.596)
 collision_layer = 4
 collision_mask = 4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HandPivot/HandArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HandArea"]
 shape = SubResource("BoxShape3D_hand")
 
-[node name="HeldAnchor" type="Marker3D" parent="HandPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+[node name="HeldAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.076, 1.389, -0.6)
