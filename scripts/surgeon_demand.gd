@@ -15,8 +15,8 @@ var state: int = State.IDLE
 var current_demand_id: String = ""
 var held_instrument: Instrument = null
 
-@onready var hand_area: Area3D = $HandArea
-@onready var held_anchor: Node3D = $HeldAnchor
+@onready var hand_area: Area3D = $DoctorModel/HandArea
+@onready var held_anchor: Node3D = $DoctorModel/HeldAnchor
 @onready var anim: AnimationPlayer = _find_anim()
 const USE_DURATION: float = 1.8
 
@@ -33,9 +33,11 @@ func _find_anim() -> AnimationPlayer:
 
 
 func _ready() -> void:
+	# Park the doctor in the rest pose (arms down), not the T-pose.
 	if anim and anim.has_animation(REACH_ANIM):
 		anim.play(REACH_ANIM)
-		anim.seek(0.0, true)   # start parked in the rest pose
+		anim.pause()
+		anim.seek(0.0, true)
 
 
 func start_demand(id: String, hand_already_out: bool = false) -> void:
