@@ -12,7 +12,7 @@ script = ExtResource("1_surg")
 [node name="DoctorModel" parent="." instance=ExtResource("2_doctor")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 rotation_degrees = Vector3(0, 180, 0)
-scale = Vector3(1.8, 1.8, 1.8)
+scale = Vector3(1, 1, 1)
 
 [node name="HandArea" type="Area3D" parent="DoctorModel"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.209, 1.331, 0.478)
