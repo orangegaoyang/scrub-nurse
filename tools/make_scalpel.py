@@ -26,8 +26,8 @@ def make_steel_material(name, roughness):
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     bsdf = mat.node_tree.nodes["Principled BSDF"]
-    bsdf.inputs["Base Color"].default_value = (0.86, 0.87, 0.89, 1.0)
-    bsdf.inputs["Metallic"].default_value = 0.95
+    bsdf.inputs["Base Color"].default_value = (0.92, 0.92, 0.93, 1.0)
+    bsdf.inputs["Metallic"].default_value = 0.55  # not pure metal -> stays lit by diffuse
     bsdf.inputs["Roughness"].default_value = roughness
     return mat
 
