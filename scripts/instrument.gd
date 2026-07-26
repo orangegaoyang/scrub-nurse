@@ -18,6 +18,8 @@ const MODELS: Dictionary = {
 var def  # ProcedureData.InstrumentDef (untyped to access inner class fields)
 var state: int = State.IN_TRAY
 
+const MODEL_SCALE: float = 0.5  # instruments are exported at 0.4 m; scale to ~0.2 m (real)
+
 @onready var mesh: MeshInstance3D = $MeshInstance3D
 @onready var label: Label3D = $NameLabel
 
@@ -39,12 +41,14 @@ func _apply_model() -> void:
 		# Use the real model; hide the placeholder box.
 		mesh.visible = false
 		var model: Node3D = MODELS[instrument_id].instantiate()
+		model.scale = Vector3(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE)
 		add_child(model)
 	else:
 		# Fallback: coloured box.
 		var mat := StandardMaterial3D.new()
 		mat.albedo_color = def.color
 		mesh.material_override = mat
+		mesh.scale = Vector3(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE)
 
 
 func set_state(s: int) -> void:
