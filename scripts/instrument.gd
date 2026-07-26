@@ -46,7 +46,7 @@ func _apply_card() -> void:
 
 	var lbl := Label3D.new()
 	lbl.text = def.name_cn
-	lbl.add_theme_font_override("font", CARD_FONT)
+	lbl.set("theme_override_fonts/font", CARD_FONT)
 	lbl.font_size = 40
 	lbl.pixel_size = 0.0006
 	lbl.modulate = Color(0.1, 0.1, 0.1)
