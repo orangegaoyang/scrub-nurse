@@ -17,6 +17,6 @@ shape = SubResource("BoxShape3D_slot")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
 billboard = 1
 text = "1"
-font_size = 36
+font_size = 24
 outline_size = 5
 modulate = Color(0.9, 0.9, 0.9, 1)
