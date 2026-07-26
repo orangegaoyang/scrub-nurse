@@ -30,18 +30,16 @@ func _spawn_slots() -> void:
 
 
 func _spawn_instruments() -> void:
-	# Instruments rotated 90° (laid across), arranged in 2 rows in the lower
-	# part of the table; the upper part is left for the slots.
+	# Stack (叠放) the instruments in one pile on the lower part of the table:
+	# basically the same X/Z, each a little above the previous; rotated 90°.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
-	var xs: Array[float] = [-0.25, 0.0, 0.25]
-	var zs: Array[float] = [-0.06, 0.06]
 	for i in range(ids.size()):
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(xs[i % 3], 0.0, zs[i / 3])
-		inst.rotation_degrees.y = 90.0
+		inst.position = Vector3(randf_range(-0.02, 0.02), i * 0.025, randf_range(-0.02, 0.02))
+		inst.rotation_degrees.y = 90.0 + randf_range(-15.0, 15.0)
 
 
 func _on_interact(_target: Node) -> void:
