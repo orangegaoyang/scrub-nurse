@@ -30,16 +30,15 @@ func _spawn_slots() -> void:
 
 
 func _spawn_instruments() -> void:
-	# Stack (叠放) the instruments in one pile on the lower part of the table:
-	# basically the same X/Z, each a little above the previous; rotated 90°.
+	# Instruments are cards; stack them in a small deck on the lower part of the table.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
 	for i in range(ids.size()):
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(randf_range(-0.02, 0.02), i * 0.025, randf_range(-0.02, 0.02))
-		inst.rotation_degrees.y = 90.0 + randf_range(-15.0, 15.0)
+		inst.position = Vector3(randf_range(-0.015, 0.015), i * 0.004, randf_range(-0.015, 0.015))
+		inst.rotation_degrees.y = randf_range(-25.0, 25.0)
 
 
 func _on_interact(_target: Node) -> void:
