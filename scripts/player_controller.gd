@@ -24,6 +24,7 @@ func _cursor_query() -> Dictionary:
 	var to: Vector3 = from + cam.project_ray_normal(mp) * REACH
 	var space := get_world_3d().direct_space_state
 	var q := PhysicsRayQueryParameters3D.create(from, to)
+	q.collision_mask = 7  # layers 1 (instruments), 2 (slots/pack), 4 (surgeon hand) — not the table (8)
 	q.collide_with_areas = true
 	q.collide_with_bodies = true
 	return space.intersect_ray(q)

@@ -42,10 +42,12 @@ func _spawn_instruments(hidden: bool) -> void:
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(xs[i], 0.01, randf_range(-0.08, 0.08))
+		inst.position = Vector3(xs[i], 0.25, randf_range(-0.08, 0.08))
 		inst.rotation_degrees.y = randf_range(-25.0, 25.0)
 		if hidden:
+			# Hidden + frozen until the pack opens, then they drop onto the table.
 			inst.visible = false
+			inst.freeze = true
 			inst.collision_layer = 0
 
 
@@ -61,6 +63,13 @@ func _on_pack_opened() -> void:
 		if inst is Instrument:
 			inst.visible = true
 			inst.collision_layer = 1
+			inst.collision_mask = 8
+			inst.freeze = false  # let it fall onto the table
+	# Once they have settled, freeze them so they don't jitter.
+	await get_tree().create_timer(2.5).timeout
+	for inst in instruments_parent.get_children():
+		if inst is Instrument and inst.state == Instrument.State.IN_TRAY:
+			inst.freeze = true
 
 
 func _on_phase_changed(new_phase: int) -> void:

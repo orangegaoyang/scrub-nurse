@@ -23,9 +23,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, -0.6)
 transform = Transform3D(-3.934025e-08, 0, 0.9, 0, 0.9, 0, -0.9, 0, -3.934025e-08, 0, 0, 0)
 
 [node name="TrayCollision" type="StaticBody3D" parent="." unique_id=691365737]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
-collision_layer = 0
-collision_mask = 0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04, 0)
+collision_layer = 8
+collision_mask = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision" unique_id=717371739]
 shape = SubResource("Shape_tray")
