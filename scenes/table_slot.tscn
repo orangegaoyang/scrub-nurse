@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/table_slot.gd" id="1_slot"]
+[ext_resource type="FontFile" path="res://assets/fonts/ArialUnicode.ttf" id="2_font"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_slot"]
 size = Vector3(0.32, 0.25, 0.32)
@@ -29,7 +30,9 @@ material_override = SubResource("Mat_tag")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.004, 0)
 rotation_degrees = Vector3(-90, 0, 0)
 modulate = Color(0.1, 0.1, 0.1, 1)
+pixel_size = 0.0005
+theme_override_fonts/font = ExtResource("2_font")
 text = "器械"
-font_size = 20
-outline_size = 3
+font_size = 48
+outline_size = 4
 no_depth_test = true

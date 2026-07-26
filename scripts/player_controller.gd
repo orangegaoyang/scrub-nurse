@@ -10,7 +10,9 @@ signal interact_pressed(target: Node)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
-		interact_pressed.emit(get_cursor_collider())
+		var c = get_cursor_collider()
+		print("DEBUG click hit: ", c)
+		interact_pressed.emit(c)
 
 
 func _cursor_query() -> Dictionary:

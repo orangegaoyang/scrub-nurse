@@ -42,7 +42,7 @@ func _spawn_instruments(hidden: bool) -> void:
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(xs[i], 0.02, randf_range(-0.08, 0.08))
+		inst.position = Vector3(xs[i], 0.01, randf_range(-0.08, 0.08))
 		inst.rotation_degrees.y = randf_range(-25.0, 25.0)
 		if hidden:
 			inst.visible = false

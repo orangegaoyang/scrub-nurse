@@ -130,7 +130,7 @@ func _place_in_slot(slot: TableSlot) -> void:
 		inst.set_state(Instrument.State.IN_SLOT)
 		inst.reparent(slot)
 		inst.transform = Transform3D.IDENTITY
-		inst.position = Vector3(0, 0.04, 0)
+		inst.position = Vector3(0, 0.01, 0)
 		inst.collision_layer = 1
 		slot.occupied = true
 		slot.current_instrument = inst
