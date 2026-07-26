@@ -22,7 +22,7 @@ func _ready() -> void:
 	player.interact_pressed.connect(_on_interact)
 	pack.opened.connect(_on_pack_opened)
 	# Fixed angled view: straight on to the Mayo table top (surgeon visible beyond).
-	camera.look_at(Vector3(0.415, 0.75, 0.471))
+	#camera.look_at(Vector3(0.415, 0.75, 0.471))
 
 
 func _spawn_slots() -> void:
