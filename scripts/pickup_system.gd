@@ -17,15 +17,17 @@ func _process(_delta: float) -> void:
 		held_instrument.global_position = player.get_cursor_point() + Vector3(0, 0.05, 0)
 
 
-func _on_interact(target: Node) -> void:
+func _on_interact(_target: Node) -> void:
 	if GameState.current_phase != GameState.Phase.PREP:
 		return
 	if held_instrument == null:
-		if target is Instrument and (target as Instrument).state == Instrument.State.IN_TRAY:
-			_pick_up(target as Instrument)
+		var inst := player.get_cursor_instrument() as Instrument
+		if inst != null and inst.state == Instrument.State.IN_TRAY:
+			_pick_up(inst)
 	else:
-		if target is TableSlot and not (target as TableSlot).occupied:
-			_place_in_slot(target as TableSlot)
+		var slot := player.get_cursor_slot() as TableSlot
+		if slot != null and not slot.occupied:
+			_place_in_slot(slot)
 
 
 func _pick_up(inst: Instrument) -> void:

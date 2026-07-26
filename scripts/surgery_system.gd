@@ -50,7 +50,7 @@ func _schedule_demand(id: String, delay: float, keep_hand_out: bool) -> void:
 func _check_delivery() -> void:
 	if held_instrument == null or not surgeon.is_demanding() or _deliver_triggered:
 		return
-	if player.get_cursor_collider() == surgeon.get_hand_area():
+	if player.get_cursor_hand() == surgeon.get_hand_area():
 		_deliver_triggered = true
 		_deliver(held_instrument)
 
@@ -68,19 +68,20 @@ func _deliver(inst: Instrument) -> void:
 		inst.play_reject()
 
 
-func _on_interact(target: Node) -> void:
+func _on_interact(_target: Node) -> void:
 	if GameState.current_phase != GameState.Phase.SURGERY:
 		return
 	if held_instrument == null:
-		if target is Instrument:
-			var inst := target as Instrument
+		var inst := player.get_cursor_instrument() as Instrument
+		if inst != null:
 			if inst.state == Instrument.State.IN_SLOT:
 				_pick_up_from_slot(inst)
 			elif surgeon.is_returning() and inst == surgeon.held_instrument:
 				_take_back(inst)
 	else:
-		if target is TableSlot and not (target as TableSlot).occupied:
-			_place_in_slot(target as TableSlot)
+		var slot := player.get_cursor_slot() as TableSlot
+		if slot != null and not slot.occupied:
+			_place_in_slot(slot)
 
 
 func _pick_up_from_slot(inst: Instrument) -> void:
