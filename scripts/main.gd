@@ -10,7 +10,6 @@ const SLOT_X_POSITIONS: Array[float] = [-0.32, -0.19, -0.06, 0.06, 0.19, 0.32]
 @onready var mayo: Node3D = $MayoStand
 @onready var slots_parent: Node3D = $MayoStand/SlotsParent
 @onready var instruments_parent: Node3D = $MayoStand/InstrumentsParent
-@onready var pack: Node = $MayoStand/Pack
 @onready var camera: Camera3D = $Camera3D
 
 
@@ -18,11 +17,8 @@ func _ready() -> void:
 	GameState.reset()
 	GameState.phase_changed.connect(_on_phase_changed)
 	_spawn_slots()
-	_spawn_instruments(true)
+	_spawn_instruments()
 	player.interact_pressed.connect(_on_interact)
-	pack.opened.connect(_on_pack_opened)
-	# Fixed angled view: straight on to the Mayo table top (surgeon visible beyond).
-	#camera.look_at(Vector3(0.415, 0.75, 0.471))
 
 
 func _spawn_slots() -> void:
@@ -33,43 +29,21 @@ func _spawn_slots() -> void:
 		slot.position = Vector3(SLOT_X_POSITIONS[i], 0, 0)
 
 
-func _spawn_instruments(hidden: bool) -> void:
+func _spawn_instruments() -> void:
+	# Lay the instruments in a neat row on the lower part of the table.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
 	var xs: Array[float] = [-0.25, -0.15, -0.05, 0.05, 0.15, 0.25]
-	xs.shuffle()
 	for i in range(ids.size()):
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(xs[i], 0.25, randf_range(-0.08, 0.08))
-		inst.rotation_degrees.y = randf_range(-25.0, 25.0)
-		if hidden:
-			# Hidden + frozen until the pack opens, then they drop onto the table.
-			inst.visible = false
-			inst.freeze = true
-			inst.collision_layer = 0
+		inst.position = Vector3(xs[i], 0.0, 0.0)
+		inst.rotation_degrees.y = randf_range(-12.0, 12.0)
 
 
-func _on_interact(target: Node) -> void:
-	if GameState.current_phase != GameState.Phase.PREP:
-		return
-	if not pack.is_opened() and target == pack.get_node("PackArea"):
-		pack.open()
-
-
-func _on_pack_opened() -> void:
-	for inst in instruments_parent.get_children():
-		if inst is Instrument:
-			inst.visible = true
-			inst.collision_layer = 1
-			inst.collision_mask = 8
-			inst.freeze = false  # let it fall onto the table
-	# Once they have settled, freeze them so they don't jitter.
-	await get_tree().create_timer(2.5).timeout
-	for inst in instruments_parent.get_children():
-		if inst is Instrument and inst.state == Instrument.State.IN_TRAY:
-			inst.freeze = true
+func _on_interact(_target: Node) -> void:
+	pass  # prep interaction (pick/place) handled by pickup_system
 
 
 func _on_phase_changed(new_phase: int) -> void:

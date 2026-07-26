@@ -14,13 +14,10 @@ var _placed_count: int = 0
 
 
 func _ready() -> void:
-	visible = false
 	_build_list()
 	GameState.phase_changed.connect(_on_phase_changed)
 	GameState.prep_item_secured.connect(_on_prep_item_secured)
-	var pack: Node = get_node_or_null("/root/Main/MayoStand/Pack")
-	if pack:
-		pack.opened.connect(_on_pack_opened)
+	visible = true
 
 
 func _build_list() -> void:
@@ -55,10 +52,6 @@ func _on_prep_item_secured(instrument_id: String) -> void:
 
 func _update_count() -> void:
 	count_label.text = "已放好 %d / %d" % [_placed_count, ProcedureData.demand_sequence.size()]
-
-
-func _on_pack_opened() -> void:
-	visible = true
 
 
 func _on_phase_changed(new_phase: int) -> void:

@@ -43,12 +43,21 @@ func _apply_model() -> void:
 		var model: Node3D = MODELS[instrument_id].instantiate()
 		model.scale = Vector3(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE)
 		add_child(model)
+		_disable_shadow(model)
 	else:
 		# Fallback: coloured box.
 		var mat := StandardMaterial3D.new()
 		mat.albedo_color = def.color
 		mesh.material_override = mat
 		mesh.scale = Vector3(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE)
+
+
+func _disable_shadow(n: Node) -> void:
+	# No instrument shadows (the draped table is uneven -> shadows look bad).
+	if n is GeometryInstance3D:
+		(n as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for c in n.get_children():
+		_disable_shadow(c)
 
 
 func set_state(s: int) -> void:
