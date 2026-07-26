@@ -31,13 +31,14 @@ collision_mask = 0
 shape = SubResource("Shape_tray")
 
 [node name="SlotsParent" type="Node3D" parent="." unique_id=1470280459]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.024495125, 1.0734302, 0)
 
 [node name="InstrumentsParent" type="Node3D" parent="." unique_id=56056477]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0591345, 0)
 
 [node name="Pack" type="Node3D" parent="." unique_id=894361136]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06, 0)
+visible = false
 script = ExtResource("1_pack")
 
 [node name="WrapMesh" type="MeshInstance3D" parent="Pack" unique_id=719604611]
