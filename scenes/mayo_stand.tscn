@@ -8,7 +8,7 @@ albedo_color = Color(0.25, 0.45, 0.75, 1)
 roughness = 0.7
 
 [sub_resource type="BoxShape3D" id="Shape_tray"]
-size = Vector3(1.0, 0.04, 1.1)
+size = Vector3(0.7, 0.04, 0.8)
 
 [sub_resource type="BoxMesh" id="Mesh_wrap"]
 size = Vector3(0.7, 0.12, 0.4)
@@ -20,21 +20,23 @@ size = Vector3(0.72, 0.18, 0.42)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, -0.6)
 
 [node name="MayoModel" parent="." instance=ExtResource("2_mayo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+scale = Vector3(0.7, 0.7, 0.7)
 
 [node name="TrayCollision" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision"]
 shape = SubResource("Shape_tray")
 
 [node name="SlotsParent" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.22, 0.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86, 0.0)
 
 [node name="InstrumentsParent" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24, 0.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, 0.0)
 
 [node name="Pack" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.24, 0.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, 0.0)
 script = ExtResource("1_pack")
 
 [node name="WrapMesh" type="MeshInstance3D" parent="Pack"]

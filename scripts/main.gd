@@ -4,7 +4,7 @@ extends Node3D
 const SLOT_SCENE: PackedScene = preload("res://scenes/table_slot.tscn")
 const INSTRUMENT_SCENE: PackedScene = preload("res://scenes/instrument.tscn")
 
-const SLOT_X_POSITIONS: Array[float] = [-0.6, -0.36, -0.12, 0.12, 0.36, 0.6]
+const SLOT_X_POSITIONS: Array[float] = [-0.32, -0.19, -0.06, 0.06, 0.19, 0.32]
 
 @onready var player: CharacterBody3D = $Player
 @onready var mayo: Node3D = $MayoStand
@@ -22,7 +22,7 @@ func _ready() -> void:
 	player.interact_pressed.connect(_on_interact)
 	pack.opened.connect(_on_pack_opened)
 	# Fixed angled view: straight on to the Mayo table top (surgeon visible beyond).
-	camera.look_at(Vector3(0.415, 1.1, 0.471))
+	camera.look_at(Vector3(0.415, 0.75, 0.471))
 
 
 func _spawn_slots() -> void:
@@ -36,7 +36,7 @@ func _spawn_slots() -> void:
 func _spawn_instruments(hidden: bool) -> void:
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
-	var xs: Array[float] = [-0.45, -0.27, -0.09, 0.09, 0.27, 0.45]
+	var xs: Array[float] = [-0.25, -0.15, -0.05, 0.05, 0.15, 0.25]
 	xs.shuffle()
 	for i in range(ids.size()):
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
