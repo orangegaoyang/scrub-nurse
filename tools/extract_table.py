@@ -7,8 +7,8 @@ Run: blender --background --python tools/extract_table.py
 import bpy
 
 SRC = "assets/surgical__instrument_table_collection.glb"
-OBJ_NAME = "Object_2"   # Beistelltisch (side table)
-OUT = "assets/models/back_table.glb"
+OBJ_NAME = "Object_2"   # Beistelltisch (cleaned side table)
+OUT = "assets/models/mayo.glb"
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=SRC)
