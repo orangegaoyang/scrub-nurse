@@ -21,7 +21,7 @@ script = ExtResource("1_slot")
 shape = SubResource("BoxShape3D_slot")
 
 [node name="Tag" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0, 0.15)
 mesh = SubResource("Mesh_tag")
 material_override = SubResource("Mat_tag")
 
