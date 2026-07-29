@@ -9,10 +9,11 @@ func _ready() -> void:
 	visible = false
 	GameState.phase_changed.connect(_on_phase_changed)
 	GameState.score_updated.connect(_update_score)
-	var surgeon: Node = get_node("/root/Main/Surgeon")
-	surgeon.demand_changed.connect(_on_demand_changed)
-	surgeon.returning_instrument.connect(_on_returning)
-	surgeon.hand_retracted.connect(_clear_demand)
+	var surgeon: Node = get_node_or_null("/root/Main/Surgeon")
+	if surgeon:
+		surgeon.demand_changed.connect(_on_demand_changed)
+		surgeon.returning_instrument.connect(_on_returning)
+		surgeon.hand_retracted.connect(_clear_demand)
 	_update_score()
 
 
