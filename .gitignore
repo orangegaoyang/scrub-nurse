@@ -3,6 +3,13 @@
 /android/
 /builds/
 
+# Godot import sidecars (regenerated automatically)
+*.import
+
+# Editor autosaves / temp
+*-autosave.*
+*.kra
+
 # Mono / C# (if used later)
 .mono/
 data_*/
