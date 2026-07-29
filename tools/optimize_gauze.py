@@ -5,10 +5,11 @@ Overwrites the file in place.
 Run: blender --background --python tools/optimize_gauze.py
 """
 import bpy
+import math
 
 SRC = "assets/models/Gauze.glb"
 OUT = "assets/models/Gauze.glb"
-TARGET = 0.4  # max dimension, matches other instrument GLBs (MODEL_SCALE 0.5 -> ~0.2 m)
+TARGET = 0.2  # max dimension (smaller than other instruments; gauze is a small pad)
 
 
 def main():
@@ -34,6 +35,10 @@ def main():
     while obj.parent is not None:
         bpy.ops.object.parent_clear(type="CLEAR_KEEP_TRANSFORM")
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+
+    # lay it flat (rotate so the front face points up)
+    obj.rotation_euler = (math.radians(90.0), 0.0, 0.0)
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
 
     # scale to TARGET on the largest dimension
     bb = [obj.matrix_world @ v.co for v in obj.data.vertices]
