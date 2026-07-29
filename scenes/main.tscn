@@ -31,17 +31,6 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.9
 tonemap_mode = 1
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_bg"]
-size = Vector2(24, 13.5)
-
-[sub_resource type="StandardMaterial3D" id="Mat_bg"]
-resource_local_to_scene = false
-shading_mode = 1
-albedo_texture = ExtResource("14_bg")
-no_depth_test = true
-cull_mode = 2
-render_priority = -100
-
 [node name="Main" type="Node3D" unique_id=869468186]
 script = ExtResource("1_main")
 
@@ -53,10 +42,11 @@ transform = Transform3D(-4.371139e-08, -0.7071068, 0.7071068, 0, 0.7071068, 0.70
 current = true
 fov = 50.0
 
-[node name="Backdrop" type="MeshInstance3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-mesh = SubResource("PlaneMesh_bg")
-material_override = SubResource("Mat_bg")
+[node name="Backdrop" type="Sprite3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+billboard = 2
+pixel_size = 0.0096
+texture = ExtResource("14_bg")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1815950793]
 transform = Transform3D(0.90630776, -0.34618863, 0.24240388, 0, 0.57357645, 0.81915206, -0.42261827, -0.74240386, 0.5198368, 0, 6, -0.5)
