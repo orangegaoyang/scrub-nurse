@@ -40,14 +40,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Day" type="TextureRect" parent="Margin/HBox"]
-custom_minimum_size = Vector2(70, 76)
+custom_minimum_size = Vector2(98, 107)
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 texture = ExtResource("2_day")
 
 [node name="Settings" type="TextureRect" parent="Margin/HBox"]
-custom_minimum_size = Vector2(72, 76)
+custom_minimum_size = Vector2(61, 64)
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 5

@@ -12,6 +12,7 @@ const MODELS: Dictionary = {
 	"forceps": preload("res://assets/models/forceps.glb"),
 	"scissors": preload("res://assets/models/scissors.glb"),
 	"needle_holder": preload("res://assets/models/needle_holder.glb"),
+	"gauze": preload("res://assets/models/Gauze.glb"),
 }
 const MODEL_SCALE: float = 0.5
 
