@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/2D/common/elements.png" id="1_elements"]
+
+[sub_resource type="AtlasTexture" id="atlas_progress"]
+atlas = ExtResource("1_elements")
+region = Rect2(27, 43, 833, 366)
+
+[sub_resource type="AtlasTexture" id="atlas_cal"]
+atlas = ExtResource("1_elements")
+region = Rect2(967, 10, 378, 399)
+
+[sub_resource type="AtlasTexture" id="atlas_set"]
+atlas = ExtResource("1_elements")
+region = Rect2(1385, 45, 104, 101)
+
+[node name="TopBar" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = 120.0
+grow_vertical = 0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="Margin"]
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Progress" type="TextureRect" parent="Margin/HBox"]
+custom_minimum_size = Vector2(250, 110)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+texture = SubResource("atlas_progress")
+
+[node name="Spacer" type="Control" parent="Margin/HBox"]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Calendar" type="TextureRect" parent="Margin/HBox"]
+custom_minimum_size = Vector2(64, 68)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+texture = SubResource("atlas_cal")
+
+[node name="Settings" type="TextureRect" parent="Margin/HBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+texture = SubResource("atlas_set")

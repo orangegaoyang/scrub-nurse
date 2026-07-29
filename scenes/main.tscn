@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
 [ext_resource type="Texture2D" uid="uid://xw4muhggfv4y" path="res://assets/2D/surgery/bg.png" id="14_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
 sky_top_color = Color(0.85, 0.9, 0.95, 1)
@@ -89,6 +90,8 @@ layout_mode = 3
 
 [node name="HeldInfo" parent="UI" unique_id=1504778137 instance=ExtResource("12_held")]
 layout_mode = 3
+
+[node name="TopBar" parent="UI" instance=ExtResource("15_topbar")]
 
 [node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=2145109302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.437667, 4.8544946, 0)
