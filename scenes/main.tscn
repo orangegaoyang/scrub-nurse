@@ -4,21 +4,13 @@
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="3_mayo"]
 [ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/pickup_system.gd" id="4_pickup"]
-[ext_resource type="PackedScene" path="res://scenes/surgeon.tscn" id="5_surgeon"]
 [ext_resource type="Script" uid="uid://bm5egqk7wbnlr" path="res://scripts/surgery_system.gd" id="6_surgery"]
 [ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="8_start"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="9_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="10_result"]
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
-[ext_resource type="PackedScene" uid="uid://cpm20d21kutw" path="res://assets/charite_university_hospital_-_operating_room.glb" id="13_room"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_bed"]
-albedo_color = Color(0.96, 0.96, 0.96, 1)
-roughness = 0.8
-
-[sub_resource type="BoxMesh" id="BoxMesh_bed"]
-size = Vector3(0.5, 0.054, 2)
+[ext_resource type="Texture2D" path="res://assets/2D/surgery/bg.png" id="14_bg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
 sky_top_color = Color(0.85, 0.9, 0.95, 1)
@@ -36,28 +28,22 @@ background_mode = 2
 sky = SubResource("Sky_1")
 ambient_light_source = 1
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.5
+ambient_light_energy = 0.9
 tonemap_mode = 1
 
-[sub_resource type="StandardMaterial3D" id="Mat_floor"]
-albedo_color = Color(0.82, 0.84, 0.86, 1)
+[sub_resource type="PlaneMesh" id="PlaneMesh_bg"]
+size = Vector2(24, 13.5)
 
-[sub_resource type="BoxMesh" id="BoxMesh_floor"]
-size = Vector3(8, 0.2, 6)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
-size = Vector3(8, 0.2, 6)
+[sub_resource type="StandardMaterial3D" id="Mat_bg"]
+resource_local_to_scene = false
+shading_mode = 1
+albedo_texture = ExtResource("14_bg")
+no_depth_test = true
+cull_mode = 2
+render_priority = -100
 
 [node name="Main" type="Node3D" unique_id=869468186]
 script = ExtResource("1_main")
-
-[node name="OperatingRoom" parent="." unique_id=2143120371 instance=ExtResource("13_room")]
-transform = Transform3D(0.54, 0, 0, 0, 0.54, 0, 0, 0, 0.54, 0, 0, 0)
-
-[node name="Bed" type="MeshInstance3D" parent="." unique_id=27235424]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013, 0.8826051, 0.034)
-material_override = SubResource("Mat_bed")
-mesh = SubResource("BoxMesh_bed")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1092295183]
 environment = SubResource("Env_1")
@@ -67,32 +53,17 @@ transform = Transform3D(-4.371139e-08, -0.7071068, 0.7071068, 0, 0.7071068, 0.70
 current = true
 fov = 50.0
 
+[node name="Backdrop" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+mesh = SubResource("PlaneMesh_bg")
+material_override = SubResource("Mat_bg")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1815950793]
 transform = Transform3D(0.90630776, -0.34618863, 0.24240388, 0, 0.57357645, 0.81915206, -0.42261827, -0.74240386, 0.5198368, 0, 6, -0.5)
-light_energy = 0.6
-
-[node name="SurgeryLamp" type="SpotLight3D" parent="." unique_id=2002452323]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2, 0)
-light_energy = 1.5
-shadow_enabled = true
-spot_range = 6.0
-spot_angle = 70.0
-
-[node name="Floor" type="StaticBody3D" parent="." unique_id=991861905]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
-
-[node name="FloorMesh" type="MeshInstance3D" parent="Floor" unique_id=1981495650]
-material_override = SubResource("Mat_floor")
-mesh = SubResource("BoxMesh_floor")
-
-[node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=452554063]
-shape = SubResource("BoxShape3D_floor")
+light_energy = 0.9
 
 [node name="MayoStand" parent="." unique_id=1893074552 instance=ExtResource("3_mayo")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.41484195, 0, 0.4712066)
-
-[node name="Surgeon" parent="." unique_id=168145495 instance=ExtResource("5_surgeon")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.76256776, -0.018, -0.336)
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=1859080663]
 
@@ -113,11 +84,11 @@ layout_mode = 3
 [node name="HUD" parent="UI" unique_id=829690161 instance=ExtResource("9_hud")]
 layout_mode = 3
 
-[node name="Result" parent="UI" unique_id=36370628 instance=ExtResource("10_result")]
+[node name="Result" parent="UI" unique_id=3630728 instance=ExtResource("10_result")]
 layout_mode = 3
 
 [node name="InstrumentList" parent="UI" unique_id=738865619 instance=ExtResource("11_list")]
 layout_mode = 3
 
-[node name="HeldInfo" parent="UI" unique_id=1503478137 instance=ExtResource("12_held")]
+[node name="HeldInfo" parent="UI" unique_id=1504778137 instance=ExtResource("12_held")]
 layout_mode = 3

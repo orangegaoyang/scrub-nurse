@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bjkyabo0ptyil"]
 
-[ext_resource type="PackedScene" uid="uid://b4vw31e05agcl" path="res://assets/models/mayo.glb" id="2_mayo"]
+[ext_resource type="Texture2D" path="res://assets/2D/common/mayo.png" id="1_mayoimg"]
 
 [sub_resource type="BoxShape3D" id="Shape_tray"]
 size = Vector3(0.7, 0.04, 0.8)
@@ -8,8 +8,11 @@ size = Vector3(0.7, 0.04, 0.8)
 [node name="MayoStand" type="Node3D" unique_id=927773184]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, -0.6)
 
-[node name="MayoModel" parent="." unique_id=507488638 instance=ExtResource("2_mayo")]
-transform = Transform3D(-3.934025e-08, 0, 0.9, 0, 0.9, 0, -0.9, 0, -3.934025e-08, 0, 0, 0)
+[node name="MayoSprite" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+billboard = 2
+pixel_size = 0.0009
+texture = ExtResource("1_mayoimg")
 
 [node name="TrayCollision" type="StaticBody3D" parent="." unique_id=691365737]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04, 0)

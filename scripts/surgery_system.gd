@@ -20,13 +20,13 @@ var _awaiting_demand: bool = false
 func _ready() -> void:
 	player = get_parent().get_node("Player")
 	held_parent = get_parent().get_node("HeldParent")
-	surgeon = get_parent().get_node("Surgeon")
+	surgeon = get_parent().get_node_or_null("Surgeon")
 	player.interact_pressed.connect(_on_interact)
 	GameState.phase_changed.connect(_on_phase_changed)
 
 
 func _process(_delta: float) -> void:
-	if GameState.current_phase != GameState.Phase.SURGERY:
+	if surgeon == null or GameState.current_phase != GameState.Phase.SURGERY:
 		return
 	if held_instrument != null:
 		held_instrument.global_position = player.get_cursor_point() + Vector3(0, 0.05, 0)
@@ -34,11 +34,15 @@ func _process(_delta: float) -> void:
 
 
 func _on_phase_changed(new_phase: int) -> void:
+	if surgeon == null:
+		return
 	if new_phase == GameState.Phase.SURGERY:
 		_schedule_demand(ProcedureData.get_demand_at(GameState.current_demand_index), FIRST_DEMAND_DELAY, false)
 
 
 func _schedule_demand(id: String, delay: float, keep_hand_out: bool) -> void:
+	if surgeon == null:
+		return
 	_deliver_triggered = false
 	_awaiting_demand = true
 	await get_tree().create_timer(delay).timeout
@@ -48,7 +52,7 @@ func _schedule_demand(id: String, delay: float, keep_hand_out: bool) -> void:
 
 
 func _check_delivery() -> void:
-	if held_instrument == null or not surgeon.is_demanding() or _deliver_triggered:
+	if surgeon == null or held_instrument == null or not surgeon.is_demanding() or _deliver_triggered:
 		return
 	if player.get_cursor_hand() == surgeon.get_hand_area():
 		_deliver_triggered = true
