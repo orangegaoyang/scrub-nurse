@@ -1,14 +1,19 @@
 class_name Instrument
 extends RigidBody3D
-## A single surgical instrument, shown as a flat card (colour + name). Keeps the
-## RigidBody/collision so the existing pickup/place/deliver logic still works.
+## A single surgical instrument. Metadata loaded from ProcedureData.
 
 enum State { IN_TRAY, HELD, IN_SLOT, IN_SURGEON }
 
-const CARD_FONT := preload("res://assets/fonts/ArialUnicode.ttf")
-const CARD_W := 0.09
-const CARD_H := 0.002
-const CARD_D := 0.13
+# Per-id 3D models (Blender-generated GLB). Ids not listed fall back to the
+# coloured box mesh so unmodelled instruments still work.
+const MODELS: Dictionary = {
+	"scalpel": preload("res://assets/models/scalpel.glb"),
+	"hemostat": preload("res://assets/models/hemostat.glb"),
+	"forceps": preload("res://assets/models/forceps.glb"),
+	"scissors": preload("res://assets/models/scissors.glb"),
+	"needle_holder": preload("res://assets/models/needle_holder.glb"),
+}
+const MODEL_SCALE: float = 0.5
 
 @export var instrument_id: String = ""
 var def  # ProcedureData.InstrumentDef (untyped to access inner class fields)
@@ -27,42 +32,28 @@ func setup(p_id: String) -> void:
 	label.text = def.name_cn
 	label.visible = false
 	freeze = true  # no physics simulation
-	_apply_card()
+	_apply_model()
 
 
-func _apply_card() -> void:
-	# Hide the placeholder box; build a flat coloured card with the name on top.
-	mesh.visible = false
-	var card := MeshInstance3D.new()
-	var box := BoxMesh.new()
-	box.size = Vector3(CARD_W, CARD_H, CARD_D)
-	card.mesh = box
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = def.color
-	mat.roughness = 0.7
-	card.material_override = mat
-	card.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(card)
-
-	var lbl := Label3D.new()
-	lbl.text = def.name_cn
-	lbl.set("theme_override_fonts/font", CARD_FONT)
-	lbl.font_size = 40
-	lbl.pixel_size = 0.0006
-	lbl.modulate = Color(0.1, 0.1, 0.1)
-	lbl.outline_modulate = Color(1, 1, 1, 1)
-	lbl.outline_size = 5
-	lbl.no_depth_test = true
-	lbl.rotation_degrees = Vector3(-90, 0, 0)
-	lbl.position = Vector3(0, CARD_H, 0)
-	card.add_child(lbl)
+func _apply_model() -> void:
+	if MODELS.has(instrument_id):
+		# Use the real 3D model; hide the placeholder box.
+		mesh.visible = false
+		var model: Node3D = MODELS[instrument_id].instantiate()
+		model.scale = Vector3(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE)
+		add_child(model)
+	else:
+		# Fallback: coloured box.
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = def.color
+		mesh.material_override = mat
 
 
 func set_state(s: int) -> void:
 	state = s
 	match s:
 		State.HELD:
-			label.visible = false
+			label.visible = false  # name+purpose shown on the HUD card instead
 		_:
 			label.visible = false
 
