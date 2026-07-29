@@ -1,29 +1,28 @@
 [gd_scene format=3 uid="uid://bjkyabo0ptyil"]
 
-[ext_resource type="Texture2D" path="res://assets/2D/common/mayo.png" id="1_mayoimg"]
+[ext_resource type="Texture2D" uid="uid://c8kcsuj2x7e7x" path="res://assets/2D/common/mayo.png" id="1_mayoimg"]
 
 [sub_resource type="BoxShape3D" id="Shape_tray"]
 size = Vector3(0.7, 0.04, 0.8)
 
 [node name="MayoStand" type="Node3D" unique_id=927773184]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, -0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.0041436553, -0.6)
 
-[node name="MayoSprite" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
-billboard = 2
+[node name="MayoSprite" type="Sprite3D" parent="." unique_id=814885839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41905868, 0)
 pixel_size = 0.0009
+billboard = 2
 texture = ExtResource("1_mayoimg")
 
 [node name="TrayCollision" type="StaticBody3D" parent="." unique_id=691365737]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47024572, 0)
 collision_layer = 8
-collision_mask = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision" unique_id=717371739]
 shape = SubResource("Shape_tray")
 
 [node name="SlotsParent" type="Node3D" parent="." unique_id=1470280459]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06, 0.05)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50060505, 0.050000012)
 
 [node name="InstrumentsParent" type="Node3D" parent="." unique_id=56056477]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06, -0.28)
+transform = Transform3D(1, 0, 0, 0, 0.25375792, -0.96726775, 0, 0.96726775, 0.25375792, 0.026933908, 0.26855952, 0.66061616)
