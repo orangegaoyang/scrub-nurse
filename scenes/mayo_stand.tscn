@@ -22,7 +22,7 @@ collision_layer = 8
 shape = SubResource("Shape_tray")
 
 [node name="SlotsParent" type="Node3D" parent="." unique_id=1470280459]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50060505, 0.050000012)
+transform = Transform3D(1, 0, 0, 0, 0.65474075, -0.7558534, 0, 0.7558534, 0.65474075, -0.008820534, 0.5189443, 0.2277137)
 
 [node name="InstrumentsParent" type="Node3D" parent="." unique_id=56056477]
-transform = Transform3D(1, 0, 0, 0, 0.25375792, -0.96726775, 0, 0.96726775, 0.25375792, 0.026933908, 0.26855952, 0.66061616)
+transform = Transform3D(1, 0, 0, 0, 0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0.026933908, 0.26855952, 0.34444517)
