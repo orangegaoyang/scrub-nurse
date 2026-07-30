@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bjkyabo0ptyil"]
 
-[ext_resource type="Texture2D" uid="uid://c8kcsuj2x7e7x" path="res://assets/2D/common/mayo.png" id="1_mayoimg"]
+[ext_resource type="Texture2D" uid="uid://ccdqta0g70bu3" path="res://assets/2D/common/mayo.png" id="1_mayoimg"]
 
 [sub_resource type="BoxShape3D" id="Shape_tray"]
 size = Vector3(0.7, 0.04, 0.8)
@@ -22,7 +22,7 @@ collision_layer = 8
 shape = SubResource("Shape_tray")
 
 [node name="SlotsParent" type="Node3D" parent="." unique_id=1470280459]
-transform = Transform3D(1, 0, 0, 0, 0.65474075, -0.7558534, 0, 0.7558534, 0.65474075, -0.008820534, 0.5189443, 0.2277137)
+transform = Transform3D(1, 0, 0, 0, 0.12360147, -0.99233186, 0, 0.99233186, 0.12360147, -0.008823633, 0.5189443, 0.36188924)
 
 [node name="InstrumentsParent" type="Node3D" parent="." unique_id=56056477]
-transform = Transform3D(1, 0, 0, 0, 0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0.026933908, 0.26855952, 0.34444517)
+transform = Transform3D(1, 0, 0, 0, 0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0.026933908, 0.26855952, 0.5361275)
