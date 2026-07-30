@@ -1,0 +1,71 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/intro.gd" id="1_intro"]
+[ext_resource type="Texture2D" path="res://assets/2D/intro/bg.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/2D/common/mayo.png" id="3_mayo"]
+[ext_resource type="Texture2D" path="res://assets/2D/intro/today's surgery.PNG" id="4_surg"]
+[ext_resource type="Texture2D" path="res://assets/2D/intro/sticker.PNG" id="5_note"]
+[ext_resource type="Texture2D" path="res://assets/2D/intro/start_btn.PNG" id="6_btn"]
+[ext_resource type="Shader" path="res://shaders/perspective.gdshader" id="7_sh"]
+
+[sub_resource type="ShaderMaterial" id="Mat_persp"]
+shader = ExtResource("7_sh")
+shader_parameter/amount = 0.15
+
+[node name="Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_intro")
+
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+expand_mode = 1
+stretch_mode = 6
+texture = ExtResource("2_bg")
+
+[node name="Mayo" type="TextureRect" parent="."]
+layout_mode = 1
+offset_left = 260.0
+offset_top = 140.0
+offset_right = 1020.0
+offset_bottom = 568.0
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("3_mayo")
+
+[node name="SurgeryBoard" type="TextureRect" parent="."]
+layout_mode = 1
+offset_left = 488.0
+offset_top = 165.0
+offset_right = 792.0
+offset_bottom = 421.0
+expand_mode = 1
+stretch_mode = 5
+material = SubResource("Mat_persp")
+texture = ExtResource("4_surg")
+
+[node name="Sticker" type="TextureRect" parent="."]
+layout_mode = 1
+offset_left = 566.0
+offset_top = 250.0
+offset_right = 706.0
+offset_bottom = 426.0
+expand_mode = 1
+stretch_mode = 5
+material = SubResource("Mat_persp")
+texture = ExtResource("5_note")
+
+[node name="StartBtn" type="TextureButton" parent="."]
+layout_mode = 1
+offset_left = 435.0
+offset_top = 472.0
+offset_right = 845.0
+offset_bottom = 581.0
+expand_mode = 1
+stretch_mode = 5
+texture_normal = ExtResource("6_btn")
