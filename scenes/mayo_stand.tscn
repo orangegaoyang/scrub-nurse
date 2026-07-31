@@ -11,6 +11,7 @@ size = Vector2(0.9, 0.506)
 [sub_resource type="StandardMaterial3D" id="Mat_mayo"]
 albedo_texture = ExtResource("1_mayoimg")
 roughness = 0.8
+cull_mode = 2
 
 [node name="MayoStand" type="Node3D" unique_id=927773184]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.0041436553, -0.6)
