@@ -5,8 +5,8 @@
 [sub_resource type="BoxShape3D" id="Shape_tray"]
 size = Vector3(0.7, 0.04, 0.8)
 
-[sub_resource type="BoxMesh" id="Mesh_mayo"]
-size = Vector3(0.9, 0.05, 0.506)
+[sub_resource type="PlaneMesh" id="Mesh_mayo"]
+size = Vector2(0.9, 0.506)
 
 [sub_resource type="StandardMaterial3D" id="Mat_mayo"]
 albedo_texture = ExtResource("1_mayoimg")
@@ -17,6 +17,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.0041436553, -0.6)
 
 [node name="MayoBox" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41905868, 0)
+rotation_degrees = Vector3(-90, 0, 0)
 mesh = SubResource("Mesh_mayo")
 material_override = SubResource("Mat_mayo")
 
