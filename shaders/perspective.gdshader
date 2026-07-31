@@ -8,8 +8,8 @@ void fragment() {
 	float x1 = 1.0 - 0.5 * k;              // visible right edge
 	if (UV.x < x0 || UV.x > x1) {
 		COLOR = vec4(0.0);
-		return;
+	} else {
+		vec2 uv = vec2((UV.x - x0) / (x1 - x0), UV.y);
+		COLOR = texture(TEXTURE, uv);
 	}
-	vec2 uv = vec2((UV.x - x0) / (x1 - x0), UV.y);
-	COLOR = texture(TEXTURE, uv);
 }
