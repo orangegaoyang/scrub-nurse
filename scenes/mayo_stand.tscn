@@ -23,7 +23,6 @@ material_override = SubResource("Mat_mayo")
 mesh = SubResource("Mesh_mayo")
 
 [node name="SlotsParent" type="Node3D" parent="." unique_id=2061970712]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 
 [node name="InstrumentsParent" type="Node3D" parent="." unique_id=936522280]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0.2)

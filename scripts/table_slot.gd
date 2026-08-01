@@ -8,7 +8,7 @@ extends Area3D
 var occupied: bool = false
 var current_instrument: Instrument = null
 
-const FRAME_SIZE := Vector2(0.40, 0.26)  # world width x height of the highlight frame
+const FRAME_SIZE := Vector2(0.1, 0.2)  # world width x height of the highlight frame
 const COLOR_PLACE := Color(1, 1, 1, 0.9)
 const COLOR_OK := Color(0.4, 0.9, 0.45, 1)
 const COLOR_BAD := Color(0.95, 0.3, 0.3, 1)
@@ -79,7 +79,7 @@ func _pop_in() -> void:
 	highlight.visible = true
 	highlight.scale = Vector3.ZERO
 	var tw := create_tween()
-	tw.tween_property(highlight, "scale", Vector3.ONE, 0.18).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	tw.tween_property(highlight, "scale", Vector3.ONE, 0.8).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 
 func _tint(color: Color) -> void:
@@ -89,6 +89,6 @@ func _tint(color: Color) -> void:
 func _make_frame_texture(size: Vector2i) -> ImageTexture:
 	var img := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	img.fill(Color(1, 1, 1, 1))
-	var t := 5
+	var t := 2
 	img.fill_rect(Rect2i(t, t, size.x - 2 * t, size.y - 2 * t), Color(0, 0, 0, 0))
 	return ImageTexture.create_from_image(img)
