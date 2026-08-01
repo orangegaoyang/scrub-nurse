@@ -1,9 +1,8 @@
 extends Control
-## Held-instrument info card: shows name + purpose while the player holds an
-## instrument, with a quick fade in/out.
+## Held-instrument info: shows a one-line description at the bottom of the
+## screen while the player holds an instrument (mirrors the voice line).
 
-@onready var name_label: Label = $Panel/NameLabel
-@onready var purpose_label: Label = $Panel/PurposeLabel
+@onready var sentence: Label = $Panel/Sentence
 
 
 func _ready() -> void:
@@ -18,8 +17,7 @@ func _on_held_changed(inst) -> void:
 		tw.tween_property(self, "modulate:a", 0.0, 0.15)
 		tw.tween_callback(func(): visible = false)
 	else:
-		name_label.text = inst.def.name_cn
-		purpose_label.text = inst.def.purpose
+		sentence.text = "这是%s，%s。" % [inst.def.name_cn, inst.def.purpose]
 		visible = true
 		var tw := create_tween()
 		tw.tween_property(self, "modulate:a", 1.0, 0.15)
