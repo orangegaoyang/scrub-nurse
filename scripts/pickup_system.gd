@@ -22,26 +22,23 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if held_instrument != null:
 		var target := player.get_cursor_point() + Vector3(0, 0.05, 0)
-		var slot := _nearest_empty_slot(target)
+		var slot := _highlighted_slot()
 		if slot != null:
-			# Snap horizontally onto the slot while keeping the held height.
-			target.x = slot.global_position.x
-			target.z = slot.global_position.z
+			var d := Vector2(target.x - slot.global_position.x, target.z - slot.global_position.z).length()
+			if d <= SNAP_DIST:
+				# Snap onto the highlighted (correct) slot, keeping held height.
+				target.x = slot.global_position.x
+				target.z = slot.global_position.z
 		held_instrument.global_position = target
 
 
-func _nearest_empty_slot(point: Vector3) -> TableSlot:
-	var best: TableSlot = null
-	var best_d := SNAP_DIST
+func _highlighted_slot() -> TableSlot:
+	# The matching, empty slot — the one showing the white frame.
 	for s in slots_parent.get_children():
 		var slot := s as TableSlot
-		if slot == null or slot.occupied:
-			continue
-		var d := Vector2(point.x - slot.global_position.x, point.z - slot.global_position.z).length()
-		if d < best_d:
-			best_d = d
-			best = slot
-	return best
+		if slot != null and not slot.occupied and slot.can_accept(held_instrument):
+			return slot
+	return null
 
 
 func _on_interact(_target: Node) -> void:
