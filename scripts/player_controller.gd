@@ -4,7 +4,7 @@ extends CharacterBody3D
 ## slot areas that overlap them), placing hits slots, delivery hits the hand.
 
 const REACH: float = 6.0
-const HOLD_Y: float = 1.2  # height at which a held instrument floats
+const HOLD_Y: float = 0.5  # height at which a held instrument floats
 
 signal interact_pressed(target: Node)
 

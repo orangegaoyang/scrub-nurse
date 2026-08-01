@@ -1,35 +1,36 @@
 [gd_scene format=3 uid="uid://bjkyabo0ptyil"]
 
-[ext_resource type="Texture2D" uid="uid://sumxwi818on3" path="res://assets/2D/common/mayo.png" id="1_fvk2y"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_mayo"]
-transparency = 2
-alpha_scissor_threshold = 0.5
-alpha_antialiasing_mode = 0
-cull_mode = 2
-albedo_texture = ExtResource("1_fvk2y")
-roughness = 0.8
+[ext_resource type="Texture2D" uid="uid://ccdqta0g70bu3" path="res://assets/2D/common/mayo.png" id="1_mayoimg"]
 
 [sub_resource type="PlaneMesh" id="Mesh_mayo"]
 size = Vector2(0.9, 0.506)
 
+[sub_resource type="StandardMaterial3D" id="Mat_mayo"]
+transparency = 2
+albedo_texture = ExtResource("1_mayoimg")
+roughness = 0.8
+cull_mode = 2
+
 [sub_resource type="BoxShape3D" id="Shape_tray"]
-size = Vector3(0.7, 0.04, 0.8)
+size = Vector3(0.9, 0.1, 0.6)
 
-[node name="MayoStand" type="Node3D" unique_id=927773184]
+[node name="MayoStand" type="Node3D"]
 
-[node name="MayoBox" type="MeshInstance3D" parent="." unique_id=1476015058]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.41905868, 0)
-material_override = SubResource("Mat_mayo")
+[node name="MayoBox" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+rotation_degrees = Vector3(-90, 0, 0)
 mesh = SubResource("Mesh_mayo")
+material_override = SubResource("Mat_mayo")
 
-[node name="TrayCollision" type="StaticBody3D" parent="." unique_id=691365737]
+[node name="SlotsParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0.05)
+
+[node name="InstrumentsParent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -0.15)
+
+[node name="TrayCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
 collision_layer = 8
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision" unique_id=717371739]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision"]
 shape = SubResource("Shape_tray")
-
-[node name="SlotsParent" type="Node3D" parent="." unique_id=1470280459]
-transform = Transform3D(1, 0, 0, 0, 0.12360147, -0.99233186, 0, 0.99233186, 0.12360147, 0, 0, 0)
-
-[node name="InstrumentsParent" type="Node3D" parent="." unique_id=56056477]
