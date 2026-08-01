@@ -13,70 +13,68 @@
 [ext_resource type="Texture2D" uid="uid://dqltxo71hdjuq" path="res://assets/2D/surgery/bg.png" id="14_bg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
 
-[sub_resource type="Environment" id="Env_1"]
-background_mode = 2
-ambient_light_source = 1
+[sub_resource type="Environment" id="Environment_eb6dy"]
+ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.9
-tonemap_mode = 1
+ambient_light_energy = 0.5
 
 [node name="Main" type="Node3D" unique_id=869468186]
 script = ExtResource("1_main")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Env_1")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2147418366]
+environment = SubResource("Environment_eb6dy")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=557423142]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 3.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 1)
 current = true
-fov = 50.0
+fov = 35.0
 
-[node name="Backdrop" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -5.0)
+[node name="Backdrop" type="Sprite3D" parent="." unique_id=1792012406]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
 pixel_size = 0.0096
-billboard = 2
+billboard = 1
 texture = ExtResource("14_bg")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 2)
-rotation_degrees = Vector3(-45, 30, 0)
-light_energy = 0.9
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1179227863]
+transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 6, 2)
+light_energy = 0.4
 
-[node name="InstrumentLamp" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2.0, 0)
-light_energy = 4.0
+[node name="InstrumentLamp" type="SpotLight3D" parent="." unique_id=366324443]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2, 0)
+light_energy = 1.5
 shadow_enabled = true
 spot_angle = 75.0
 
-[node name="MayoStand" parent="." instance=ExtResource("3_mayo")]
+[node name="MayoStand" parent="." unique_id=347040338 instance=ExtResource("3_mayo")]
+transform = Transform3D(1, 0, 0, 0, 0.9396926, 0.34202012, 0, -0.34202012, 0.9396926, 0, 1.2, 0)
 
-[node name="HeldParent" type="Node3D" parent="."]
+[node name="HeldParent" type="Node3D" parent="." unique_id=454209940]
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.0)
+[node name="Player" parent="." unique_id=978976225 instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
-[node name="PickupSystem" type="Node" parent="."]
+[node name="PickupSystem" type="Node" parent="." unique_id=293766964]
 script = ExtResource("4_pickup")
 
-[node name="SurgerySystem" type="Node" parent="."]
+[node name="SurgerySystem" type="Node" parent="." unique_id=962743578]
 script = ExtResource("6_surgery")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=1810462951]
 
-[node name="TopBar" parent="UI" instance=ExtResource("15_topbar")]
+[node name="TopBar" parent="UI" unique_id=546803864 instance=ExtResource("15_topbar")]
 layout_mode = 3
 
-[node name="StartButton" parent="UI" instance=ExtResource("8_start")]
+[node name="StartButton" parent="UI" unique_id=1917777412 instance=ExtResource("8_start")]
 layout_mode = 3
 
-[node name="HUD" parent="UI" instance=ExtResource("9_hud")]
+[node name="HUD" parent="UI" unique_id=1275602804 instance=ExtResource("9_hud")]
 layout_mode = 3
 
-[node name="Result" parent="UI" instance=ExtResource("10_result")]
+[node name="Result" parent="UI" unique_id=1197145972 instance=ExtResource("10_result")]
 layout_mode = 3
 
-[node name="InstrumentList" parent="UI" instance=ExtResource("11_list")]
+[node name="InstrumentList" parent="UI" unique_id=1158023996 instance=ExtResource("11_list")]
 layout_mode = 3
 
-[node name="HeldInfo" parent="UI" instance=ExtResource("12_held")]
+[node name="HeldInfo" parent="UI" unique_id=1139997355 instance=ExtResource("12_held")]
 layout_mode = 3

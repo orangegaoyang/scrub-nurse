@@ -19,7 +19,7 @@ func _ready() -> void:
 	_spawn_slots()
 	_spawn_instruments()
 	player.interact_pressed.connect(_on_interact)
-	camera.look_at(Vector3(0.0, 0.4, 0.0))
+	camera.look_at(Vector3(0.0, 1.25, 0.0))
 
 
 func _spawn_slots() -> void:

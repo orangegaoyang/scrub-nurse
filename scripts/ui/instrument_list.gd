@@ -17,7 +17,7 @@ func _ready() -> void:
 	_build_list()
 	GameState.phase_changed.connect(_on_phase_changed)
 	GameState.prep_item_secured.connect(_on_prep_item_secured)
-	visible = true
+	visible = false
 
 
 func _build_list() -> void:
