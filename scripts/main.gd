@@ -42,7 +42,7 @@ func _spawn_instruments() -> void:
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
 		inst.position = Vector3(xs[i % 3], 0.15, zs[i / 3])
-		inst.rotation_degrees.y = 90.0 + randf_range(-8.0, 8.0)
+		inst.rotation_degrees = Vector3(90.0, 90.0 + randf_range(-8.0, 8.0), 0.0)
 		inst.freeze = false  # let it fall
 	# Freeze after settling.
 	await get_tree().create_timer(2.0).timeout
