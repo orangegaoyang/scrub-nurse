@@ -31,17 +31,57 @@ func _spawn_slots() -> void:
 
 
 func _spawn_instruments() -> void:
-	# Place instruments directly on the tray at rest height, already frozen —
-	# no physics drop, so they don't bounce/jitter on spawn.
+	# Stack instruments on the tray without the tumbling/jitter a free drop
+	# causes: lock every body to vertical-only motion + no rotation, zero
+	# bounce. The gauze drops first and is frozen as a platform, then the rest
+	# drop straight down onto the tray or the gauze.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
-	for i in range(ids.size()):
+	var mat := PhysicsMaterial.new()
+	mat.bounce = 0.0
+	mat.friction = 1.0
+	var gauze: RigidBody3D = null
+	var drops: Array[RigidBody3D] = []
+	for id in ids:
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
-		inst.setup(ids[i])
-		inst.position = Vector3(randf_range(-0.2, 0.2), 0.05, randf_range(-0.05, 0.0))
+		inst.setup(id)
+		inst.position = Vector3(randf_range(-0.2, 0.2), 0.12, randf_range(-0.05, 0.0))
 		inst.rotation_degrees = Vector3(0, 90.0 + randf_range(-0.5, 0.5), 0)
+		inst.physics_material_override = mat
+		_lock_for_drop(inst)
+		inst.freeze = false
+		if id == "gauze":
+			gauze = inst
+		else:
+			drops.append(inst)
+	# Phase 1: gauze settles onto the tray, then freeze it as the platform.
+	if gauze != null:
+		await get_tree().create_timer(0.25).timeout
+		gauze.freeze = true
+	# Phase 2: the rest drop onto the tray / gauze, then freeze and release locks.
+	await get_tree().create_timer(0.4).timeout
+	for inst in drops:
 		inst.freeze = true
+		_unlock_drop(inst)
+	if gauze != null:
+		_unlock_drop(gauze)
+
+
+func _lock_for_drop(inst: RigidBody3D) -> void:
+	inst.axis_lock_linear_x = true
+	inst.axis_lock_linear_z = true
+	inst.axis_lock_angular_x = true
+	inst.axis_lock_angular_y = true
+	inst.axis_lock_angular_z = true
+
+
+func _unlock_drop(inst: RigidBody3D) -> void:
+	inst.axis_lock_linear_x = false
+	inst.axis_lock_linear_z = false
+	inst.axis_lock_angular_x = false
+	inst.axis_lock_angular_y = false
+	inst.axis_lock_angular_z = false
 
 
 func _on_interact(_target: Node) -> void:
