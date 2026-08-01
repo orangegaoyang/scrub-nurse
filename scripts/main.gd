@@ -31,23 +31,17 @@ func _spawn_slots() -> void:
 
 
 func _spawn_instruments() -> void:
-	# Instruments spawn above the surface and drop onto it (physics), then
-	# freeze after settling so they stay put.
+	# Place instruments directly on the tray at rest height, already frozen —
+	# no physics drop, so they don't bounce/jitter on spawn.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
-
 	for i in range(ids.size()):
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(randf_range(-0.2,0.2), i * 0.005, randf_range(-0.05,0))
-		inst.rotation_degrees = Vector3(0, 90+randf_range(-0.5, 0.5), 0)
-		inst.freeze = false  # let it fall
-	# Freeze after settling.
-	await get_tree().create_timer(2.0).timeout
-	for inst in instruments_parent.get_children():
-		if inst is Instrument and inst.state == Instrument.State.IN_TRAY:
-			inst.freeze = true
+		inst.position = Vector3(randf_range(-0.2, 0.2), 0.05, randf_range(-0.05, 0.0))
+		inst.rotation_degrees = Vector3(0, 90.0 + randf_range(-0.5, 0.5), 0)
+		inst.freeze = true
 
 
 func _on_interact(_target: Node) -> void:
