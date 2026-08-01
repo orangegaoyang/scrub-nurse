@@ -13,6 +13,7 @@ func _ready() -> void:
 	camera.look_at(Vector3(0.0, 1.45, 0.0))
 	board_title.text = ProcedureData.procedure_name
 	sticker_note.text = ProcedureData.procedure_name_en
+	Transition.fade_in()
 
 
 func _on_start() -> void:

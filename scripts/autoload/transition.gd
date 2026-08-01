@@ -9,7 +9,7 @@ var _rect: ColorRect
 func _ready() -> void:
 	layer = 100
 	_rect = ColorRect.new()
-	_rect.color = Color(0, 0, 0, 0)
+	_rect.color = Color(0, 0, 0, 1)
 	_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_rect)
 	_fit()
