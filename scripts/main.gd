@@ -19,7 +19,7 @@ func _ready() -> void:
 	_spawn_slots()
 	_spawn_instruments()
 	player.interact_pressed.connect(_on_interact)
-	camera.look_at(Vector3(0.0, 1.25, 0.0))
+	camera.look_at(Vector3(0.0, 1.2, 0.0))
 
 
 func _spawn_slots() -> void:
@@ -41,7 +41,7 @@ func _spawn_instruments() -> void:
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(xs[i % 3], 0.4, zs[i / 3])
+		inst.position = Vector3(xs[i % 3], 0.15, zs[i / 3])
 		inst.rotation_degrees = Vector3(0, randf_range(-15.0, 15.0), 0)
 		inst.freeze = false  # let it fall
 	# Freeze after settling.

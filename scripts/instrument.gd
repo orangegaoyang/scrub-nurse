@@ -30,6 +30,10 @@ func setup(p_id: String) -> void:
 	if def == null:
 		push_error("Instrument: unknown id %s" % p_id)
 		return
+	# setup() runs right after add_child, before _ready() fires, so the
+	# @onready vars are still null here — fetch the nodes explicitly.
+	mesh = $MeshInstance3D
+	label = $NameLabel
 	label.text = def.name_cn
 	label.visible = false
 	freeze = true  # no physics simulation
