@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="10_result"]
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
-[ext_resource type="Texture2D" uid="uid://xw4muhggfv4y" path="res://assets/2D/surgery/bg.png" id="14_bg"]
+[ext_resource type="Texture2D" uid="uid://dqltxo71hdjuq" path="res://assets/2D/surgery/bg.png" id="14_bg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat_1"]
@@ -53,15 +53,14 @@ texture = ExtResource("14_bg")
 transform = Transform3D(0.90630776, -0.34618863, 0.24240388, 0, 0.57357645, 0.81915206, -0.42261827, -0.74240386, 0.5198368, 0, 6, -0.5)
 light_energy = 0.9
 
-[node name="InstrumentLamp" type="SpotLight3D" parent="."]
+[node name="InstrumentLamp" type="SpotLight3D" parent="." unique_id=849574104]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.77, 2.4, 0.5)
 light_energy = 4.0
 shadow_enabled = true
-spot_range = 5.0
 spot_angle = 75.0
 
 [node name="MayoStand" parent="." unique_id=1893074552 instance=ExtResource("3_mayo")]
-transform = Transform3D(-4.3702897e-08, 0.019708369, 0.99980575, 8.6148016e-10, 0.99980575, -0.019708369, -1, 0, -4.371139e-08, -7.7714257, 0.32172978, 0.4712066)
+transform = Transform3D(-4.371139e-08, -0.17364818, 0.9848077, 0, 0.9848077, 0.17364818, -1, 7.590403e-09, -4.304731e-08, -7.37, 0.36, 0.471)
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=1859080663]
 
@@ -91,7 +90,8 @@ layout_mode = 3
 [node name="HeldInfo" parent="UI" unique_id=1504778137 instance=ExtResource("12_held")]
 layout_mode = 3
 
-[node name="TopBar" parent="UI" instance=ExtResource("15_topbar")]
+[node name="TopBar" parent="UI" unique_id=1437896820 instance=ExtResource("15_topbar")]
+layout_mode = 3
 
 [node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=2145109302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.437667, 4.8544946, 0)
