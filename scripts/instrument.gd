@@ -14,7 +14,11 @@ const MODELS: Dictionary = {
 	"needle_holder": preload("res://assets/models/needle_holder.glb"),
 	"gauze": preload("res://assets/models/Gauze.glb"),
 }
-const MODEL_SCALE: float = 0.5
+const DEFAULT_MODEL_SCALE := Vector3(0.5, 0.5, 0.5)
+# Per-id overrides (non-uniform allowed) since each GLB was modeled at a
+# different native size.
+const MODEL_SCALE: Dictionary = {
+}
 
 @export var instrument_id: String = ""
 var def  # ProcedureData.InstrumentDef (untyped to access inner class fields)
@@ -45,7 +49,7 @@ func _apply_model() -> void:
 		# Use the real 3D model; hide the placeholder box.
 		mesh.visible = false
 		var model: Node3D = MODELS[instrument_id].instantiate()
-		model.scale = Vector3(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE)
+		model.scale = MODEL_SCALE.get(instrument_id, DEFAULT_MODEL_SCALE)
 		add_child(model)
 	else:
 		# Fallback: coloured box.
