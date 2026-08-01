@@ -56,13 +56,22 @@ func _start_light_breath() -> void:
 
 
 func _entrance() -> void:
-	# Cascade in: board, sticker, start button — 0.2s apart.
+	# Cascade in 0.2s apart: board, start button, sticker.
 	var b := create_tween()
 	b.tween_property(board, "scale", Vector3.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	var s := create_tween()
-	s.tween_property(sticker, "scale", Vector3.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.2)
 	var btn := create_tween()
-	btn.tween_property(start_btn, "modulate:a", 1.0, 0.4).set_ease(Tween.EASE_OUT).set_delay(0.4)
+	btn.tween_property(start_btn, "modulate:a", 1.0, 0.4).set_ease(Tween.EASE_OUT).set_delay(0.2)
+	btn.tween_callback(_breathe_button)
+	var s := create_tween()
+	s.tween_property(sticker, "scale", Vector3.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.4)
+
+
+func _breathe_button() -> void:
+	# Gentle scale breathing 1.00 -> 1.02 -> 1.00, 2s loop (a pulse, not a flash).
+	start_btn.pivot_offset = start_btn.size / 2.0
+	var tw := create_tween().set_loops()
+	tw.tween_property(start_btn, "scale", Vector2(1.02, 1.02), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(start_btn, "scale", Vector2(1.0, 1.0), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _process(delta: float) -> void:
