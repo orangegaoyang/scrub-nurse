@@ -21,8 +21,8 @@ cull_mode = 2
 albedo_texture = ExtResource("4_surg")
 roughness = 0.8
 
-[sub_resource type="BoxMesh" id="Mesh_board"]
-size = Vector3(0.3, 0.3, 0.02)
+[sub_resource type="QuadMesh" id="Mesh_board"]
+size = Vector2(0.35, 0.4)
 
 [sub_resource type="StandardMaterial3D" id="Mat_sticker"]
 transparency = 2
@@ -32,8 +32,8 @@ cull_mode = 2
 albedo_texture = ExtResource("5_note")
 roughness = 0.8
 
-[sub_resource type="BoxMesh" id="Mesh_sticker"]
-size = Vector3(0.18, 0.23, 0.02)
+[sub_resource type="QuadMesh" id="Mesh_sticker"]
+size = Vector2(0.15, 0.2)
 
 [node name="Intro" type="Node3D" unique_id=1027297458]
 script = ExtResource("1_intro")
@@ -61,29 +61,27 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="SurgeryBoard" type="MeshInstance3D" parent="." unique_id=49535020]
-position = Vector3(-0.2, 1.22, 0)
-rotation_degrees = Vector3(-90, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.11275025, 1.22, -0.07373047)
 material_override = SubResource("Mat_board")
 mesh = SubResource("Mesh_board")
 
 [node name="Title" type="Label3D" parent="SurgeryBoard" unique_id=1328232104]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.012)
-pixel_size = 0.001
+pixel_size = 0.0005
 no_depth_test = true
 modulate = Color(0.1, 0.1, 0.1, 1)
 text = "今日手术"
-font_size = 20
+font_size = 40
 outline_size = 1
 
 [node name="Sticker" type="MeshInstance3D" parent="." unique_id=1518014301]
-position = Vector3(0.2, 1.22, 0)
-rotation_degrees = Vector3(-90, 15, 0)
+transform = Transform3D(0.99619466, -0.08715573, -3.8096983e-09, 0, -4.3711385e-08, 1, -0.08715573, -0.99619466, -4.3545054e-08, 0.2, 1.22, -0.048217773)
 material_override = SubResource("Mat_sticker")
 mesh = SubResource("Mesh_sticker")
 
 [node name="Note" type="Label3D" parent="Sticker" unique_id=833595310]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.012)
-pixel_size = 0.001
+pixel_size = 0.0005
 no_depth_test = true
 modulate = Color(0.1, 0.1, 0.1, 1)
 text = "今日"
@@ -94,9 +92,9 @@ outline_size = 1
 
 [node name="StartBtn" type="TextureButton" parent="UI" unique_id=238469613]
 offset_left = 435.0
-offset_top = 590.0
+offset_top = 545.0
 offset_right = 845.0
-offset_bottom = 680.0
+offset_bottom = 654.0
 texture_normal = ExtResource("6_btn")
 
 [node name="TopBar" parent="UI" unique_id=1842786818 instance=ExtResource("7_0naf5")]
