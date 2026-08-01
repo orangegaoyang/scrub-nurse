@@ -19,7 +19,7 @@ func _ready() -> void:
 	_spawn_slots()
 	_spawn_instruments()
 	player.interact_pressed.connect(_on_interact)
-	camera.look_at(Vector3(0.0, 1.2, 0.0))
+	camera.look_at(Vector3(0.0, 1.45, 0.0))
 
 
 func _spawn_slots() -> void:
@@ -35,14 +35,13 @@ func _spawn_instruments() -> void:
 	# freeze after settling so they stay put.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
-	var xs: Array[float] = [-0.22, 0.0, 0.22]
-	var zs: Array[float] = [-0.30, -0.20]
+
 	for i in range(ids.size()):
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(ids[i])
-		inst.position = Vector3(xs[i % 3], 0.15, zs[i / 3])
-		inst.rotation_degrees = Vector3(0, randf_range(-15.0, 15.0), 0)
+		inst.position = Vector3(randf_range(-0.2,0.2), i * 0.005, randf_range(-0.05,0))
+		inst.rotation_degrees = Vector3(0, 90+randf_range(-0.5, 0.5), 0)
 		inst.freeze = false  # let it fall
 	# Freeze after settling.
 	await get_tree().create_timer(2.0).timeout
