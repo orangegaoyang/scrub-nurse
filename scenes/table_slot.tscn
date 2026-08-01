@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://7pebjf57l7w7" path="res://scripts/table_slot.gd" id="1_slot"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_slot"]
-size = Vector3(0.32, 0.25, 0.32)
+size = Vector3(0.11, 0.25, 0.20)
 
 [node name="TableSlot" type="Area3D" unique_id=808810072]
 collision_layer = 2
