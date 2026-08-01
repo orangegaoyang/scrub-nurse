@@ -8,7 +8,7 @@ extends Area3D
 var occupied: bool = false
 var current_instrument: Instrument = null
 
-const FRAME_SIZE := Vector2(0.40, 0.26)  # world width x height of the highlight frame
+const FRAME_SIZE := Vector2(0.12, 0.10)  # world width x height, must be <= slot pitch (~0.13)
 const COLOR_PLACE := Color(1, 1, 1, 0.9)
 const COLOR_OK := Color(0.4, 0.9, 0.45, 1)
 const COLOR_BAD := Color(0.95, 0.3, 0.3, 1)
