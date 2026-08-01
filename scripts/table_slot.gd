@@ -8,7 +8,7 @@ extends Area3D
 var occupied: bool = false
 var current_instrument: Instrument = null
 
-const FRAME_WORLD_SIZE := 0.36
+const FRAME_SIZE := Vector2(0.40, 0.26)  # world width x height of the highlight frame
 const COLOR_PLACE := Color(1, 1, 1, 0.9)
 const COLOR_OK := Color(0.4, 0.9, 0.45, 1)
 const COLOR_BAD := Color(0.95, 0.3, 0.3, 1)
@@ -62,8 +62,12 @@ func _on_held_changed(inst) -> void:
 
 func _build_highlight() -> void:
 	highlight = Sprite3D.new()
-	highlight.texture = _make_frame_texture(64)
-	highlight.pixel_size = FRAME_WORLD_SIZE / 64.0
+	# Texture resolution follows the frame's aspect ratio so it stays a
+	# rectangle; pixel_size is derived from the width.
+	var tex_w := 80
+	var tex_h := int(round(tex_w * FRAME_SIZE.y / FRAME_SIZE.x))
+	highlight.texture = _make_frame_texture(Vector2i(tex_w, tex_h))
+	highlight.pixel_size = FRAME_SIZE.x / float(tex_w)
 	highlight.billboard = 1
 	highlight.no_depth_test = true
 	highlight.scale = Vector3.ZERO
@@ -82,9 +86,9 @@ func _tint(color: Color) -> void:
 	highlight.modulate = color
 
 
-func _make_frame_texture(size: int) -> ImageTexture:
-	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+func _make_frame_texture(size: Vector2i) -> ImageTexture:
+	var img := Image.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 	img.fill(Color(1, 1, 1, 1))
 	var t := 5
-	img.fill_rect(Rect2i(t, t, size - 2 * t, size - 2 * t), Color(0, 0, 0, 0))
+	img.fill_rect(Rect2i(t, t, size.x - 2 * t, size.y - 2 * t), Color(0, 0, 0, 0))
 	return ImageTexture.create_from_image(img)
