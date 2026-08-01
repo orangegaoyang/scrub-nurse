@@ -43,8 +43,8 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -6.7
 current = true
 fov = 50.0
 
-[node name="Backdrop" type="Sprite3D" parent="Camera3D" unique_id=629516888]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+[node name="Backdrop" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.75, 0.826, 0.483)
 pixel_size = 0.0096
 billboard = 2
 texture = ExtResource("14_bg")
