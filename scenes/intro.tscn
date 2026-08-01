@@ -60,7 +60,8 @@ light_energy = 0.7
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="SurgeryBoard" type="MeshInstance3D" parent="." unique_id=49535020]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.2, 0)
+position = Vector3(-0.2, 1.26, 0)
+rotation_degrees = Vector3(-80, 0, 0)
 material_override = SubResource("Mat_board")
 mesh = SubResource("Mesh_board")
 
@@ -74,7 +75,8 @@ font_size = 48
 outline_size = 6
 
 [node name="Sticker" type="MeshInstance3D" parent="." unique_id=1518014301]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 1.2, 0)
+position = Vector3(0.32, 1.26, 0)
+rotation_degrees = Vector3(-80, 20, 0)
 material_override = SubResource("Mat_sticker")
 mesh = SubResource("Mesh_sticker")
 
