@@ -1,18 +1,20 @@
 extends Node3D
 ## Intro / title page (3D, mirrors the main scene layout). Start button loads
 ## the surgery scene. The board shows the procedure name, the sticker a note.
-## Subtle idle motion: a very slow background drift + a gentle bob on the
-## board/sticker. The camera itself stays still.
+## Subtle idle motion: a very slow background drift + a gentle unified Y bob
+## of the MayoStand (with the board/sticker riding it). The camera stays still.
 
 @onready var start_btn: TextureButton = $UI/StartBtn
 @onready var camera: Camera3D = $Camera3D
 @onready var backdrop: Sprite3D = $Camera3D/Backdrop
+@onready var mayo: Node3D = $MayoStand
 @onready var board_title: Label3D = $SurgeryBoard/Title
 @onready var sticker_note: Label3D = $Sticker/Note
 @onready var board: MeshInstance3D = $SurgeryBoard
 @onready var sticker: MeshInstance3D = $Sticker
 
 var _t: float = 0.0
+var _mayo_y: float
 var _board_y: float
 var _sticker_y: float
 
@@ -22,6 +24,7 @@ func _ready() -> void:
 	camera.look_at(Vector3(0.0, 1.45, 0.0))
 	board_title.text = ProcedureData.procedure_name
 	sticker_note.text = ProcedureData.procedure_name_en
+	_mayo_y = mayo.position.y
 	_board_y = board.position.y
 	_sticker_y = sticker.position.y
 	Transition.fade_in()
@@ -39,9 +42,12 @@ func _start_bg_drift() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	# Gentle vertical bob on the board and sticker (offset phase so they don't sync).
-	board.position.y = _board_y + sin(_t * 0.8) * 0.006
-	sticker.position.y = _sticker_y + sin(_t * 1.1 + 1.0) * 0.006
+	# Gentle unified Y bob (MayoStand + board + sticker move together so the
+	# board/sticker stay glued to the tray). sin = 0 -> +amp -> 0 -> -amp -> 0.
+	var bob := sin(_t * TAU / 5.0) * 0.004
+	mayo.position.y = _mayo_y + bob
+	board.position.y = _board_y + bob
+	sticker.position.y = _sticker_y + bob
 
 
 func _on_start() -> void:
