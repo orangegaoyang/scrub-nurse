@@ -60,33 +60,32 @@ light_energy = 0.7
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="SurgeryBoard" type="MeshInstance3D" parent="." unique_id=49535020]
-position = Vector3(-0.2, 1.26, 0)
-rotation_degrees = Vector3(-80, 0, 0)
+transform = Transform3D(0.9848077, -0.17101006, 0.030153697, 0, 0.17364822, 0.9848077, -0.17364818, -0.96984625, 0.1710101, -0.2, 1.25, -0.05)
 material_override = SubResource("Mat_board")
 mesh = SubResource("Mesh_board")
 
 [node name="Title" type="Label3D" parent="SurgeryBoard" unique_id=1328232104]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.002)
-pixel_size = 0.01
+pixel_size = 0.001
 no_depth_test = true
 modulate = Color(0.1, 0.1, 0.1, 1)
-text = "手术"
-font_size = 48
-outline_size = 6
+text = "今日手术"
+font_size = 20
+outline_size = 1
 
 [node name="Sticker" type="MeshInstance3D" parent="." unique_id=1518014301]
-position = Vector3(0.32, 1.26, 0)
-rotation_degrees = Vector3(-80, 20, 0)
+transform = Transform3D(0.9961947, 0.08583164, -0.015134439, 0, 0.17364822, 0.9848077, 0.08715574, -0.98106027, 0.17298745, 0.2, 1.25, -0.05)
 material_override = SubResource("Mat_sticker")
 mesh = SubResource("Mesh_sticker")
 
 [node name="Note" type="Label3D" parent="Sticker" unique_id=833595310]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.002)
-pixel_size = 0.012
+pixel_size = 0.001
 no_depth_test = true
 modulate = Color(0.1, 0.1, 0.1, 1)
 text = "今日"
-outline_size = 4
+font_size = 20
+outline_size = 1
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1649354861]
 
