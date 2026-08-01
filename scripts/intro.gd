@@ -16,4 +16,6 @@ func _ready() -> void:
 
 
 func _on_start() -> void:
+	start_btn.disabled = true
+	await Transition.fade_out()
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
