@@ -31,41 +31,30 @@ func _spawn_slots() -> void:
 
 
 func _spawn_instruments() -> void:
-	# Stack instruments on the tray without the tumbling/jitter a free drop
-	# causes: lock every body to vertical-only motion + no rotation, zero
-	# bounce. The gauze drops first and is frozen as a platform, then the rest
-	# drop straight down onto the tray or the gauze.
+	# Drop all instruments into the tray as a random pile, without the
+	# tumbling/jitter a free drop causes: lock each body to vertical-only
+	# motion + no rotation, zero bounce. A small random height stagger helps
+	# the solver stack overlapping ones into flat layers.
 	var ids: Array = ProcedureData.demand_sequence.duplicate()
 	ids.shuffle()
 	var mat := PhysicsMaterial.new()
 	mat.bounce = 0.0
 	mat.friction = 1.0
-	var gauze: RigidBody3D = null
-	var drops: Array[RigidBody3D] = []
 	for id in ids:
 		var inst: RigidBody3D = INSTRUMENT_SCENE.instantiate()
 		instruments_parent.add_child(inst)
 		inst.setup(id)
-		inst.position = Vector3(randf_range(-0.2, 0.2), 0.12, randf_range(-0.05, 0.0))
+		inst.position = Vector3(randf_range(-0.2, 0.2), 0.12 + randf_range(0.0, 0.1), randf_range(-0.05, 0.0))
 		inst.rotation_degrees = Vector3(0, 90.0 + randf_range(-0.5, 0.5), 0)
 		inst.physics_material_override = mat
 		_lock_for_drop(inst)
 		inst.freeze = false
-		if id == "gauze":
-			gauze = inst
-		else:
-			drops.append(inst)
-	# Phase 1: gauze settles onto the tray, then freeze it as the platform.
-	if gauze != null:
-		await get_tree().create_timer(0.25).timeout
-		gauze.freeze = true
-	# Phase 2: the rest drop onto the tray / gauze, then freeze and release locks.
-	await get_tree().create_timer(0.4).timeout
-	for inst in drops:
-		inst.freeze = true
-		_unlock_drop(inst)
-	if gauze != null:
-		_unlock_drop(gauze)
+	# Let them settle into a pile, then freeze and release the locks.
+	await get_tree().create_timer(0.5).timeout
+	for inst in instruments_parent.get_children():
+		if inst is Instrument:
+			inst.freeze = true
+			_unlock_drop(inst)
 
 
 func _lock_for_drop(inst: RigidBody3D) -> void:
