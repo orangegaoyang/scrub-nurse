@@ -21,7 +21,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if held_instrument != null:
-		var target := player.get_cursor_point() + Vector3(0, 0.05, 0)
+		var target: Vector3 = player.get_cursor_point() + Vector3(0, 0.05, 0)
 		var slot := _highlighted_slot()
 		if slot != null:
 			var d := Vector2(target.x - slot.global_position.x, target.z - slot.global_position.z).length()
