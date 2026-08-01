@@ -1,12 +1,13 @@
 extends Node3D
 ## Intro / title page (3D, mirrors the main scene layout). Start button loads
 ## the surgery scene. The board shows the procedure name, the sticker a note.
-## Subtle idle motion: a very slow background drift + a gentle unified Y bob
-## of the MayoStand (with the board/sticker riding it). The camera stays still.
+## Subtle idle motion: slow background drift, a unified Y bob of the MayoStand,
+## and a gentle sunlight energy breathing. Featured elements cascade in.
 
 @onready var start_btn: TextureButton = $UI/StartBtn
 @onready var camera: Camera3D = $Camera3D
 @onready var backdrop: Sprite3D = $Camera3D/Backdrop
+@onready var light: DirectionalLight3D = $DirectionalLight3D
 @onready var mayo: Node3D = $MayoStand
 @onready var board_title: Label3D = $SurgeryBoard/Title
 @onready var sticker_note: Label3D = $Sticker/Note
@@ -27,8 +28,14 @@ func _ready() -> void:
 	_mayo_y = mayo.position.y
 	_board_y = board.position.y
 	_sticker_y = sticker.position.y
-	Transition.fade_in()
+	# Featured elements start hidden for the staggered entrance.
+	board.scale = Vector3.ZERO
+	sticker.scale = Vector3.ZERO
+	start_btn.modulate.a = 0.0
 	_start_bg_drift()
+	_start_light_breath()
+	await Transition.fade_in()
+	_entrance()
 
 
 func _start_bg_drift() -> void:
@@ -38,6 +45,24 @@ func _start_bg_drift() -> void:
 	tw.tween_property(backdrop, "offset:x", 0.0, 3.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(backdrop, "offset:x", -3.0, 3.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(backdrop, "offset:x", 0.0, 3.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _start_light_breath() -> void:
+	# Sunlight slowly breathing: 0.95 -> 1.05 -> 0.95 over ~9s.
+	light.light_energy = 0.95
+	var tw := create_tween().set_loops()
+	tw.tween_property(light, "light_energy", 1.05, 4.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(light, "light_energy", 0.95, 4.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _entrance() -> void:
+	# Cascade in: board, sticker, start button — 0.2s apart.
+	var b := create_tween()
+	b.tween_property(board, "scale", Vector3.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	var s := create_tween()
+	s.tween_property(sticker, "scale", Vector3.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(0.2)
+	var btn := create_tween()
+	btn.tween_property(start_btn, "modulate:a", 1.0, 0.4).set_ease(Tween.EASE_OUT).set_delay(0.4)
 
 
 func _process(delta: float) -> void:
