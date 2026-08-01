@@ -1,71 +1,112 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Texture2D" path="res://assets/2D/intro/bg.png" id="2_bg"]
-[ext_resource type="Texture2D" path="res://assets/2D/common/mayo.png" id="3_mayo"]
+[ext_resource type="Texture2D" uid="uid://sumxwi818on3" path="res://assets/2D/common/mayo.png" id="3_mayo"]
 [ext_resource type="Texture2D" path="res://assets/2D/intro/today's surgery.PNG" id="4_surg"]
 [ext_resource type="Texture2D" path="res://assets/2D/intro/sticker.PNG" id="5_note"]
 [ext_resource type="Texture2D" path="res://assets/2D/intro/start_btn.PNG" id="6_btn"]
-[ext_resource type="Shader" path="res://shaders/perspective.gdshader" id="7_sh"]
 
-[sub_resource type="ShaderMaterial" id="Mat_persp"]
-shader = ExtResource("7_sh")
-shader_parameter/amount = 0.15
+[sub_resource type="Environment" id="Env"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.6
 
-[node name="Intro" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[sub_resource type="StandardMaterial3D" id="Mat_mayo"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("3_mayo")
+roughness = 0.8
+
+[sub_resource type="PlaneMesh" id="Mesh_mayo"]
+size = Vector2(0.9, 0.49)
+
+[sub_resource type="StandardMaterial3D" id="Mat_board"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("4_surg")
+roughness = 0.8
+
+[sub_resource type="QuadMesh" id="Mesh_board"]
+size = Vector2(0.3, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="Mat_sticker"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("5_note")
+roughness = 0.8
+
+[sub_resource type="QuadMesh" id="Mesh_sticker"]
+size = Vector2(0.18, 0.23)
+
+[node name="Intro" type="Node3D"]
 script = ExtResource("1_intro")
 
-[node name="BG" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-expand_mode = 1
-stretch_mode = 6
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0.9)
+current = true
+fov = 35.0
+
+[node name="Backdrop" type="Sprite3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+pixel_size = 0.0068
+billboard = 1
 texture = ExtResource("2_bg")
 
-[node name="Mayo" type="TextureRect" parent="."]
-layout_mode = 1
-offset_left = 260.0
-offset_top = 140.0
-offset_right = 1020.0
-offset_bottom = 568.0
-expand_mode = 1
-stretch_mode = 5
-texture = ExtResource("3_mayo")
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+position = Vector3(0, 4, 2)
+rotation_degrees = Vector3(-50, 30, 0)
+light_energy = 0.7
 
-[node name="SurgeryBoard" type="TextureRect" parent="."]
-layout_mode = 1
-offset_left = 488.0
-offset_top = 165.0
-offset_right = 792.0
-offset_bottom = 421.0
-expand_mode = 1
-stretch_mode = 5
-material = SubResource("Mat_persp")
-texture = ExtResource("4_surg")
+[node name="Mayo" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.2, 0)
+material_override = SubResource("Mat_mayo")
+mesh = SubResource("Mesh_mayo")
 
-[node name="Sticker" type="TextureRect" parent="."]
-layout_mode = 1
-offset_left = 566.0
-offset_top = 250.0
-offset_right = 706.0
-offset_bottom = 426.0
-expand_mode = 1
-stretch_mode = 5
-material = SubResource("Mat_persp")
-texture = ExtResource("5_note")
+[node name="SurgeryBoard" type="MeshInstance3D" parent="."]
+position = Vector3(-0.32, 1.45, 0.05)
+rotation_degrees = Vector3(-12, 0, 0)
+material_override = SubResource("Mat_board")
+mesh = SubResource("Mesh_board")
 
-[node name="StartBtn" type="TextureButton" parent="."]
-layout_mode = 1
+[node name="Title" type="Label3D" parent="SurgeryBoard"]
+position = Vector3(0, 0, 0.002)
+modulate = Color(0.1, 0.1, 0.1, 1)
+pixel_size = 0.01
+no_depth_test = true
+text = "手术"
+font_size = 48
+outline_size = 6
+
+[node name="Sticker" type="MeshInstance3D" parent="."]
+position = Vector3(0.32, 1.42, 0.05)
+rotation_degrees = Vector3(8, 8, 0)
+material_override = SubResource("Mat_sticker")
+mesh = SubResource("Mesh_sticker")
+
+[node name="Note" type="Label3D" parent="Sticker"]
+position = Vector3(0, 0, 0.002)
+modulate = Color(0.1, 0.1, 0.1, 1)
+pixel_size = 0.012
+no_depth_test = true
+text = "今日"
+font_size = 32
+outline_size = 4
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="StartBtn" type="TextureButton" parent="UI"]
 offset_left = 435.0
-offset_top = 472.0
+offset_top = 590.0
 offset_right = 845.0
-offset_bottom = 581.0
-expand_mode = 1
-stretch_mode = 5
+offset_bottom = 680.0
 texture_normal = ExtResource("6_btn")
