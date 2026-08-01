@@ -1,27 +1,17 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene format=3 uid="uid://beqf5qviglybc"]
 
-[ext_resource type="Script" path="res://scripts/intro.gd" id="1_intro"]
-[ext_resource type="Texture2D" path="res://assets/2D/intro/bg.png" id="2_bg"]
-[ext_resource type="Texture2D" uid="uid://sumxwi818on3" path="res://assets/2D/common/mayo.png" id="3_mayo"]
-[ext_resource type="Texture2D" path="res://assets/2D/intro/today's surgery.PNG" id="4_surg"]
-[ext_resource type="Texture2D" path="res://assets/2D/intro/sticker.PNG" id="5_note"]
-[ext_resource type="Texture2D" path="res://assets/2D/intro/start_btn.PNG" id="6_btn"]
+[ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
+[ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
+[ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="3_0naf5"]
+[ext_resource type="Texture2D" uid="uid://01k2lc7pfbu3" path="res://assets/2D/intro/today's surgery.PNG" id="4_surg"]
+[ext_resource type="Texture2D" uid="uid://gywh0upmad4r" path="res://assets/2D/intro/sticker.PNG" id="5_note"]
+[ext_resource type="Texture2D" uid="uid://b137lfb1ktjjt" path="res://assets/2D/intro/start_btn.PNG" id="6_btn"]
+[ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="7_0naf5"]
 
 [sub_resource type="Environment" id="Env"]
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.6
-
-[sub_resource type="StandardMaterial3D" id="Mat_mayo"]
-transparency = 2
-alpha_scissor_threshold = 0.5
-alpha_antialiasing_mode = 0
-cull_mode = 2
-albedo_texture = ExtResource("3_mayo")
-roughness = 0.8
-
-[sub_resource type="PlaneMesh" id="Mesh_mayo"]
-size = Vector2(0.9, 0.49)
 
 [sub_resource type="StandardMaterial3D" id="Mat_board"]
 transparency = 2
@@ -45,68 +35,65 @@ roughness = 0.8
 [sub_resource type="QuadMesh" id="Mesh_sticker"]
 size = Vector2(0.18, 0.23)
 
-[node name="Intro" type="Node3D"]
+[node name="Intro" type="Node3D" unique_id=1027297458]
 script = ExtResource("1_intro")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=385933077]
 environment = SubResource("Env")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0.9)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=240830859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0.1)
 current = true
-fov = 35.0
+fov = 40.0
 
-[node name="Backdrop" type="Sprite3D" parent="Camera3D"]
+[node name="Backdrop" type="Sprite3D" parent="Camera3D" unique_id=523591972]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-pixel_size = 0.0068
+pixel_size = 0.008
 billboard = 1
 texture = ExtResource("2_bg")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-position = Vector3(0, 4, 2)
-rotation_degrees = Vector3(-50, 30, 0)
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1224386069]
+transform = Transform3D(0.8660254, -0.38302222, 0.32139382, 0, 0.64278764, 0.76604444, -0.5, -0.66341394, 0.5566704, 0, 4, 2)
 light_energy = 0.7
 
-[node name="Mayo" type="MeshInstance3D" parent="."]
-position = Vector3(0, 1.2, 0)
-material_override = SubResource("Mat_mayo")
-mesh = SubResource("Mesh_mayo")
+[node name="MayoStand" parent="." unique_id=1080990136 instance=ExtResource("3_0naf5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
-[node name="SurgeryBoard" type="MeshInstance3D" parent="."]
-position = Vector3(-0.32, 1.45, 0.05)
-rotation_degrees = Vector3(-12, 0, 0)
+[node name="SurgeryBoard" type="MeshInstance3D" parent="." unique_id=49535020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.2, 0)
 material_override = SubResource("Mat_board")
 mesh = SubResource("Mesh_board")
 
-[node name="Title" type="Label3D" parent="SurgeryBoard"]
-position = Vector3(0, 0, 0.002)
-modulate = Color(0.1, 0.1, 0.1, 1)
+[node name="Title" type="Label3D" parent="SurgeryBoard" unique_id=1328232104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.002)
 pixel_size = 0.01
 no_depth_test = true
+modulate = Color(0.1, 0.1, 0.1, 1)
 text = "手术"
 font_size = 48
 outline_size = 6
 
-[node name="Sticker" type="MeshInstance3D" parent="."]
-position = Vector3(0.32, 1.42, 0.05)
-rotation_degrees = Vector3(8, 8, 0)
+[node name="Sticker" type="MeshInstance3D" parent="." unique_id=1518014301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 1.2, 0)
 material_override = SubResource("Mat_sticker")
 mesh = SubResource("Mesh_sticker")
 
-[node name="Note" type="Label3D" parent="Sticker"]
-position = Vector3(0, 0, 0.002)
-modulate = Color(0.1, 0.1, 0.1, 1)
+[node name="Note" type="Label3D" parent="Sticker" unique_id=833595310]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.002)
 pixel_size = 0.012
 no_depth_test = true
+modulate = Color(0.1, 0.1, 0.1, 1)
 text = "今日"
-font_size = 32
 outline_size = 4
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=1649354861]
 
-[node name="StartBtn" type="TextureButton" parent="UI"]
+[node name="StartBtn" type="TextureButton" parent="UI" unique_id=238469613]
 offset_left = 435.0
 offset_top = 590.0
 offset_right = 845.0
 offset_bottom = 680.0
 texture_normal = ExtResource("6_btn")
+
+[node name="TopBar" parent="UI" unique_id=1842786818 instance=ExtResource("7_0naf5")]
+layout_mode = 3
