@@ -51,11 +51,67 @@ func _apply_model() -> void:
 		var model: Node3D = MODELS[instrument_id].instantiate()
 		model.scale = MODEL_SCALE.get(instrument_id, DEFAULT_MODEL_SCALE)
 		add_child(model)
+		_fit_collision(model)
 	else:
 		# Fallback: coloured box.
 		var mat := StandardMaterial3D.new()
 		mat.albedo_color = def.color
 		mesh.material_override = mat
+
+
+func _fit_collision(model: Node3D) -> void:
+	# Size the collision box to the model's real bounding box (in this
+	# instrument's local space) so each instrument's click area matches its
+	# own model. Instruments are frozen, so this only affects raycasts.
+	var aabb := _subtree_aabb(model, Transform3D.IDENTITY)
+	if aabb.size.length() < 0.001:
+		return
+	var box := BoxShape3D.new()
+	box.size = aabb.size
+	var col: CollisionShape3D = $CollisionShape3D
+	col.shape = box
+	col.position = aabb.get_center()
+
+
+func _subtree_aabb(node: Node3D, parent_xform: Transform3D) -> AABB:
+	var self_xform: Transform3D = parent_xform * node.transform
+	var result := AABB()
+	var has := false
+	if node is MeshInstance3D:
+		var m := node as MeshInstance3D
+		var transformed := _xform_aabb(m.get_aabb(), self_xform)
+		if transformed.size.length() > 0.001:
+			result = transformed
+			has = true
+	for c in node.get_children():
+		if c is Node3D:
+			var c_aabb := _subtree_aabb(c, self_xform)
+			if c_aabb.size.length() > 0.001:
+				if has:
+					result = result.merge(c_aabb)
+				else:
+					result = c_aabb
+					has = true
+	return result
+
+
+func _xform_aabb(a: AABB, x: Transform3D) -> AABB:
+	var p := a.position
+	var e := a.end
+	var pts: Array[Vector3] = [
+		x * Vector3(p.x, p.y, p.z),
+		x * Vector3(e.x, p.y, p.z),
+		x * Vector3(p.x, e.y, p.z),
+		x * Vector3(e.x, e.y, p.z),
+		x * Vector3(p.x, p.y, e.z),
+		x * Vector3(e.x, p.y, e.z),
+		x * Vector3(p.x, e.y, e.z),
+		x * Vector3(e.x, e.y, e.z),
+	]
+	var out := AABB(pts[0], Vector3.ZERO)
+	for i in range(1, pts.size()):
+		out = out.expand(pts[i])
+	return out
 
 
 func set_state(s: int) -> void:
