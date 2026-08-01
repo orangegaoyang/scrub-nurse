@@ -26,6 +26,9 @@ class InstrumentDef:
 var instruments: Dictionary = {}
 # demand sequence: ordered list of instrument ids (also the prep slot order)
 var demand_sequence: Array[String] = []
+# Procedure title (shown on the intro board / sticker)
+var procedure_name: String = ""
+var procedure_name_en: String = ""
 
 
 func _ready() -> void:
@@ -46,6 +49,8 @@ func _load_procedure() -> void:
 		return
 
 	var arr: Array = parsed.get("instruments", [])
+	procedure_name = parsed.get("procedure_name", "")
+	procedure_name_en = parsed.get("procedure_name_en", "")
 	instruments.clear()
 	demand_sequence.clear()
 	for entry in arr:
