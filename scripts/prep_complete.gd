@@ -38,14 +38,6 @@ func _apply_texture() -> void:
 
 
 func _resolve_texture() -> Texture2D:
-	# DIAGNOSTIC: bypass surgery.PNG so the board is a solid card with ONLY the
-	# Label3D checklist. If the blurry double is gone -> the PNG had content.
-	# If it persists -> the labels render twice (outline / draw bug).
-	# To restore: replace the next line with `return _load_real_texture()`.
-	return _make_placeholder()
-
-
-func _load_real_texture() -> Texture2D:
 	# Use the real artwork once it has been imported into common/.
 	if ResourceLoader.exists(SURGERY_IMG):
 		var t = load(SURGERY_IMG)
@@ -104,7 +96,10 @@ func _on_phase_changed(new_phase: int) -> void:
 func _present() -> void:
 	visible = true
 	board.scale = Vector3.ZERO
-	_reset_lines()
+	# NOTE: do NOT call _reset_lines() here. Re-assigning each label's .text
+	# (even to the same value) makes Label3D regenerate its glyph texture and
+	# leaves a blurry ghost behind the crisp text -- the "written twice" look.
+	# Labels are already reset once at the end of _build_list().
 	var tw := create_tween()
 	tw.tween_property(board, "scale", Vector3.ONE, 0.45) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
