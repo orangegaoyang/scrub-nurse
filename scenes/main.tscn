@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
 [ext_resource type="Texture2D" uid="uid://dqltxo71hdjuq" path="res://assets/2D/surgery/bg.png" id="14_bg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
+[ext_resource type="PackedScene" path="res://scenes/prep_complete.tscn" id="13_prep"]
 
 [sub_resource type="Environment" id="Environment_eb6dy"]
 ambient_light_source = 2
@@ -48,6 +49,8 @@ spot_angle = 75.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=454209940]
+
+[node name="PrepComplete" parent="." instance=ExtResource("13_prep")]
 
 [node name="Player" parent="." unique_id=978976225 instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
