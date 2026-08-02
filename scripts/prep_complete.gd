@@ -70,7 +70,6 @@ func _build_list() -> void:
 		list_parent.add_child(lbl)
 		_items.append(lbl)
 		i += 1
-	_reset_lines()
 
 
 func _make_label(text: String, size: int, pos: Vector3) -> Label3D:
@@ -78,7 +77,10 @@ func _make_label(text: String, size: int, pos: Vector3) -> Label3D:
 	lbl.text = text
 	lbl.pixel_size = PIXEL_SIZE
 	lbl.font_size = size
-	lbl.modulate = TEXT_COLOR
+	# Start invisible so _present() can fade lines in one-by-one. Set the alpha
+	# here instead of via a later .text re-assignment, which would regenerate
+	# Label3D's glyph texture and leave a blurry ghost.
+	lbl.modulate = Color(TEXT_COLOR.r, TEXT_COLOR.g, TEXT_COLOR.b, 0.0)
 	lbl.outline_size = 2
 	lbl.no_depth_test = true
 	lbl.horizontal_alignment = 1
@@ -96,10 +98,9 @@ func _on_phase_changed(new_phase: int) -> void:
 func _present() -> void:
 	visible = true
 	board.scale = Vector3.ZERO
-	# NOTE: do NOT call _reset_lines() here. Re-assigning each label's .text
-	# (even to the same value) makes Label3D regenerate its glyph texture and
-	# leaves a blurry ghost behind the crisp text -- the "written twice" look.
-	# Labels are already reset once at the end of _build_list().
+	# Labels start invisible (alpha 0 set in _make_label) so the cascade can
+	# fade them in. Don't re-assign .text here -- regenerating Label3D's glyph
+	# texture leaves a blurry ghost ("written twice").
 	var tw := create_tween()
 	tw.tween_property(board, "scale", Vector3.ONE, 0.45) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -110,13 +111,6 @@ func _present() -> void:
 		tw.tween_callback(Callable(self, "_check_item").bind(lbl))
 		tw.tween_property(lbl, "modulate", DONE_COLOR, 0.2)
 	tw.tween_callback(func(): list_presented.emit())
-
-
-func _reset_lines() -> void:
-	_title.modulate = Color(TEXT_COLOR.r, TEXT_COLOR.g, TEXT_COLOR.b, 0.0)
-	for lbl in _items:
-		lbl.text = lbl.get_meta("unchecked")
-		lbl.modulate = Color(TEXT_COLOR.r, TEXT_COLOR.g, TEXT_COLOR.b, 0.0)
 
 
 func _check_item(lbl: Label3D) -> void:
