@@ -23,6 +23,7 @@ enum State { IDLE, DEMANDING, USING, RETURNING }
 const EXTENDED_POS := Vector3(0.36, 1.55, -0.15)
 const RETRACTED_POS := Vector3(0.85, 1.70, -0.05)
 const SLIDE_TIME := 0.25
+const RECEIVE_PAUSE := 1.0  # hand holds the just-received instrument before retracting
 const USE_DURATION_MAX := 1.8
 const USE_DURATION_MIN := 0.8
 
@@ -81,9 +82,8 @@ func try_receive(inst: Instrument) -> bool:
 		inst.set_state(Instrument.State.IN_SURGEON)
 		inst.reparent(held_anchor)
 		inst.transform = Transform3D.IDENTITY
-		_move_to(RETRACTED_POS)
 		state = State.USING
-		_use_after_delay()
+		_use_sequence()
 		return true
 	else:
 		_reject()
@@ -103,7 +103,13 @@ func _reject() -> void:
 		_play_voice(current_demand_id)
 
 
-func _use_after_delay() -> void:
+func _use_sequence() -> void:
+	# 1) Hold the just-received instrument out for a beat so the grab reads,
+	#    then 2) retract to use, then 3) extend again to return it.
+	await get_tree().create_timer(RECEIVE_PAUSE).timeout
+	if state != State.USING:
+		return
+	_move_to(RETRACTED_POS)
 	# Surgeon uses the instrument faster as the procedure goes on.
 	var total: int = ProcedureData.demand_sequence.size()
 	var t: float = clampf(float(GameState.current_demand_index) / float(maxi(total - 1, 1)), 0.0, 1.0)
