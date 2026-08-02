@@ -67,4 +67,5 @@ func _make_placeholder() -> Texture2D:
 func _proceed() -> void:
 	set_process(false)
 	await Transition.fade_out()
+	await get_tree().create_timer(1.0).timeout  # hold on black a beat
 	get_tree().change_scene_to_file("res://scenes/main.tscn")
