@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://dqltxo71hdjuq" path="res://assets/2D/surgery/bg.png" id="14_bg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
 [ext_resource type="PackedScene" path="res://scenes/prep_complete.tscn" id="13_prep"]
+[ext_resource type="PackedScene" path="res://scenes/surgeon.tscn" id="16_surg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/demand_bubble.tscn" id="17_bubble"]
 
 [sub_resource type="Environment" id="Environment_eb6dy"]
 ambient_light_source = 2
@@ -55,6 +57,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 [node name="Player" parent="." unique_id=978976225 instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
+[node name="Surgeon" parent="." instance=ExtResource("16_surg")]
+
 [node name="PickupSystem" type="Node" parent="." unique_id=293766964]
 script = ExtResource("4_pickup")
 
@@ -79,4 +83,7 @@ layout_mode = 3
 layout_mode = 3
 
 [node name="HeldInfo" parent="UI" unique_id=1139997355 instance=ExtResource("12_held")]
+layout_mode = 3
+
+[node name="DemandBubble" parent="UI" instance=ExtResource("17_bubble")]
 layout_mode = 3

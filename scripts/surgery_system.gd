@@ -3,11 +3,10 @@ extends Node
 ## take back, replace in original slot.
 
 const FIRST_DEMAND_DELAY: float = 1.0
-const RETURN_DELAY_SHORT_MIN: float = 0.2
-const RETURN_DELAY_SHORT_MAX: float = 0.8
-const RETURN_DELAY_LONG_MIN: float = 3.0
-const RETURN_DELAY_LONG_MAX: float = 6.0
-const RETURN_LONG_PAUSE_CHANCE: float = 0.2
+# Cadence between take-back and the next demand shrinks as the procedure goes
+# on, so the surgeon's hand-extension rhythm accelerates toward the end.
+const GAP_START: float = 0.8
+const GAP_END: float = 0.15
 
 var player: CharacterBody3D
 var held_parent: Node3D
@@ -107,15 +106,12 @@ func _pick_up_from_slot(inst: Instrument) -> void:
 func _take_back(inst: Instrument) -> void:
 	held_instrument = inst
 	var has_next: bool = GameState.current_demand_index < ProcedureData.demand_sequence.size()
-	var keep_hand_out: bool = false
+	# Keep the hand out for a continuous rhythm; only the gap before the next
+	# demand shrinks (accelerating) as progress grows.
+	var keep_hand_out: bool = has_next
 	var delay: float = 0.0
 	if has_next:
-		var long_pause: bool = randf() < RETURN_LONG_PAUSE_CHANCE
-		keep_hand_out = not long_pause
-		if long_pause:
-			delay = randf_range(RETURN_DELAY_LONG_MIN, RETURN_DELAY_LONG_MAX)
-		else:
-			delay = randf_range(RETURN_DELAY_SHORT_MIN, RETURN_DELAY_SHORT_MAX)
+		delay = _demand_gap(GameState.current_demand_index)
 	surgeon.take_back(keep_hand_out)
 	inst.set_state(Instrument.State.HELD)
 	inst.reparent(held_parent)
@@ -126,6 +122,14 @@ func _take_back(inst: Instrument) -> void:
 	GameState.set_held(inst)
 	if has_next:
 		_schedule_demand(ProcedureData.get_demand_at(GameState.current_demand_index), delay, keep_hand_out)
+
+
+func _demand_gap(index: int) -> float:
+	var total: int = ProcedureData.demand_sequence.size()
+	if total <= 1:
+		return GAP_END
+	var t: float = clampf(float(index) / float(total - 1), 0.0, 1.0)
+	return lerpf(GAP_START, GAP_END, t)
 
 
 func _place_in_slot(slot: TableSlot) -> void:

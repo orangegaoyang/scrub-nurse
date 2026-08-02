@@ -2,11 +2,15 @@ extends Control
 ## HUD: demand/take-back prompt at the bottom, score (correct/wrong) top-right.
 
 @onready var demand_label: Label = $DemandPanel/DemandLabel
+@onready var demand_panel: Panel = $DemandPanel
 @onready var score_label: Label = $ScoreLabel
 
 
 func _ready() -> void:
 	visible = false
+	# The top-right demand bubble now carries the demand/take-back text; the
+	# bottom panel is kept only as a score-less spacer, so hide it.
+	demand_panel.visible = false
 	GameState.phase_changed.connect(_on_phase_changed)
 	GameState.score_updated.connect(_update_score)
 	var surgeon: Node = get_node_or_null("/root/Main/Surgeon")

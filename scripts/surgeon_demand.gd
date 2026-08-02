@@ -1,43 +1,54 @@
 class_name Surgeon
 extends Node3D
-## Surgeon: a rigged doctor model that plays a "Reach" arm animation when
-## demanding / returning an instrument. The HandArea sits at the reach pose.
-
-enum State { IDLE, DEMANDING, USING, RETURNING }
+## Surgeon: a box-placeholder "hand" that slides into view from the upper-right
+## to demand / return an instrument. The real hand model replaces the box
+## later. Keeps the same signal/method API the surgery system & HUD/bubble rely
+## on (demand_changed / returning_instrument / hand_retracted / try_receive /
+## take_back / is_demanding / is_returning / get_hand_area / held_instrument).
+##
+## Hand states, mapped to screen motion:
+##   DEMANDING — hand extended (slide in), asking for current_demand_id.
+##   USING     — hand retracted (slide out) while using the delivered instrument.
+##   RETURNING — hand extended again, holding the used instrument for take-back.
+##
+## Both the use duration and the demand cadence shrink as the procedure
+## progresses (driven by current_demand_index) so the rhythm accelerates.
 
 signal demand_changed(instrument_id: String)
 signal returning_instrument(instrument_id: String)
 signal hand_retracted()
 
-const REACH_ANIM := "Reach"
+enum State { IDLE, DEMANDING, USING, RETURNING }
+
+const EXTENDED_POS := Vector3(0.36, 1.55, -0.15)
+const RETRACTED_POS := Vector3(0.85, 1.70, -0.05)
+const SLIDE_TIME := 0.25
+const USE_DURATION_MAX := 1.8
+const USE_DURATION_MIN := 0.8
 
 var state: int = State.IDLE
 var current_demand_id: String = ""
 var held_instrument: Instrument = null
 
-@onready var hand_area: Area3D = $DoctorModel/HandArea
-@onready var held_anchor: Node3D = $DoctorModel/HeldAnchor
-@onready var anim: AnimationPlayer = _find_anim()
-const USE_DURATION: float = 1.8
+@onready var pivot: Node3D = $HandPivot
+@onready var hand_area: Area3D = $HandPivot/HandArea
+@onready var held_anchor: Node3D = $HandPivot/HeldAnchor
+@onready var voice: AudioStreamPlayer = $Voice
 
 var _reject_cooldown: bool = false
-
-
-func _find_anim() -> AnimationPlayer:
-	var n := get_node_or_null("DoctorModel")
-	if n:
-		var ap := n.find_child("AnimationPlayer", true, false)
-		if ap:
-			return ap
-	return null
+var _move: Tween = null
 
 
 func _ready() -> void:
-	# Park the doctor in the rest pose (arms down), not the T-pose.
-	if anim and anim.has_animation(REACH_ANIM):
-		anim.play(REACH_ANIM)
-		anim.pause()
-		anim.seek(0.0, true)
+	pivot.position = RETRACTED_POS
+
+
+func _move_to(pos: Vector3) -> void:
+	if _move != null and _move.is_valid():
+		_move.kill()
+	_move = create_tween()
+	_move.tween_property(pivot, "position", pos, SLIDE_TIME) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func start_demand(id: String, hand_already_out: bool = false) -> void:
@@ -45,8 +56,9 @@ func start_demand(id: String, hand_already_out: bool = false) -> void:
 	state = State.DEMANDING
 	held_instrument = null
 	if not hand_already_out:
-		_play_reach(true)
+		_move_to(EXTENDED_POS)
 	demand_changed.emit(id)
+	_play_voice(id)
 
 
 func is_demanding() -> bool:
@@ -69,7 +81,7 @@ func try_receive(inst: Instrument) -> bool:
 		inst.set_state(Instrument.State.IN_SURGEON)
 		inst.reparent(held_anchor)
 		inst.transform = Transform3D.IDENTITY
-		_play_reach(false)   # pull hand back to use
+		_move_to(RETRACTED_POS)
 		state = State.USING
 		_use_after_delay()
 		return true
@@ -80,21 +92,26 @@ func try_receive(inst: Instrument) -> bool:
 
 func _reject() -> void:
 	GameState.record_wrong()
-	_play_reach(false)   # hand comes back
+	_move_to(RETRACTED_POS)
 	hand_retracted.emit()
 	_reject_cooldown = true
 	await get_tree().create_timer(0.6).timeout
 	_reject_cooldown = false
 	if state == State.DEMANDING:
-		_play_reach(true)
+		_move_to(EXTENDED_POS)
 		demand_changed.emit(current_demand_id)
+		_play_voice(current_demand_id)
 
 
 func _use_after_delay() -> void:
-	await get_tree().create_timer(USE_DURATION).timeout
+	# Surgeon uses the instrument faster as the procedure goes on.
+	var total: int = ProcedureData.demand_sequence.size()
+	var t: float = clampf(float(GameState.current_demand_index) / float(maxi(total - 1, 1)), 0.0, 1.0)
+	var dur: float = lerpf(USE_DURATION_MAX, USE_DURATION_MIN, t)
+	await get_tree().create_timer(dur).timeout
 	if state == State.USING:
 		state = State.RETURNING
-		_play_reach(true)   # extend hand to give the instrument back
+		_move_to(EXTENDED_POS)
 		returning_instrument.emit(current_demand_id)
 
 
@@ -102,14 +119,16 @@ func take_back(keep_hand_out: bool = false) -> void:
 	held_instrument = null
 	state = State.IDLE
 	if not keep_hand_out:
-		_play_reach(false)
+		_move_to(RETRACTED_POS)
 		hand_retracted.emit()
 
 
-func _play_reach(extend: bool) -> void:
-	if anim == null or not anim.has_animation(REACH_ANIM):
+func _play_voice(id: String) -> void:
+	# Plays assets/audio/<id>.wav if present; silent otherwise (audio TBD).
+	var path := "res://assets/audio/%s.wav" % id
+	if not ResourceLoader.exists(path):
 		return
-	if extend:
-		anim.play(REACH_ANIM, 0.15)
-	else:
-		anim.play_backwards(REACH_ANIM, 0.15)
+	var s = load(path)
+	if s is AudioStream:
+		voice.stream = s
+		voice.play()
