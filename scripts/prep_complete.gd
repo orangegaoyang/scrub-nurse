@@ -10,9 +10,9 @@ extends Node3D
 signal list_presented()
 
 const SURGERY_IMG := "res://assets/2D/common/surgery.PNG"
-const TEXT_COLOR := Color(0.20, 0.22, 0.21)
-const DONE_COLOR := Color(0.30, 0.50, 0.30)
-const PIXEL_SIZE := 0.0003
+const TEXT_COLOR := Color(0.08, 0.10, 0.09)
+const DONE_COLOR := Color(0.18, 0.42, 0.20)
+const PIXEL_SIZE := 0.0005
 
 @onready var board: MeshInstance3D = $Board
 @onready var list_parent: Node3D = $Board/List
@@ -54,17 +54,17 @@ func _make_placeholder() -> Texture2D:
 
 
 func _build_list() -> void:
-	_title = _make_label("器械整理完成", 34, Vector3(0.0, 0.085, 0.006))
+	_title = _make_label("器械整理完成", 38, Vector3(0.0, 0.08, 0.006))
 	list_parent.add_child(_title)
 
-	var top_y := 0.05
-	var step := 0.024
+	var top_y := 0.045
+	var step := 0.027
 	var i := 0
 	for id in ProcedureData.demand_sequence:
 		var def = ProcedureData.get_instrument(id)
 		var unchecked := "%d. %s — %s" % [i + 1, def.name_cn, def.purpose]
 		var checked := "✓ %d. %s — %s" % [i + 1, def.name_cn, def.purpose]
-		var lbl := _make_label(unchecked, 22, Vector3(0.0, top_y - i * step, 0.006))
+		var lbl := _make_label(unchecked, 26, Vector3(0.0, top_y - i * step, 0.006))
 		lbl.set_meta("unchecked", unchecked)
 		lbl.set_meta("checked", checked)
 		list_parent.add_child(lbl)
@@ -79,7 +79,7 @@ func _make_label(text: String, size: int, pos: Vector3) -> Label3D:
 	lbl.pixel_size = PIXEL_SIZE
 	lbl.font_size = size
 	lbl.modulate = TEXT_COLOR
-	lbl.outline_size = 1
+	lbl.outline_size = 2
 	lbl.no_depth_test = true
 	lbl.horizontal_alignment = 1
 	lbl.position = pos
