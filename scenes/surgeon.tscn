@@ -1,13 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/surgeon_demand.gd" id="1_surg"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_hand"]
-albedo_color = Color(0.95, 0.78, 0.66, 1)
-roughness = 0.8
-
-[sub_resource type="BoxMesh" id="Mesh_hand"]
-size = Vector3(0.12, 0.08, 0.12)
+[ext_resource type="PackedScene" path="res://assets/models/hand.glb" id="2_hand"]
 
 [sub_resource type="BoxShape3D" id="Shape_hand"]
 size = Vector3(0.4, 0.4, 0.4)
@@ -18,9 +12,8 @@ script = ExtResource("1_surg")
 [node name="HandPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 1.7, -0.05)
 
-[node name="HandMesh" type="MeshInstance3D" parent="HandPivot"]
-material_override = SubResource("Mat_hand")
-mesh = SubResource("Mesh_hand")
+[node name="HandModel" parent="HandPivot" instance=ExtResource("2_hand")]
+scale = Vector3(0.4, 0.4, 0.4)
 
 [node name="HandArea" type="Area3D" parent="HandPivot"]
 collision_layer = 4
