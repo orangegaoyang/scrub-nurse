@@ -6,6 +6,9 @@
 # Godot import sidecars (regenerated automatically)
 *.import
 
+# Godot UID sidecars (regenerated automatically)
+*.uid
+
 # Editor autosaves / temp
 *-autosave.*
 *.kra
