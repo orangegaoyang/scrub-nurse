@@ -38,6 +38,14 @@ func _apply_texture() -> void:
 
 
 func _resolve_texture() -> Texture2D:
+	# DIAGNOSTIC: bypass surgery.PNG so the board is a solid card with ONLY the
+	# Label3D checklist. If the blurry double is gone -> the PNG had content.
+	# If it persists -> the labels render twice (outline / draw bug).
+	# To restore: replace the next line with `return _load_real_texture()`.
+	return _make_placeholder()
+
+
+func _load_real_texture() -> Texture2D:
 	# Use the real artwork once it has been imported into common/.
 	if ResourceLoader.exists(SURGERY_IMG):
 		var t = load(SURGERY_IMG)
