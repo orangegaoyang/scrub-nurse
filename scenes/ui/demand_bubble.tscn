@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/demand_bubble.gd" id="1_db"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_bubble"]
+bg_color = Color(1, 0.98, 0.94, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.4, 0.38, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
 
 [node name="DemandBubble" type="Control"]
 anchors_preset = 15
@@ -19,6 +35,7 @@ offset_right = -30.0
 offset_bottom = 255.0
 grow_horizontal = 0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_bubble")
 
 [node name="Label" type="Label" parent="Panel"]
 anchors_preset = 15
@@ -29,6 +46,6 @@ offset_top = 6.0
 offset_right = -10.0
 offset_bottom = -6.0
 theme_override_colors/font_color = Color(0.1, 0.12, 0.11, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
 vertical_alignment = 1
