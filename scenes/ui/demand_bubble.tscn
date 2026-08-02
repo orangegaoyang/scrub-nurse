@@ -1,8 +1,12 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://dflopixtcdaqf"]
 
-[ext_resource type="Script" path="res://scripts/ui/demand_bubble.gd" id="1_db"]
+[ext_resource type="Script" uid="uid://cyeytey5e8n1o" path="res://scripts/ui/demand_bubble.gd" id="1_db"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_bubble"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
 bg_color = Color(1, 0.98, 0.94, 0.96)
 border_width_left = 2
 border_width_top = 2
@@ -13,32 +17,26 @@ corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
-content_margin_left = 14.0
-content_margin_top = 8.0
-content_margin_right = 14.0
-content_margin_bottom = 8.0
 
-[node name="DemandBubble" type="Control"]
+[node name="DemandBubble" type="Control" unique_id=1167278242]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("1_db")
 
-[node name="Panel" type="Panel" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -250.0
-offset_top = 185.0
-offset_right = -30.0
-offset_bottom = 255.0
-grow_horizontal = 0
+[node name="Panel" type="Panel" parent="." unique_id=581915844]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 150.0
+offset_right = 750.0
+offset_bottom = 220.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBox_bubble")
 
-[node name="Label" type="Label" parent="Panel"]
-anchors_preset = 15
+[node name="Label" type="Label" parent="Panel" unique_id=1662101010]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
