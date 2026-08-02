@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/corridor.gd" id="1_corr"]
+[ext_resource type="Texture2D" path="res://assets/2D/common/mayo.png" id="2_mayo"]
+
+[sub_resource type="Environment" id="Env"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+roughness = 1.0
+uv1_scale = Vector3(2, 4, 1)
+
+[sub_resource type="QuadMesh" id="Mesh_floor"]
+size = Vector2(14, 8)
+
+[sub_resource type="StandardMaterial3D" id="Mat_mayo"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+cull_mode = 2
+albedo_texture = ExtResource("2_mayo")
+roughness = 0.8
+
+[sub_resource type="PlaneMesh" id="Mesh_mayo"]
+size = Vector2(0.9, 0.506)
+
+[node name="Corridor" type="Node3D"]
+script = ExtResource("1_corr")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0.1)
+fov = 40.0
+current = true
+
+[node name="Floor" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+material_override = SubResource("Mat_floor")
+mesh = SubResource("Mesh_floor")
+
+[node name="Mayo" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+material_override = SubResource("Mat_mayo")
+mesh = SubResource("Mesh_mayo")

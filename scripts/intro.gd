@@ -88,4 +88,4 @@ func _on_start() -> void:
 	start_btn.disabled = true
 	set_process(false)  # freeze the idle motion during the fade-out
 	await Transition.fade_out()
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file("res://scenes/corridor.tscn")
