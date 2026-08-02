@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/result.gd" id="1_res"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_card"]
+bg_color = Color(1, 0.98, 0.94, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.85, 0.68, 0.20, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.28)
+shadow_size = 14
 
 [node name="Result" type="Control"]
 anchors_preset = 15
@@ -9,47 +23,106 @@ anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("1_res")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0)
+mouse_filter = 0
+
+[node name="Card" type="Panel" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -220.0
-offset_top = -180.0
-offset_right = 220.0
-offset_bottom = 180.0
-mouse_filter = 2
+offset_left = -240.0
+offset_top = -250.0
+offset_right = 240.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBox_card")
 
-[node name="StarsLabel" type="Label" parent="Panel"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -180.0
-offset_top = 24.0
-offset_right = 180.0
-offset_bottom = 94.0
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 64
-
-[node name="StatsLabel" type="Label" parent="Panel"]
+[node name="TitleLabel" type="Label" parent="Card"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -200.0
-offset_top = 104.0
+offset_top = 30.0
 offset_right = 200.0
-offset_bottom = 154.0
+offset_bottom = 92.0
+theme_override_colors/font_color = Color(0.12, 0.13, 0.12, 1)
+theme_override_font_sizes/font_size = 42
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+text = "手术完成"
 
-[node name="RestartButton" type="Button" parent="Panel"]
+[node name="StarsBox" type="HBoxContainer" parent="Card"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -80.0
-offset_top = 120.0
-offset_right = 80.0
-offset_bottom = 160.0
-theme_override_font_sizes/font_size = 20
-text = "重新开始"
+offset_left = -180.0
+offset_top = 108.0
+offset_right = 180.0
+offset_bottom = 190.0
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="Star0" type="Label" parent="Card/StarsBox"]
+theme_override_colors/font_color = Color(1, 0.78, 0.22, 1)
+theme_override_font_sizes/font_size = 76
+mouse_filter = 2
+text = "★"
+
+[node name="Star1" type="Label" parent="Card/StarsBox"]
+theme_override_colors/font_color = Color(1, 0.78, 0.22, 1)
+theme_override_font_sizes/font_size = 76
+mouse_filter = 2
+text = "★"
+
+[node name="Star2" type="Label" parent="Card/StarsBox"]
+theme_override_colors/font_color = Color(1, 0.78, 0.22, 1)
+theme_override_font_sizes/font_size = 76
+mouse_filter = 2
+text = "★"
+
+[node name="GradeLabel" type="Label" parent="Card"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 206.0
+offset_right = 200.0
+offset_bottom = 250.0
+theme_override_colors/font_color = Color(0.85, 0.55, 0.18, 1)
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+text = ""
+
+[node name="StatsLabel" type="Label" parent="Card"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 268.0
+offset_right = 220.0
+offset_bottom = 312.0
+theme_override_colors/font_color = Color(0.25, 0.25, 0.25, 1)
+theme_override_font_sizes/font_size = 21
+horizontal_alignment = 1
+vertical_alignment = 1
+text = ""
+
+[node name="RestartButton" type="Button" parent="Card"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -90.0
+offset_top = 384.0
+offset_right = 90.0
+offset_bottom = 432.0
+theme_override_font_sizes/font_size = 22
+text = "再来一次"
