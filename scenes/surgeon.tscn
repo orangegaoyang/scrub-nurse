@@ -1,27 +1,29 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://dkcsxre2uevh2"]
 
-[ext_resource type="Script" path="res://scripts/surgeon_demand.gd" id="1_surg"]
-[ext_resource type="PackedScene" path="res://assets/models/hand.glb" id="2_hand"]
+[ext_resource type="Script" uid="uid://cd1pjb3t3vket" path="res://scripts/surgeon_demand.gd" id="1_surg"]
+[ext_resource type="PackedScene" uid="uid://deaqfw6psklja" path="res://assets/models/hand.glb" id="2_hand"]
 
 [sub_resource type="BoxShape3D" id="Shape_hand"]
 size = Vector3(0.4, 0.4, 0.4)
 
-[node name="Surgeon" type="Node3D"]
+[node name="Surgeon" type="Node3D" unique_id=1857129052]
 script = ExtResource("1_surg")
 
-[node name="HandPivot" type="Node3D" parent="."]
+[node name="HandPivot" type="Node3D" parent="." unique_id=1167558948]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 1.7, -0.05)
 
-[node name="HandModel" parent="HandPivot" instance=ExtResource("2_hand")]
-scale = Vector3(0.4, 0.4, 0.4)
+[node name="HandModel" parent="HandPivot" unique_id=1280865879 instance=ExtResource("2_hand")]
+transform = Transform3D(-0.19995508, -0.0022088885, -0.0036185726, 0.0032570527, 0.029235704, -0.19782487, 0.0027138144, -0.19783929, -0.029193165, -0.052693665, 0.005539894, 0.013061523)
 
-[node name="HandArea" type="Area3D" parent="HandPivot"]
+[node name="HandArea" type="Area3D" parent="HandPivot" unique_id=409280964]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09117681, 0, 0.050862312)
 collision_layer = 4
 collision_mask = 4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HandPivot/HandArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HandPivot/HandArea" unique_id=1202414634]
 shape = SubResource("Shape_hand")
 
-[node name="HeldAnchor" type="Marker3D" parent="HandPivot"]
+[node name="HeldAnchor" type="Marker3D" parent="HandPivot" unique_id=19632747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.099805295, 0, 0.05278164)
 
-[node name="Voice" type="AudioStreamPlayer" parent="."]
+[node name="Voice" type="AudioStreamPlayer" parent="." unique_id=247439211]
