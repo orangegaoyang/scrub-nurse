@@ -2,9 +2,9 @@ extends Node3D
 ## Intro: badge and schedule drift gently from above onto the table center,
 ## then UI fades in. No hand model.
 
-const DROP_FROM := Vector3(0.0, 1.6, 0.0)
+const DROP_FROM := Vector3(0.0, 2.5, -0.6)
 const REST_POS := Vector3(0.0, 1.21, 0.0)
-const DROP_TIME := 1.2
+const DROP_TIME := 1.4
 const FLY_TIME := 1.4
 
 # Today's surgery schedule. `easy` marks the playable case (first day, pick an
@@ -45,9 +45,11 @@ func _shot1() -> void:
 	badge_prop.visible = true
 	badge_prop.global_position = DROP_FROM
 	badge_prop.scale = Vector3.ONE
-	var drop := create_tween()
-	drop.tween_property(badge_prop, "global_position", REST_POS, DROP_TIME) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	var drop := create_tween().set_parallel(true)
+	drop.tween_property(badge_prop, "global_position:y", REST_POS.y, DROP_TIME) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	drop.tween_property(badge_prop, "global_position:z", REST_POS.z, DROP_TIME) \
+		.set_trans(Tween.TRANS_LINEAR)
 	await drop.finished
 	_voice("intro_badge")
 	await _wait(2.4)
@@ -68,9 +70,11 @@ func _shot1() -> void:
 func _shot2() -> void:
 	schedule_prop.visible = true
 	schedule_prop.global_position = DROP_FROM
-	var drop := create_tween()
-	drop.tween_property(schedule_prop, "global_position", REST_POS, DROP_TIME) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	var drop := create_tween().set_parallel(true)
+	drop.tween_property(schedule_prop, "global_position:y", REST_POS.y, DROP_TIME) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	drop.tween_property(schedule_prop, "global_position:z", REST_POS.z, DROP_TIME) \
+		.set_trans(Tween.TRANS_LINEAR)
 	await drop.finished
 	_voice("intro_schedule")
 	await _wait(2.6)
