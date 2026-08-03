@@ -2,10 +2,10 @@ extends Node3D
 ## Intro: badge and schedule drift gently from above onto the table center,
 ## then UI fades in. No hand model.
 
-const DROP_P0 := Vector3(0.0, 2.5, -0.7)
-const DROP_P1 := Vector3(0.0, 1.6, 0.25)
+const DROP_P0 := Vector3(0.0, 2.5, -1.8)
+const DROP_P1 := Vector3(0.0, 1.5, 0.15)
 const REST_POS := Vector3(0.0, 1.21, 0.0)
-const DROP_TIME := 1.4
+const DROP_TIME := 1.6
 const BOUNCE_TIME := 0.34
 const BOUNCE_PEAK := 0.06
 const FLY_TIME := 1.4
