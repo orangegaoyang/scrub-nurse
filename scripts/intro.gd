@@ -1,15 +1,11 @@
 extends Node3D
-## Intro: a two-shot cinematic over the unchanged bg.png backdrop.
-## Shot 1 — a hand reaches in with the intern's ID badge; voice welcomes
-##   them; the badge flies to the top-left and becomes the badge UI.
-## Shot 2 — the hand delivers today's surgery schedule; voice explains;
-##   the easiest case blinks until the player clicks it to start the day.
-## All props are placeholder boxes until real art is provided.
+## Intro: badge and schedule drift gently from above onto the table center,
+## then UI fades in. No hand model.
 
-const HAND_OFF := Vector3(1.3, 1.25, 0.35)
-const HAND_HOLD := Vector3(0.25, 1.32, 0.05)
-const HAND_PLACE := Vector3(0.0, 1.28, 0.0)
-const SLIDE_TIME := 0.45
+const DROP_FROM := Vector3(0.0, 1.6, 0.0)
+const REST_POS := Vector3(0.0, 1.21, 0.0)
+const DROP_TIME := 1.2
+const FLY_TIME := 1.4
 
 # Today's surgery schedule. `easy` marks the playable case (first day, pick an
 # easy one). Placeholder rows; swap for real content / art later.
@@ -21,8 +17,6 @@ const SCHEDULE := [
 ]
 
 @onready var camera: Camera3D = $Camera3D
-@onready var hand: Node3D = $Hand
-@onready var held_anchor: Node3D = $Hand/HeldAnchor
 @onready var badge_prop: MeshInstance3D = $BadgeProp
 @onready var schedule_prop: MeshInstance3D = $ScheduleProp
 @onready var badge_ui: Control = $UI/BadgeUI
@@ -35,7 +29,6 @@ var _proceeding: bool = false
 
 func _ready() -> void:
 	camera.look_at(Vector3(0.0, 1.45, 0.0))
-	hand.position = HAND_OFF
 	badge_prop.visible = false
 	schedule_prop.visible = false
 	badge_ui.modulate.a = 0.0
@@ -50,49 +43,39 @@ func _ready() -> void:
 
 func _shot1() -> void:
 	badge_prop.visible = true
-	badge_prop.reparent(held_anchor)
-	badge_prop.transform = Transform3D.IDENTITY
-	_slide_to(HAND_HOLD)
-	await _wait(SLIDE_TIME + 0.2)
+	badge_prop.global_position = DROP_FROM
+	badge_prop.scale = Vector3.ONE
+	var drop := create_tween()
+	drop.tween_property(badge_prop, "global_position", REST_POS, DROP_TIME) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	await drop.finished
 	_voice("intro_badge")
 	await _wait(2.4)
-	# Badge detaches, flies to the top-left, and becomes the badge UI.
-	badge_prop.reparent(self)
-	badge_prop.global_position = held_anchor.global_position
+	# 飘到屏幕左上角化作 BadgeUI
 	var fly := create_tween()
 	fly.set_parallel(true)
-	fly.tween_property(badge_prop, "global_position", _top_left_world(), 0.7) \
+	fly.tween_property(badge_prop, "global_position", _top_left_world(), FLY_TIME) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	fly.tween_property(badge_prop, "scale", Vector3.ZERO, FLY_TIME) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	fly.tween_property(badge_prop, "scale", Vector3.ZERO, 0.7).set_ease(Tween.EASE_IN)
-	fly.tween_property(badge_ui, "modulate:a", 1.0, 0.5).set_delay(0.35)
+	fly.tween_property(badge_ui, "modulate:a", 1.0, 0.6).set_delay(0.5)
 	await fly.finished
 	badge_prop.visible = false
-	_slide_to(HAND_OFF)
-	await _wait(SLIDE_TIME)
 
 
 # ---------------- Shot 2: schedule ----------------
 
 func _shot2() -> void:
 	schedule_prop.visible = true
-	schedule_prop.reparent(held_anchor)
-	schedule_prop.transform = Transform3D.IDENTITY
-	_slide_to(HAND_HOLD)
-	await _wait(SLIDE_TIME + 0.2)
+	schedule_prop.global_position = DROP_FROM
+	var drop := create_tween()
+	drop.tween_property(schedule_prop, "global_position", REST_POS, DROP_TIME) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	await drop.finished
 	_voice("intro_schedule")
 	await _wait(2.6)
-	# Place the schedule on the table, retract the hand.
-	schedule_prop.reparent(self)
-	schedule_prop.global_position = held_anchor.global_position
-	var place := create_tween()
-	place.tween_property(schedule_prop, "global_position", HAND_PLACE + Vector3(0, 0.03, 0), 0.4) \
-		.set_ease(Tween.EASE_OUT)
-	await place.finished
-	_slide_to(HAND_OFF)
-	await _wait(0.3)
-	# Reveal the interactive schedule and blink the easy case.
 	var reveal := create_tween()
-	reveal.tween_property(schedule_ui, "modulate:a", 1.0, 0.4)
+	reveal.tween_property(schedule_ui, "modulate:a", 1.0, 0.5)
 	await reveal.finished
 	_start_blink()
 
@@ -131,12 +114,6 @@ func _build_schedule_rows() -> void:
 			lbl.add_theme_font_size_override("font_size", 19)
 			lbl.modulate.a = 0.5
 			rows_box.add_child(lbl)
-
-
-func _slide_to(pos: Vector3) -> void:
-	var tw := create_tween()
-	tw.tween_property(hand, "position", pos, SLIDE_TIME) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _wait(t: float) -> void:
