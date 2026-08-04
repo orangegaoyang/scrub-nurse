@@ -8,15 +8,18 @@ var held_parent: Node3D
 var held_instrument: Instrument = null
 var voice: AudioStreamPlayer
 var slots_parent: Node3D
+var inspect: InspectSystem
 
 
 func _ready() -> void:
 	player = get_parent().get_node("Player")
 	held_parent = get_parent().get_node("HeldParent")
 	slots_parent = get_parent().get_node("MayoStand/SlotsParent")
+	inspect = get_parent().get_node_or_null("InspectSystem")
 	voice = AudioStreamPlayer.new()
 	add_child(voice)
 	player.interact_pressed.connect(_on_interact)
+	player.inspect_pressed.connect(_on_inspect)
 
 
 func _process(_delta: float) -> void:
@@ -44,6 +47,8 @@ func _highlighted_slot() -> TableSlot:
 func _on_interact(_target: Node) -> void:
 	if GameState.current_phase != GameState.Phase.PREP:
 		return
+	if inspect != null and inspect.is_inspecting():
+		return
 	if held_instrument == null:
 		var inst := player.get_cursor_instrument() as Instrument
 		if inst != null and inst.state == Instrument.State.IN_TRAY:
@@ -52,6 +57,19 @@ func _on_interact(_target: Node) -> void:
 		var slot := player.get_cursor_slot() as TableSlot
 		if slot != null and not slot.occupied:
 			_place_in_slot(slot)
+
+
+func _on_inspect() -> void:
+	# Right-click during prep: bring the instrument under the cursor up for a
+	# close look. Disabled while holding (placing takes priority) or already
+	# inspecting.
+	if GameState.current_phase != GameState.Phase.PREP:
+		return
+	if inspect == null or inspect.is_inspecting() or held_instrument != null:
+		return
+	var inst := player.get_cursor_instrument() as Instrument
+	if inst != null:
+		inspect.inspect(inst)
 
 
 func _pick_up(inst: Instrument) -> void:

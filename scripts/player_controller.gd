@@ -7,6 +7,7 @@ const REACH: float = 6.0
 const HOLD_Y: float = 1.35  # held instruments float above the tray so they clear it and other instruments
 
 signal interact_pressed(target: Node)
+signal inspect_pressed()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -14,6 +15,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		var c = get_cursor_collider()
 		print("DEBUG click hit: ", c)
 		interact_pressed.emit(c)
+	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		inspect_pressed.emit()
 
 
 func _ray(mask: int, areas: bool, bodies: bool) -> Dictionary:
