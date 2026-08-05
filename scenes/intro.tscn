@@ -76,21 +76,21 @@ transform = Transform3D(0.8660254, -0.38302222, 0.32139382, 0, 0.64278764, 0.766
 light_energy = 0.2
 shadow_enabled = true
 
-[node name="Table" type="MeshInstance3D" parent="."]
+[node name="Table" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Table"]
 material_override = SubResource("Mat_table")
 mesh = SubResource("PlaneMesh_i2l1n")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.215, -0.18)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
-
-[node name="TableCollision" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TableCollision"]
-shape = SubResource("Shape_table")
 
 [node name="BadgeProp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21, 0)
