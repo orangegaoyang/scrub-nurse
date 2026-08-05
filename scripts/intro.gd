@@ -7,7 +7,6 @@ extends Node3D
 ## Replay (same session): badge already in slot, wait 1s, throw schedule.
 
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
-const SLOT_POS := Vector3(0.0, 1.21, -0.14)
 const SNAP_DISTANCE := 0.18
 const SCHEDULE_DELAY := 1.0
 const TABLE_Y := 1.21
@@ -69,7 +68,7 @@ func _first_loop() -> void:
 
 func _replay_loop() -> void:
 	# Badge already in slot; just wait, then throw schedule.
-	badge.global_position = SLOT_POS + Vector3(0, 0.005, 0)
+	badge.global_position = slot.global_position + Vector3(0, 0.005, 0)
 	badge.visible = true
 	_badge_placed = true
 	await _wait(1.0)
@@ -132,10 +131,11 @@ func _input(event: InputEvent) -> void:
 func _drop_badge() -> void:
 	_stop_slot_blink()
 	# Horizontal aim decides the snap; hold height is irrelevant.
-	var horiz := Vector2(badge.global_position.x - SLOT_POS.x, badge.global_position.z - SLOT_POS.z).length()
+	var sp := slot.global_position
+	var horiz := Vector2(badge.global_position.x - sp.x, badge.global_position.z - sp.z).length()
 	if horiz < SNAP_DISTANCE:
 		var snap := create_tween()
-		snap.tween_property(badge, "global_position", SLOT_POS + Vector3(0, 0.005, 0), 0.22) \
+		snap.tween_property(badge, "global_position", sp + Vector3(0, 0.005, 0), 0.22) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await snap.finished
 		_badge_placed = true
