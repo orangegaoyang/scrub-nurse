@@ -99,7 +99,7 @@ func _throw_schedule() -> void:
 # ---------------- Badge interaction ----------------
 
 func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _badge_placed or _badge_held or _badge_placing or not badge.freeze:
+	if _badge_held or _badge_placing or not badge.freeze:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_badge_held = true
@@ -253,10 +253,10 @@ func _start_badge_hint() -> void:
 	badge_hint.visible = true
 	var mat: ShaderMaterial = badge_hint.material_override
 	_badge_hint_blink = create_tween().set_loops()
-	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.85, 0.2)
-	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.85, 0.8)
-	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.1, 0.2)
-	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.1, 0.8)
+	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.7, 1.0) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.3, 1.0) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _stop_badge_hint() -> void:
