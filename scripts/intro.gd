@@ -11,8 +11,8 @@ const SNAP_DISTANCE := 0.22
 const SCHEDULE_DELAY := 1.0
 const TABLE_Y := 1.21
 const HOLD_Y := 1.65
-const REST_SCALE := 0.5
-const HOLD_SCALE := 1.0
+const REST_MESH_SIZE := Vector2(0.15, 0.09)
+const HOLD_MESH_SIZE := Vector2(0.3, 0.18)
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
@@ -45,7 +45,6 @@ func _ready() -> void:
 	badge.visible = false
 	schedule.visible = false
 	slot.visible = false
-	badge_mesh.scale = Vector3.ONE * REST_SCALE
 	badge.freeze = true
 	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	schedule.freeze = true
@@ -109,8 +108,9 @@ func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n:
 
 func _physics_process(delta: float) -> void:
 	var f := clampf(delta * 18.0, 0.0, 1.0)
-	var ts := HOLD_SCALE if _badge_held else REST_SCALE
-	badge_mesh.scale = badge_mesh.scale.lerp(Vector3.ONE * ts, f)
+	var pm: PlaneMesh = badge_mesh.mesh
+	var target := HOLD_MESH_SIZE if _badge_held else REST_MESH_SIZE
+	pm.size = pm.size.lerp(target, f)
 	if not _badge_held:
 		return
 	# Drive the drag on the physics timeline so the body's transform doesn't
