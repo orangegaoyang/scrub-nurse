@@ -11,7 +11,7 @@ const SLOT_POS := Vector3(0.0, 1.21, -0.14)
 const SNAP_DISTANCE := 0.18
 const SCHEDULE_DELAY := 1.0
 const TABLE_Y := 1.21
-const HOLD_Y := 1.5
+const HOLD_Y := 1.65
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
@@ -202,9 +202,9 @@ func _start_slot_blink() -> void:
 	_stop_slot_blink()
 	var mat: StandardMaterial3D = slot.material_override
 	_slot_blink = create_tween().set_loops()
-	_slot_blink.tween_property(mat, "albedo_color:a", 0.15, 0.4) \
+	_slot_blink.tween_property(mat, "albedo_color:a", 0.4, 0.4) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_slot_blink.tween_property(mat, "albedo_color:a", 0.6, 0.4) \
+	_slot_blink.tween_property(mat, "albedo_color:a", 0.95, 0.4) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
@@ -215,7 +215,7 @@ func _stop_slot_blink() -> void:
 	var mat: StandardMaterial3D = slot.material_override
 	if mat:
 		var c: Color = mat.albedo_color
-		c.a = 0.4
+		c.a = 0.6
 		mat.albedo_color = c
 
 
