@@ -41,10 +41,10 @@ transparency = 1
 albedo_texture = ExtResource("6_sched")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_schedule"]
-size = Vector2(0.5, 0.3)
+size = Vector2(0.35, 0.427)
 
 [sub_resource type="BoxShape3D" id="Shape_schedule"]
-size = Vector3(0.5, 0.2, 0.3)
+size = Vector3(0.35, 0.2, 0.427)
 
 [sub_resource type="StandardMaterial3D" id="Mat_slot"]
 transparency = 1
