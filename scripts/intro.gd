@@ -37,7 +37,8 @@ var _proceeding: bool = false
 var _badge_held: bool = false
 var _badge_placed: bool = false
 var _pick_frame: int = -1
-var _lift: Tween
+var _aim_x: float
+var _aim_z: float
 var _slot_blink: Tween
 var _sched_blink: Tween
 
@@ -94,9 +95,21 @@ func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_badge_held = true
 		_pick_frame = Engine.get_process_frames()
+		# Seed the aim with the current rest position so the badge lifts in place.
+		_aim_x = badge.global_position.x
+		_aim_z = badge.global_position.z
 		slot.visible = true
 		_start_slot_blink()
-		_start_lift()
+
+
+func _physics_process(delta: float) -> void:
+	if not _badge_held:
+		return
+	# Drive the drag on the physics timeline so the body's transform doesn't
+	# fight the physics server (which would jitter when set from _input).
+	var cur := badge.global_position
+	var ty := lerpf(cur.y, HOLD_Y, clampf(delta * 18.0, 0.0, 1.0))
+	badge.global_position = Vector3(_aim_x, ty, _aim_z)
 
 
 func _input(event: InputEvent) -> void:
@@ -105,12 +118,8 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var aim := _mouse_to_plane(event.position, TABLE_Y)
 		if aim != Vector3.INF:
-			aim.x = clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT)
-			aim.z = clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)
-			if _lift:
-				_lift.kill()
-				_lift = null
-			badge.global_position = Vector3(aim.x, HOLD_Y, aim.z)
+			_aim_x = clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT)
+			_aim_z = clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Engine.get_process_frames() == _pick_frame:
 			return  # same frame as the pick press; ignore
@@ -120,9 +129,6 @@ func _input(event: InputEvent) -> void:
 
 func _drop_badge() -> void:
 	_stop_slot_blink()
-	if _lift:
-		_lift.kill()
-		_lift = null
 	# Horizontal aim decides the snap; hold height is irrelevant.
 	var horiz := Vector2(badge.global_position.x - SLOT_POS.x, badge.global_position.z - SLOT_POS.z).length()
 	if horiz < SNAP_DISTANCE:
@@ -139,15 +145,6 @@ func _drop_badge() -> void:
 		badge.linear_velocity = Vector3.ZERO
 		badge.angular_velocity = Vector3.ZERO
 		await _settle_and_freeze()
-
-
-func _start_lift() -> void:
-	if _lift:
-		_lift.kill()
-	var target := Vector3(badge.global_position.x, HOLD_Y, badge.global_position.z)
-	_lift = create_tween()
-	_lift.tween_property(badge, "global_position", target, 0.12) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 func _wait_for_badge_placed() -> void:
