@@ -86,12 +86,6 @@ func _replay_loop() -> void:
 func _throw_schedule() -> void:
 	schedule.visible = true
 	await _physics_throw(schedule, SCHEDULE_LAND)
-	# Physics bounce drifts the landing; slide to a precise spot clear of the badge.
-	var slide := create_tween()
-	slide.tween_property(schedule, "global_position",
-		Vector3(SCHEDULE_LAND.x, REST_Y, SCHEDULE_LAND.z), 0.2) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	await slide.finished
 	schedule.input_event.connect(_on_schedule_input_event)
 	_voice("intro_schedule")
 
