@@ -34,7 +34,7 @@ size = Vector3(0.3, 0.2, 0.18)
 transparency = 1
 shading_mode = 1
 render_priority = 1.0
-albedo_color = Color(1, 1, 1, 0)
+albedo_color = Color(0.25, 0.55, 1.0, 0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_badge_hint"]
 size = Vector2(0.19, 0.13)
@@ -105,7 +105,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.215, -0.14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 1.215, -0.21)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
