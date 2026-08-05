@@ -27,6 +27,7 @@ static var _intro_seen_once := false
 @onready var camera: Camera3D = $Camera3D
 @onready var badge: RigidBody3D = $BadgeProp
 @onready var badge_mesh: MeshInstance3D = $BadgeProp/Mesh
+@onready var badge_hint: MeshInstance3D = $BadgeProp/BadgeHint
 @onready var schedule: RigidBody3D = $ScheduleProp
 @onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
@@ -39,6 +40,7 @@ var _pick_frame: int = -1
 var _aim_x: float
 var _aim_z: float
 var _slot_blink: Tween
+var _badge_hint_blink: Tween
 
 
 func _ready() -> void:
@@ -46,6 +48,7 @@ func _ready() -> void:
 	badge.visible = false
 	schedule.visible = false
 	slot.visible = false
+	badge_hint.visible = false
 	badge.freeze = true
 	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	schedule.freeze = true
@@ -65,6 +68,7 @@ func _first_loop() -> void:
 	await _physics_throw(badge, Vector3.ZERO)
 	_intro_seen_once = true
 	_voice("intro_badge")
+	_start_badge_hint()
 	await _wait_for_badge_placed()
 	await _wait(SCHEDULE_DELAY)
 	await _throw_schedule()
@@ -105,6 +109,7 @@ func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n:
 		_aim_z = badge.global_position.z
 		slot.visible = true
 		_start_slot_blink()
+		_stop_badge_hint()
 
 
 func _physics_process(delta: float) -> void:
@@ -242,6 +247,23 @@ func _stop_slot_blink() -> void:
 		var c: Color = mat.albedo_color
 		c.a = 0.6
 		mat.albedo_color = c
+
+
+func _start_badge_hint() -> void:
+	badge_hint.visible = true
+	var mat: StandardMaterial3D = badge_hint.material_override
+	_badge_hint_blink = create_tween().set_loops()
+	_badge_hint_blink.tween_property(mat, "albedo_color:a", 0.25, 0.4) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_badge_hint_blink.tween_property(mat, "albedo_color:a", 0.9, 0.4) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _stop_badge_hint() -> void:
+	if _badge_hint_blink:
+		_badge_hint_blink.kill()
+		_badge_hint_blink = null
+	badge_hint.visible = false
 
 
 func _wait(t: float) -> void:

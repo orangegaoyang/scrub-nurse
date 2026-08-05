@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://beqf5qviglybc"]
+[gd_scene load_steps=23 format=3 uid="uid://beqf5qviglybc"]
 
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
@@ -29,6 +29,15 @@ size = Vector2(0.15, 0.09)
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
+
+[sub_resource type="StandardMaterial3D" id="Mat_badge_hint"]
+transparency = 1
+shading_mode = 1
+render_priority = 1.0
+albedo_color = Color(1, 1, 1, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_badge_hint"]
+size = Vector2(0.19, 0.13)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
 friction = 0.8
@@ -112,6 +121,11 @@ mesh = SubResource("PlaneMesh_badge")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BadgeProp"]
 shape = SubResource("Shape_badge")
+
+[node name="BadgeHint" type="MeshInstance3D" parent="BadgeProp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.005, 0)
+material_override = SubResource("Mat_badge_hint")
+mesh = SubResource("PlaneMesh_badge_hint")
 
 [node name="ScheduleProp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21, 0)
