@@ -7,10 +7,12 @@ extends Node3D
 ## Replay (same session): badge already in slot, wait 1s, throw schedule.
 
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
-const SNAP_DISTANCE := 0.18
+const SNAP_DISTANCE := 0.22
 const SCHEDULE_DELAY := 1.0
 const TABLE_Y := 1.21
 const HOLD_Y := 1.65
+const REST_SCALE := 0.5
+const HOLD_SCALE := 1.0
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
@@ -24,6 +26,7 @@ static var _intro_seen_once := false
 
 @onready var camera: Camera3D = $Camera3D
 @onready var badge: RigidBody3D = $BadgeProp
+@onready var badge_mesh: MeshInstance3D = $BadgeProp/Mesh
 @onready var schedule: RigidBody3D = $ScheduleProp
 @onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
@@ -42,6 +45,7 @@ func _ready() -> void:
 	badge.visible = false
 	schedule.visible = false
 	slot.visible = false
+	badge_mesh.scale = Vector3.ONE * REST_SCALE
 	badge.freeze = true
 	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	schedule.freeze = true
@@ -104,12 +108,15 @@ func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n:
 
 
 func _physics_process(delta: float) -> void:
+	var f := clampf(delta * 18.0, 0.0, 1.0)
+	var ts := HOLD_SCALE if _badge_held else REST_SCALE
+	badge_mesh.scale = badge_mesh.scale.lerp(Vector3.ONE * ts, f)
 	if not _badge_held:
 		return
 	# Drive the drag on the physics timeline so the body's transform doesn't
 	# fight the physics server (which would jitter when set from _input).
 	var cur := badge.global_position
-	var ty := lerpf(cur.y, HOLD_Y, clampf(delta * 18.0, 0.0, 1.0))
+	var ty := lerpf(cur.y, HOLD_Y, f)
 	badge.global_position = Vector3(_aim_x, ty, _aim_z)
 
 
