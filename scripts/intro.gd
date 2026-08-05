@@ -16,13 +16,16 @@ const BOUNCE_TIME := 0.34
 const BOUNCE_PEAK := 0.06
 const TABLE_Y := 1.21
 const HOVER_LIFT := 0.05
+const THROW_VY := 1.5
+const THROW_VZ := 2.7
+const THROW_TIMEOUT := 3.0
 
 # Persists across scene reloads within one process: skip the badge throw on
 # replays (badge stays in slot).
 static var _intro_seen_once := false
 
 @onready var camera: Camera3D = $Camera3D
-@onready var badge: Area3D = $BadgeProp
+@onready var badge: RigidBody3D = $BadgeProp
 @onready var schedule: Area3D = $ScheduleProp
 @onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
@@ -40,6 +43,8 @@ func _ready() -> void:
 	badge.visible = false
 	schedule.visible = false
 	slot.visible = false
+	badge.freeze = true
+	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	badge.input_event.connect(_on_badge_input_event)
 	await Transition.fade_in()
 	if _intro_seen_once:
@@ -52,7 +57,7 @@ func _ready() -> void:
 
 func _first_loop() -> void:
 	badge.visible = true
-	await _arc_throw(badge)
+	await _physics_throw()
 	_intro_seen_once = true
 	_voice("intro_badge")
 	await _wait_for_badge_placed()
@@ -138,6 +143,23 @@ func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, 
 
 
 # ---------------- Helpers ----------------
+
+func _physics_throw() -> void:
+	badge.global_position = DROP_P0
+	badge.rotation = Vector3.ZERO
+	badge.freeze = false
+	badge.sleeping = false
+	badge.linear_velocity = Vector3(0.0, THROW_VY, THROW_VZ)
+	badge.angular_velocity = Vector3.ZERO
+	var elapsed := 0.0
+	while not badge.sleeping and elapsed < THROW_TIMEOUT:
+		await get_tree().physics_frame
+		elapsed += get_physics_process_delta_time()
+	badge.freeze = true
+	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	badge.linear_velocity = Vector3.ZERO
+	badge.angular_velocity = Vector3.ZERO
+	badge.rotation = Vector3.ZERO
 
 func _arc_throw(node: Node3D) -> void:
 	var arc := create_tween()

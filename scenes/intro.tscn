@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://beqf5qviglybc"]
+[gd_scene load_steps=20 format=3 uid="uid://beqf5qviglybc"]
 
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
@@ -28,6 +28,13 @@ size = Vector2(0.3, 0.18)
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
+friction = 0.8
+bounce = 0.3
+
+[sub_resource type="BoxShape3D" id="Shape_table"]
+size = Vector3(1.2, 0.2, 1.0)
 
 [sub_resource type="StandardMaterial3D" id="Mat_schedule"]
 transparency = 1
@@ -79,8 +86,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.215, -0.18)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
-[node name="BadgeProp" type="Area3D" parent="."]
+[node name="TableCollision" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TableCollision"]
+shape = SubResource("Shape_table")
+
+[node name="BadgeProp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21, 0)
+continuous_cd = true
+physics_material_override = SubResource("PhysicsMaterial_badge")
 
 [node name="Mesh" type="MeshInstance3D" parent="BadgeProp"]
 material_override = SubResource("Mat_badge")
