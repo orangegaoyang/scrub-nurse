@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://beqf5qviglybc"]
+[gd_scene load_steps=24 format=3 uid="uid://beqf5qviglybc"]
 
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
 [ext_resource type="Texture2D" path="res://assets/2D/intro/badge.png" id="5_badge"]
 [ext_resource type="Texture2D" path="res://assets/2D/intro/today's surgery.PNG" id="6_sched"]
+[ext_resource type="Shader" path="res://shaders/rounded_rect.gdshader" id="7_hint"]
 
 [sub_resource type="Environment" id="Env"]
 ambient_light_source = 2
@@ -30,11 +31,13 @@ size = Vector2(0.15, 0.09)
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
 
-[sub_resource type="StandardMaterial3D" id="Mat_badge_hint"]
-transparency = 1
-shading_mode = 1
-render_priority = 1.0
-albedo_color = Color(0.25, 0.55, 1.0, 0)
+[sub_resource type="ShaderMaterial" id="Mat_badge_hint"]
+render_priority = 1
+shader = ExtResource("7_hint")
+shader_parameter/color = Color(0.514, 0.576, 0.588, 1)
+shader_parameter/alpha = 0.0
+shader_parameter/size = Vector2(0.19, 0.13)
+shader_parameter/corner_radius = 0.025
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_badge_hint"]
 size = Vector2(0.19, 0.13)

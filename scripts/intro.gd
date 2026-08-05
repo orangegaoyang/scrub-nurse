@@ -251,12 +251,12 @@ func _stop_slot_blink() -> void:
 
 func _start_badge_hint() -> void:
 	badge_hint.visible = true
-	var mat: StandardMaterial3D = badge_hint.material_override
+	var mat: ShaderMaterial = badge_hint.material_override
 	_badge_hint_blink = create_tween().set_loops()
-	_badge_hint_blink.tween_property(mat, "albedo_color:a", 0.25, 0.4) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_badge_hint_blink.tween_property(mat, "albedo_color:a", 0.9, 0.4) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.85, 0.2)
+	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.85, 0.8)
+	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.1, 0.2)
+	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.1, 0.8)
 
 
 func _stop_badge_hint() -> void:
