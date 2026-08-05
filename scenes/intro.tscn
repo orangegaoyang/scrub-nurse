@@ -59,10 +59,10 @@ render_priority = 1.0
 albedo_texture = ExtResource("6_sched")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_schedule"]
-size = Vector2(0.262, 0.32)
+size = Vector2(0.369, 0.45)
 
 [sub_resource type="BoxShape3D" id="Shape_schedule"]
-size = Vector3(0.262, 0.2, 0.32)
+size = Vector3(0.369, 0.2, 0.45)
 
 [sub_resource type="StandardMaterial3D" id="Mat_slot"]
 transparency = 1
@@ -108,7 +108,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, 1.215, -0.16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 1.215, -0.16)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 

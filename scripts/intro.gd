@@ -18,7 +18,7 @@ const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
 const REST_Y := 1.3 # table top (1.2) + half collision-box height (0.1)
 const THROW_TIMEOUT := 3.0
-const SCHEDULE_LAND := Vector3(0.0, 0.0, 0.12) # lower half of the table, clear of the slot
+const SCHEDULE_LAND := Vector3(-0.05, 0.0, 0.05) # lower half of the table, clear of the slot
 
 # Persists across scene reloads within one process: skip the badge throw on
 # replays (badge stays in slot).
