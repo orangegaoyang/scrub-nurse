@@ -9,7 +9,7 @@ extends Node3D
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
 const DROP_P1 := Vector3(0.0, 1.5, 0.15)
 const REST_POS := Vector3(0.0, 1.21, 0.0)
-const SLOT_POS := Vector3(-0.35, 1.21, -0.18)
+const SLOT_POS := Vector3(0.0, 1.21, -0.14)
 const SNAP_DISTANCE := 0.18
 const SCHEDULE_DELAY := 1.0
 const DROP_TIME := 1.6
