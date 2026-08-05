@@ -1,8 +1,9 @@
 extends Node3D
 ## Intro:
-## Day 1: arc-throw badge → user clicks badge, mouse follows, click to drop →
-##   snap into slot if close → wait 1s → arc-throw schedule → click schedule →
-##   proceed to corridor.
+## Day 1: physics-drop badge → click to pick up (lifts toward camera), mouse
+##   follows on the table plane, click to drop → snap into slot if horizontally
+##   close, else free-fall back onto the table → wait 1s → arc-throw schedule →
+##   click schedule → proceed to corridor.
 ## Replay (same session): badge already in slot, wait 1s, throw schedule.
 
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
@@ -15,7 +16,9 @@ const DROP_TIME := 1.6
 const BOUNCE_TIME := 0.34
 const BOUNCE_PEAK := 0.06
 const TABLE_Y := 1.21
-const HOVER_LIFT := 0.05
+const HOLD_Y := 1.5
+const HOLD_X_LIMIT := 0.45
+const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
 const THROW_VZ := 2.7
 const THROW_TIMEOUT := 3.0
@@ -34,6 +37,7 @@ var _proceeding: bool = false
 var _badge_held: bool = false
 var _badge_placed: bool = false
 var _pick_frame: int = -1
+var _lift: Tween
 var _slot_blink: Tween
 var _sched_blink: Tween
 
@@ -85,22 +89,28 @@ func _throw_schedule() -> void:
 # ---------------- Badge interaction ----------------
 
 func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _badge_placed or _badge_held:
+	if _badge_placed or _badge_held or not badge.freeze:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_badge_held = true
 		_pick_frame = Engine.get_process_frames()
 		slot.visible = true
 		_start_slot_blink()
+		_start_lift()
 
 
 func _input(event: InputEvent) -> void:
 	if not _badge_held:
 		return
 	if event is InputEventMouseMotion:
-		var p := _mouse_to_table_y(event.position)
-		if p != Vector3.INF:
-			badge.global_position = p + Vector3(0, HOVER_LIFT, 0)
+		var aim := _mouse_to_plane(event.position, TABLE_Y)
+		if aim != Vector3.INF:
+			aim.x = clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT)
+			aim.z = clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)
+			if _lift:
+				_lift.kill()
+				_lift = null
+			badge.global_position = Vector3(aim.x, HOLD_Y, aim.z)
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Engine.get_process_frames() == _pick_frame:
 			return  # same frame as the pick press; ignore
@@ -110,18 +120,34 @@ func _input(event: InputEvent) -> void:
 
 func _drop_badge() -> void:
 	_stop_slot_blink()
-	var drop := badge.global_position - Vector3(0, HOVER_LIFT, 0)
-	if drop.distance_to(SLOT_POS) < SNAP_DISTANCE:
+	if _lift:
+		_lift.kill()
+		_lift = null
+	# Horizontal aim decides the snap; hold height is irrelevant.
+	var horiz := Vector2(badge.global_position.x - SLOT_POS.x, badge.global_position.z - SLOT_POS.z).length()
+	if horiz < SNAP_DISTANCE:
 		var snap := create_tween()
-		snap.tween_property(badge, "global_position", SLOT_POS + Vector3(0, 0.005, 0), 0.18) \
+		snap.tween_property(badge, "global_position", SLOT_POS + Vector3(0, 0.005, 0), 0.22) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await snap.finished
 		_badge_placed = true
 		slot.visible = false
 	else:
-		var lower := create_tween()
-		lower.tween_property(badge, "global_position", drop, 0.08) \
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		# Let go: free-fall back onto the table, then re-freeze for picking.
+		badge.freeze = false
+		badge.sleeping = false
+		badge.linear_velocity = Vector3.ZERO
+		badge.angular_velocity = Vector3.ZERO
+		await _settle_and_freeze()
+
+
+func _start_lift() -> void:
+	if _lift:
+		_lift.kill()
+	var target := Vector3(badge.global_position.x, HOLD_Y, badge.global_position.z)
+	_lift = create_tween()
+	_lift.tween_property(badge, "global_position", target, 0.12) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 func _wait_for_badge_placed() -> void:
@@ -151,6 +177,10 @@ func _physics_throw() -> void:
 	badge.sleeping = false
 	badge.linear_velocity = Vector3(0.0, THROW_VY, THROW_VZ)
 	badge.angular_velocity = Vector3.ZERO
+	await _settle_and_freeze()
+
+
+func _settle_and_freeze() -> void:
 	var elapsed := 0.0
 	while not badge.sleeping and elapsed < THROW_TIMEOUT:
 		await get_tree().physics_frame
@@ -178,12 +208,12 @@ func _arc_throw(node: Node3D) -> void:
 	await bounce.finished
 
 
-func _mouse_to_table_y(mouse_pos: Vector2) -> Vector3:
+func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
 	var from := camera.project_ray_origin(mouse_pos)
 	var dir := camera.project_ray_normal(mouse_pos)
 	if abs(dir.y) < 0.0001:
 		return Vector3.INF
-	var t := (TABLE_Y + HOVER_LIFT - from.y) / dir.y
+	var t := (plane_y - from.y) / dir.y
 	if t < 0:
 		return Vector3.INF
 	return from + dir * t
