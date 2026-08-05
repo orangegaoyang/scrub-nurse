@@ -7,7 +7,7 @@ extends Node3D
 ## Replay (same session): badge already in slot, wait 1s, throw schedule.
 
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
-const SNAP_DISTANCE := 0.22
+const SNAP_DISTANCE := 0.14
 const SCHEDULE_DELAY := 1.0
 const TABLE_Y := 1.21
 const HOLD_Y := 1.65
@@ -33,6 +33,7 @@ static var _intro_seen_once := false
 
 var _proceeding: bool = false
 var _badge_held: bool = false
+var _badge_placing: bool = false
 var _badge_placed: bool = false
 var _pick_frame: int = -1
 var _aim_x: float
@@ -94,7 +95,7 @@ func _throw_schedule() -> void:
 # ---------------- Badge interaction ----------------
 
 func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _badge_placed or _badge_held or not badge.freeze:
+	if _badge_placed or _badge_held or _badge_placing or not badge.freeze:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_badge_held = true
@@ -141,11 +142,13 @@ func _drop_badge() -> void:
 	var sp := slot.global_position
 	var horiz := Vector2(badge.global_position.x - sp.x, badge.global_position.z - sp.z).length()
 	if horiz < SNAP_DISTANCE:
+		_badge_placing = true
 		var snap := create_tween()
 		snap.tween_property(badge, "global_position", sp + Vector3(0, 0.005, 0), 0.22) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await snap.finished
 		_badge_placed = true
+		_badge_placing = false
 		slot.visible = false
 	else:
 		# Let go: free-fall back onto the table, then re-freeze for picking.
