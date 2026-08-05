@@ -2,19 +2,14 @@ extends Node3D
 ## Intro:
 ## Day 1: physics-drop badge → click to pick up (lifts toward camera), mouse
 ##   follows on the table plane, click to drop → snap into slot if horizontally
-##   close, else free-fall back onto the table → wait 1s → arc-throw schedule →
-##   click schedule → proceed to corridor.
+##   close, else free-fall back onto the table → wait 1s → physics-drop schedule
+##   → click schedule → proceed to corridor.
 ## Replay (same session): badge already in slot, wait 1s, throw schedule.
 
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
-const DROP_P1 := Vector3(0.0, 1.5, 0.15)
-const REST_POS := Vector3(0.0, 1.21, 0.0)
 const SLOT_POS := Vector3(0.0, 1.21, -0.14)
 const SNAP_DISTANCE := 0.18
 const SCHEDULE_DELAY := 1.0
-const DROP_TIME := 1.6
-const BOUNCE_TIME := 0.34
-const BOUNCE_PEAK := 0.06
 const TABLE_Y := 1.21
 const HOLD_Y := 1.5
 const HOLD_X_LIMIT := 0.45
@@ -29,7 +24,8 @@ static var _intro_seen_once := false
 
 @onready var camera: Camera3D = $Camera3D
 @onready var badge: RigidBody3D = $BadgeProp
-@onready var schedule: Area3D = $ScheduleProp
+@onready var schedule: RigidBody3D = $ScheduleProp
+@onready var schedule_mesh: MeshInstance3D = $ScheduleProp/Mesh
 @onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
 
@@ -50,6 +46,8 @@ func _ready() -> void:
 	slot.visible = false
 	badge.freeze = true
 	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	schedule.freeze = true
+	schedule.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	badge.input_event.connect(_on_badge_input_event)
 	await Transition.fade_in()
 	if _intro_seen_once:
@@ -62,7 +60,7 @@ func _ready() -> void:
 
 func _first_loop() -> void:
 	badge.visible = true
-	await _physics_throw()
+	await _physics_throw(badge)
 	_intro_seen_once = true
 	_voice("intro_badge")
 	await _wait_for_badge_placed()
@@ -81,7 +79,7 @@ func _replay_loop() -> void:
 
 func _throw_schedule() -> void:
 	schedule.visible = true
-	await _arc_throw(schedule)
+	await _physics_throw(schedule)
 	schedule.input_event.connect(_on_schedule_input_event)
 	_voice("intro_schedule")
 	_start_schedule_blink()
@@ -144,7 +142,7 @@ func _drop_badge() -> void:
 		badge.sleeping = false
 		badge.linear_velocity = Vector3.ZERO
 		badge.angular_velocity = Vector3.ZERO
-		await _settle_and_freeze()
+		await _settle_and_freeze(badge)
 
 
 func _wait_for_badge_placed() -> void:
@@ -155,7 +153,7 @@ func _wait_for_badge_placed() -> void:
 # ---------------- Schedule interaction ----------------
 
 func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _proceeding:
+	if _proceeding or not schedule.freeze:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_proceeding = true
@@ -167,42 +165,26 @@ func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, 
 
 # ---------------- Helpers ----------------
 
-func _physics_throw() -> void:
-	badge.global_position = DROP_P0
-	badge.rotation = Vector3.ZERO
-	badge.freeze = false
-	badge.sleeping = false
-	badge.linear_velocity = Vector3(0.0, THROW_VY, THROW_VZ)
-	badge.angular_velocity = Vector3.ZERO
-	await _settle_and_freeze()
+func _physics_throw(body: RigidBody3D) -> void:
+	body.global_position = DROP_P0
+	body.rotation = Vector3.ZERO
+	body.freeze = false
+	body.sleeping = false
+	body.linear_velocity = Vector3(0.0, THROW_VY, THROW_VZ)
+	body.angular_velocity = Vector3.ZERO
+	await _settle_and_freeze(body)
 
 
-func _settle_and_freeze() -> void:
+func _settle_and_freeze(body: RigidBody3D) -> void:
 	var elapsed := 0.0
-	while not badge.sleeping and elapsed < THROW_TIMEOUT:
+	while not body.sleeping and elapsed < THROW_TIMEOUT:
 		await get_tree().physics_frame
 		elapsed += get_physics_process_delta_time()
-	badge.freeze = true
-	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-	badge.linear_velocity = Vector3.ZERO
-	badge.angular_velocity = Vector3.ZERO
-	badge.rotation = Vector3.ZERO
-
-func _arc_throw(node: Node3D) -> void:
-	var arc := create_tween()
-	arc.tween_method(
-		func(t: float):
-			var u := 1.0 - t
-			node.global_position = u * u * DROP_P0 + 2 * u * t * DROP_P1 + t * t * REST_POS,
-		0.0, 1.0, DROP_TIME
-	).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	await arc.finished
-	var bounce := create_tween()
-	bounce.tween_property(node, "global_position", REST_POS + Vector3(0, BOUNCE_PEAK, 0), BOUNCE_TIME * 0.4) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	bounce.tween_property(node, "global_position", REST_POS, BOUNCE_TIME * 0.6) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	await bounce.finished
+	body.freeze = true
+	body.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	body.linear_velocity = Vector3.ZERO
+	body.angular_velocity = Vector3.ZERO
+	body.rotation = Vector3.ZERO
 
 
 func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
@@ -240,9 +222,9 @@ func _stop_slot_blink() -> void:
 func _start_schedule_blink() -> void:
 	_stop_schedule_blink()
 	_sched_blink = create_tween().set_loops()
-	_sched_blink.tween_property(schedule, "scale", Vector3(1.04, 1.04, 1.04), 0.4) \
+	_sched_blink.tween_property(schedule_mesh, "scale", Vector3(1.04, 1.04, 1.04), 0.4) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_sched_blink.tween_property(schedule, "scale", Vector3.ONE, 0.4) \
+	_sched_blink.tween_property(schedule_mesh, "scale", Vector3.ONE, 0.4) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
@@ -250,7 +232,7 @@ func _stop_schedule_blink() -> void:
 	if _sched_blink:
 		_sched_blink.kill()
 		_sched_blink = null
-	schedule.scale = Vector3.ONE
+	schedule_mesh.scale = Vector3.ONE
 
 
 func _wait(t: float) -> void:
