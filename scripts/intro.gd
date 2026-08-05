@@ -15,8 +15,9 @@ const HOLD_Y := 1.65
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
-const THROW_VZ := 2.7
+const REST_Y := 1.3 # table top (1.2) + half collision-box height (0.1)
 const THROW_TIMEOUT := 3.0
+const SCHEDULE_LAND := Vector3(0.0, 0.0, 0.12) # lower half of the table, clear of the slot
 
 # Persists across scene reloads within one process: skip the badge throw on
 # replays (badge stays in slot).
@@ -25,7 +26,6 @@ static var _intro_seen_once := false
 @onready var camera: Camera3D = $Camera3D
 @onready var badge: RigidBody3D = $BadgeProp
 @onready var schedule: RigidBody3D = $ScheduleProp
-@onready var schedule_mesh: MeshInstance3D = $ScheduleProp/Mesh
 @onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
 
@@ -36,7 +36,6 @@ var _pick_frame: int = -1
 var _aim_x: float
 var _aim_z: float
 var _slot_blink: Tween
-var _sched_blink: Tween
 
 
 func _ready() -> void:
@@ -60,7 +59,7 @@ func _ready() -> void:
 
 func _first_loop() -> void:
 	badge.visible = true
-	await _physics_throw(badge)
+	await _physics_throw(badge, Vector3.ZERO)
 	_intro_seen_once = true
 	_voice("intro_badge")
 	await _wait_for_badge_placed()
@@ -79,10 +78,15 @@ func _replay_loop() -> void:
 
 func _throw_schedule() -> void:
 	schedule.visible = true
-	await _physics_throw(schedule)
+	await _physics_throw(schedule, SCHEDULE_LAND)
+	# Physics bounce drifts the landing; slide to a precise spot clear of the badge.
+	var slide := create_tween()
+	slide.tween_property(schedule, "global_position",
+		Vector3(SCHEDULE_LAND.x, REST_Y, SCHEDULE_LAND.z), 0.2) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	await slide.finished
 	schedule.input_event.connect(_on_schedule_input_event)
 	_voice("intro_schedule")
-	_start_schedule_blink()
 
 
 # ---------------- Badge interaction ----------------
@@ -157,7 +161,6 @@ func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, 
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_proceeding = true
-		_stop_schedule_blink()
 		await Transition.fade_out()
 		await get_tree().create_timer(0.8).timeout
 		get_tree().change_scene_to_file("res://scenes/corridor.tscn")
@@ -165,14 +168,26 @@ func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, 
 
 # ---------------- Helpers ----------------
 
-func _physics_throw(body: RigidBody3D) -> void:
+func _physics_throw(body: RigidBody3D, target: Vector3) -> void:
 	body.global_position = DROP_P0
 	body.rotation = Vector3.ZERO
 	body.freeze = false
 	body.sleeping = false
-	body.linear_velocity = Vector3(0.0, THROW_VY, THROW_VZ)
+	var t := _flight_time()
+	body.linear_velocity = Vector3(
+		(target.x - DROP_P0.x) / t,
+		THROW_VY,
+		(target.z - DROP_P0.z) / t)
 	body.angular_velocity = Vector3.ZERO
 	await _settle_and_freeze(body)
+
+
+func _flight_time() -> float:
+	# REST_Y = DROP_P0.y + THROW_VY*t - (g/2)*t^2  (g = 9.8); solve for t > 0.
+	var a := 4.9
+	var b := -THROW_VY
+	var c := REST_Y - DROP_P0.y
+	return (-b + sqrt(b * b - 4.0 * a * c)) / (2.0 * a)
 
 
 func _settle_and_freeze(body: RigidBody3D) -> void:
@@ -217,22 +232,6 @@ func _stop_slot_blink() -> void:
 		var c: Color = mat.albedo_color
 		c.a = 0.6
 		mat.albedo_color = c
-
-
-func _start_schedule_blink() -> void:
-	_stop_schedule_blink()
-	_sched_blink = create_tween().set_loops()
-	_sched_blink.tween_property(schedule_mesh, "scale", Vector3(1.04, 1.04, 1.04), 0.4) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_sched_blink.tween_property(schedule_mesh, "scale", Vector3.ONE, 0.4) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-
-
-func _stop_schedule_blink() -> void:
-	if _sched_blink:
-		_sched_blink.kill()
-		_sched_blink = null
-	schedule_mesh.scale = Vector3.ONE
 
 
 func _wait(t: float) -> void:
