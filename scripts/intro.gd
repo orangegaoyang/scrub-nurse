@@ -232,10 +232,10 @@ func _start_slot_blink() -> void:
 	_stop_slot_blink()
 	var mat: StandardMaterial3D = slot.material_override
 	_slot_blink = create_tween().set_loops()
-	_slot_blink.tween_property(mat, "albedo_color:a", 0.4, 0.4) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_slot_blink.tween_property(mat, "albedo_color:a", 0.95, 0.4) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_slot_blink.tween_property(mat, "albedo_color:a", 0.8, 0.2)
+	_slot_blink.tween_property(mat, "albedo_color:a", 0.8, 0.8)
+	_slot_blink.tween_property(mat, "albedo_color:a", 0.1, 0.2)
+	_slot_blink.tween_property(mat, "albedo_color:a", 0.1, 0.8)
 
 
 func _stop_slot_blink() -> void:
@@ -245,7 +245,7 @@ func _stop_slot_blink() -> void:
 	var mat: StandardMaterial3D = slot.material_override
 	if mat:
 		var c: Color = mat.albedo_color
-		c.a = 0.6
+		c.a = 0.4
 		mat.albedo_color = c
 
 
