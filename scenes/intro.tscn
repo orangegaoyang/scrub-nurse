@@ -1,32 +1,47 @@
-[gd_scene load_steps=24 format=3 uid="uid://beqf5qviglybc"]
+[gd_scene format=3 uid="uid://beqf5qviglybc"]
 
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
-[ext_resource type="Texture2D" uid="uid://dqbsglrjfe4ml" path="res://assets/2D/intro/desk.png" id="3_i2l1n"]
+[ext_resource type="PackedScene" uid="uid://cmcb4lwimkavj" path="res://assets/models/intro/small_table.glb" id="3_272cy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
-[ext_resource type="Texture2D" path="res://assets/2D/intro/badge.png" id="5_badge"]
-[ext_resource type="Texture2D" path="res://assets/2D/intro/today's surgery.PNG" id="6_sched"]
-[ext_resource type="Shader" path="res://shaders/rounded_rect.gdshader" id="7_hint"]
+[ext_resource type="Texture2D" uid="uid://cnsaxhb4rx23r" path="res://assets/2D/intro/badge.png" id="5_badge"]
+[ext_resource type="Texture2D" uid="uid://dj8mesle4p3v2" path="res://assets/2D/intro/today's surgery.png" id="6_sched"]
+[ext_resource type="Shader" uid="uid://c6xu4jianqll4" path="res://shaders/rounded_rect.gdshader" id="7_hint"]
+[ext_resource type="PackedScene" uid="uid://b52sedwsi0x7n" path="res://assets/models/intro/small_pen_holder.glb" id="8_37iue"]
+[ext_resource type="PackedScene" uid="uid://bduevxrpwqv43" path="res://assets/models/intro/small_pant.glb" id="8_bu1yb"]
+[ext_resource type="PackedScene" uid="uid://vclnehkyo6ch" path="res://assets/models/intro/small_card_holder.glb" id="8_xwriy"]
+[ext_resource type="PackedScene" uid="uid://hg8bcgrwcplh" path="res://assets/models/intro/small_mug.glb" id="9_272cy"]
+[ext_resource type="PackedScene" uid="uid://c1ihagjnkycso" path="res://assets/models/intro/small_book.glb" id="9_u5myo"]
+[ext_resource type="PackedScene" uid="uid://b6vhd4pdybco2" path="res://assets/models/intro/small_notebook.glb" id="10_37iue"]
+[ext_resource type="PackedScene" uid="uid://d1dhy7n4b3ru4" path="res://assets/models/intro/small_pen.glb" id="14_u05oh"]
 
 [sub_resource type="Environment" id="Env"]
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.7
 
-[sub_resource type="StandardMaterial3D" id="Mat_table"]
-transparency = 1
-albedo_texture = ExtResource("3_i2l1n")
+[sub_resource type="BoxShape3D" id="Shape_table"]
+size = Vector3(1.2, 0.2, 1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_i2l1n"]
-size = Vector2(1.1, 0.55)
+[sub_resource type="StandardMaterial3D" id="Mat_slot"]
+render_priority = 1
+transparency = 1
+albedo_color = Color(0.933, 0.933, 0.933, 0.4)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_slot"]
+size = Vector2(0.16, 0.1)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
+friction = 0.8
+bounce = 0.3
 
 [sub_resource type="StandardMaterial3D" id="Mat_badge"]
+render_priority = 2
 transparency = 1
-render_priority = 2.0
 albedo_texture = ExtResource("5_badge")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_badge"]
-size = Vector2(0.15, 0.09)
+size = Vector2(0.15, 0.15)
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
@@ -42,20 +57,13 @@ shader_parameter/corner_radius = 0.025
 [sub_resource type="PlaneMesh" id="PlaneMesh_badge_hint"]
 size = Vector2(0.17, 0.11)
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
-friction = 0.8
-bounce = 0.3
-
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_schedule"]
 friction = 0.8
 bounce = 0.1
 
-[sub_resource type="BoxShape3D" id="Shape_table"]
-size = Vector3(1.2, 0.2, 1.0)
-
 [sub_resource type="StandardMaterial3D" id="Mat_schedule"]
+render_priority = 1
 transparency = 1
-render_priority = 1.0
 albedo_texture = ExtResource("6_sched")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_schedule"]
@@ -64,89 +72,106 @@ size = Vector2(0.369, 0.45)
 [sub_resource type="BoxShape3D" id="Shape_schedule"]
 size = Vector3(0.369, 0.2, 0.45)
 
-[sub_resource type="StandardMaterial3D" id="Mat_slot"]
-transparency = 1
-shading_mode = 1
-render_priority = 1.0
-albedo_color = Color(0.933, 0.933, 0.933, 0.4)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_slot"]
-size = Vector2(0.16, 0.1)
-
-[node name="Intro" type="Node3D"]
+[node name="Intro" type="Node3D" unique_id=851681118]
 script = ExtResource("1_intro")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=245886782]
 environment = SubResource("Env")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0.1)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=766783925]
+transform = Transform3D(1, 0, 0, 0, 0.544639, 0.8386706, 0, -0.8386706, 0.544639, 0, 2.6436048, 0.9142716)
 current = true
-fov = 40.0
+fov = 20.6
 
-[node name="Backdrop" type="Sprite3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+[node name="Backdrop" type="Sprite3D" parent="Camera3D" unique_id=2010010805]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
 pixel_size = 0.008
 billboard = 1
 texture = ExtResource("2_bg")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8660254, -0.38302222, 0.32139382, 0, 0.64278764, 0.76604444, -0.5, -0.66341394, 0.5566704, 0, 4, 2)
-light_energy = 0.2
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=732980075]
+transform = Transform3D(-0.39460155, -0.8732472, 0.28588223, -0.19191597, 0.3825954, 0.90376383, -0.89858663, 0.3017613, -0.3185629, 2.0023131, 4, -0.45686024)
+light_color = Color(1, 0.9372549, 0.8392157, 1)
+light_energy = 0.253
+light_indirect_energy = 1.914
+light_specular = 2.223
 shadow_enabled = true
+sky_mode = 1
 
-[node name="Table" type="StaticBody3D" parent="."]
+[node name="Table" type="StaticBody3D" parent="." unique_id=995962184]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 collision_mask = 7
 
-[node name="Mesh" type="MeshInstance3D" parent="Table"]
-material_override = SubResource("Mat_table")
-mesh = SubResource("PlaneMesh_i2l1n")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Table"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table" unique_id=267645160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("Shape_table")
 
-[node name="BadgeSlot" type="MeshInstance3D" parent="."]
+[node name="small_table" parent="Table" unique_id=1718077058 instance=ExtResource("3_272cy")]
+
+[node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 1.215, -0.16)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
-[node name="BadgeProp" type="RigidBody3D" parent="."]
+[node name="BadgeProp" type="RigidBody3D" parent="." unique_id=1756491781]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21, 0)
 collision_layer = 2
-continuous_cd = true
 physics_material_override = SubResource("PhysicsMaterial_badge")
+continuous_cd = true
 
-[node name="Mesh" type="MeshInstance3D" parent="BadgeProp"]
+[node name="Mesh" type="MeshInstance3D" parent="BadgeProp" unique_id=1479370712]
 material_override = SubResource("Mat_badge")
 mesh = SubResource("PlaneMesh_badge")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BadgeProp"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BadgeProp" unique_id=1681058765]
 shape = SubResource("Shape_badge")
 
-[node name="BadgeHint" type="MeshInstance3D" parent="BadgeProp"]
+[node name="BadgeHint" type="MeshInstance3D" parent="BadgeProp" unique_id=319708970]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.005, 0)
 material_override = SubResource("Mat_badge_hint")
 mesh = SubResource("PlaneMesh_badge_hint")
 
-[node name="ScheduleProp" type="RigidBody3D" parent="."]
+[node name="ScheduleProp" type="RigidBody3D" parent="." unique_id=1900584815]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21, 0)
 collision_layer = 4
-continuous_cd = true
 physics_material_override = SubResource("PhysicsMaterial_schedule")
+continuous_cd = true
 
-[node name="Mesh" type="MeshInstance3D" parent="ScheduleProp"]
+[node name="Mesh" type="MeshInstance3D" parent="ScheduleProp" unique_id=1981621084]
 material_override = SubResource("Mat_schedule")
 mesh = SubResource("PlaneMesh_schedule")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ScheduleProp"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScheduleProp" unique_id=2031144131]
 shape = SubResource("Shape_schedule")
 
-[node name="Voice" type="AudioStreamPlayer" parent="."]
+[node name="Voice" type="AudioStreamPlayer" parent="." unique_id=410251256]
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=1398449734]
 visible = false
 
-[node name="TopBar" parent="UI" instance=ExtResource("3_topbar")]
+[node name="TopBar" parent="UI" unique_id=597781892 instance=ExtResource("3_topbar")]
 layout_mode = 3
+
+[node name="Decration" type="Node3D" parent="." unique_id=1065474735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="small_card_holder" parent="Decration" unique_id=1903936460 instance=ExtResource("8_xwriy")]
+transform = Transform3D(0.73845536, 0, -0.6743024, 0, 1, 0, 0.6743024, 0, 0.73845536, 0.3675419, 0, -0.07909768)
+
+[node name="small_book" parent="Decration" unique_id=235952412 instance=ExtResource("9_u5myo")]
+transform = Transform3D(0.9640954, 0, -0.26555613, 0, 1, 0, 0.26555613, 0, 0.9640954, 0.3161969, 0, 0.13589285)
+
+[node name="small_pen_holder" parent="Decration" unique_id=203044741 instance=ExtResource("8_37iue")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34937596, 0, -0.18207043)
+
+[node name="small_pant" parent="Decration" unique_id=1434590661 instance=ExtResource("8_bu1yb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34329766, 0, -0.100982584)
+
+[node name="small_mug" parent="Decration" unique_id=779773451 instance=ExtResource("9_272cy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30633906, 0, -0.016520761)
+
+[node name="small_notebook" parent="Decration" unique_id=394493474 instance=ExtResource("10_37iue")]
+transform = Transform3D(0.89179754, 0, -0.45243472, 0, 1, 0, 0.45243472, 0, 0.89179754, -0.3785296, 0, 0.10356772)
+
+[node name="small_pen" parent="Decration" unique_id=244545672 instance=ExtResource("14_u05oh")]
+transform = Transform3D(0.85720664, 0, -0.51497287, 0, 1, 0, 0.51497287, 0, 0.85720664, 0.33765915, 0, -0.026930109)
