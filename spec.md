@@ -57,10 +57,10 @@ organizer/
 ├── data/
 │   └── procedure.json         # 6 件器械定义 + 6 步需求序列(供 ProcedureData 读取)
 └── assets/
-    ├── models/
-    ├── textures/
-    ├── audio/
-    └── fonts/
+	├── models/
+	├── textures/
+	├── audio/
+	└── fonts/
 ```
 
 ## 数据模型
