@@ -12,7 +12,6 @@ extends Node3D
 ## This script drives the scene flow and the shared table-contact freeze.
 
 const SCHEDULE_DELAY := 1.0
-const REST_Y := 1.3 # table top (1.2) + half collision-box height (0.1)
 const THROW_TIMEOUT := 3.0
 
 # Persists across scene reloads within one process: skip the badge drop on
@@ -22,15 +21,13 @@ static var _intro_seen_once := false
 @onready var camera: Camera3D = $Camera3D
 @onready var badge: IntroBadge = $BadgeProp
 @onready var schedule: IntroSchedule = $ScheduleProp
-@onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
 
 
 func _ready() -> void:
 	#camera.look_at(Vector3(0.0, 1.45, 0.0))
 	badge.visible = false
-	slot.visible = false
-	badge.setup(camera, slot)
+	badge.setup(camera)
 	schedule.proceed.connect(_on_schedule_proceed)
 	await Transition.fade_in()
 	if _intro_seen_once:
