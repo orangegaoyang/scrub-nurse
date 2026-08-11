@@ -15,7 +15,6 @@ const REST_MESH_SIZE := Vector2(0.15, 0.09)
 const HOLD_MESH_SIZE := Vector2(0.3, 0.18)
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
-const THROW_VY := 1.5
 const REST_Y := 1.3 # table top (1.2) + half collision-box height (0.1)
 const THROW_TIMEOUT := 3.0
 const SCHEDULE_LAND := Vector3(-0.05, 0.0, 0.05) # lower half of the table, clear of the slot
@@ -49,7 +48,7 @@ var _badge_hint_blink: Tween
 
 
 func _ready() -> void:
-	camera.look_at(Vector3(0.0, 1.45, 0.0))
+	#camera.look_at(Vector3(0.0, 1.45, 0.0))
 	badge.visible = false
 	schedule.visible = false
 	slot.visible = false
@@ -71,13 +70,13 @@ func _ready() -> void:
 
 func _first_loop() -> void:
 	badge.visible = true
-	await _physics_throw(badge, Vector3.ZERO)
+	badge.freeze = false
 	_intro_seen_once = true
 	_voice("intro_badge")
 	_start_badge_hint()
 	await _wait_for_badge_placed()
 	await _wait(SCHEDULE_DELAY)
-	await _throw_schedule()
+	_throw_schedule()
 
 
 func _replay_loop() -> void:
@@ -86,12 +85,12 @@ func _replay_loop() -> void:
 	badge.visible = true
 	_badge_placed = true
 	await _wait(1.0)
-	await _throw_schedule()
+	_throw_schedule()
 
 
 func _throw_schedule() -> void:
 	schedule.visible = true
-	await _physics_throw(schedule, SCHEDULE_LAND)
+	schedule.freeze = false
 	_voice("intro_schedule")
 
 
@@ -218,29 +217,6 @@ func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, 
 
 
 # ---------------- Helpers ----------------
-
-func _physics_throw(body: RigidBody3D, target: Vector3) -> void:
-	body.global_position = DROP_P0
-	body.rotation = Vector3.ZERO
-	body.freeze = false
-	body.sleeping = false
-	var t := _flight_time()
-	body.linear_velocity = Vector3(
-		(target.x - DROP_P0.x) / t,
-		THROW_VY,
-		(target.z - DROP_P0.z) / t)
-	body.angular_velocity = Vector3.ZERO
-	await _settle_and_freeze(body)
-
-
-func _flight_time() -> float:
-	# REST_Y = DROP_P0.y + THROW_VY*t - (g/2)*t^2  (g = 9.8); solve for t > 0.
-	var a := 4.9
-	var b := -THROW_VY
-	var c := REST_Y - DROP_P0.y
-	return (-b + sqrt(b * b - 4.0 * a * c)) / (2.0 * a)
-
-
 func _settle_and_freeze(body: RigidBody3D) -> void:
 	var elapsed := 0.0
 	while not body.sleeping and elapsed < THROW_TIMEOUT:
@@ -314,3 +290,9 @@ func _voice(key: String) -> void:
 	if s is AudioStream:
 		voice.stream = s
 		voice.play()
+
+func _on_table_area_3d_body_entered(body: Node3D) -> void:
+	if body ==badge:
+		badge.freeze = true
+	if body == schedule:
+		schedule.freeze = true

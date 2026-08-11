@@ -20,8 +20,12 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.7
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_u5myo"]
+friction = 0.0
+bounce = 1.0
+
 [sub_resource type="BoxShape3D" id="Shape_table"]
-size = Vector3(1.2, 0.2, 1)
+size = Vector3(0.66157836, 0.034692384, 0.5494385)
 
 [sub_resource type="StandardMaterial3D" id="Mat_slot"]
 render_priority = 1
@@ -32,16 +36,15 @@ albedo_color = Color(0.933, 0.933, 0.933, 0.4)
 size = Vector2(0.16, 0.1)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
-friction = 0.8
-bounce = 0.3
+friction = 0.0
+bounce = 1.0
 
 [sub_resource type="StandardMaterial3D" id="Mat_badge"]
 render_priority = 2
 transparency = 1
 albedo_texture = ExtResource("5_badge")
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_badge"]
-size = Vector2(0.15, 0.15)
+[sub_resource type="PlaneMesh" id="PlaneMesh_cf6u3"]
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
@@ -101,12 +104,16 @@ sky_mode = 1
 [node name="Table" type="StaticBody3D" parent="." unique_id=995962184]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 collision_mask = 7
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Table" unique_id=267645160]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-shape = SubResource("Shape_table")
+physics_material_override = SubResource("PhysicsMaterial_u5myo")
 
 [node name="small_table" parent="Table" unique_id=1718077058 instance=ExtResource("3_272cy")]
+
+[node name="TableArea3D" type="Area3D" parent="Table" unique_id=1862279667]
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table/TableArea3D" unique_id=267645160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0001373589, -0.017346263, 0.0017700195)
+shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 1.215, -0.16)
@@ -114,14 +121,14 @@ material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
 [node name="BadgeProp" type="RigidBody3D" parent="." unique_id=1756491781]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.21, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7233057, 0)
 collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_badge")
 continuous_cd = true
 
 [node name="Mesh" type="MeshInstance3D" parent="BadgeProp" unique_id=1479370712]
 material_override = SubResource("Mat_badge")
-mesh = SubResource("PlaneMesh_badge")
+mesh = SubResource("PlaneMesh_cf6u3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BadgeProp" unique_id=1681058765]
 shape = SubResource("Shape_badge")
@@ -175,3 +182,5 @@ transform = Transform3D(0.89179754, 0, -0.45243472, 0, 1, 0, 0.45243472, 0, 0.89
 
 [node name="small_pen" parent="Decration" unique_id=244545672 instance=ExtResource("14_u05oh")]
 transform = Transform3D(0.85720664, 0, -0.51497287, 0, 1, 0, 0.51497287, 0, 0.85720664, 0.33765915, 0, -0.026930109)
+
+[connection signal="body_entered" from="Table/TableArea3D" to="." method="_on_table_area_3d_body_entered"]
