@@ -5,16 +5,13 @@ extends Node3D
 ##   close, else free-fall back onto the table → wait 1s → physics-drop schedule
 ##   → click schedule → proceed to corridor.
 ## Replay (same session): badge already in slot, wait 1s, throw schedule.
+##
+## Badge pick-up/drag/drop/snap lives on the BadgeProp node itself
+## (scripts/intro_badge.gd); this script drives the scene flow and the shared
+## throw physics used by both badge and schedule.
 
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
-const SNAP_DISTANCE := 0.14
 const SCHEDULE_DELAY := 1.0
-const TABLE_Y := 1.21
-const HOLD_Y := 1.65
-const REST_MESH_SIZE := Vector2(0.15, 0.09)
-const HOLD_MESH_SIZE := Vector2(0.3, 0.18)
-const HOLD_X_LIMIT := 0.45
-const HOLD_Z_LIMIT := 0.4
 const THROW_VY := 1.5
 const REST_Y := 1.3 # table top (1.2) + half collision-box height (0.1)
 const THROW_TIMEOUT := 3.0
@@ -30,22 +27,12 @@ const SCHEDULE_CELL_LABELS := ["手术 1", "手术 2", "手术 3", "手术 4", "
 static var _intro_seen_once := false
 
 @onready var camera: Camera3D = $Camera3D
-@onready var badge: RigidBody3D = $BadgeProp
-@onready var badge_mesh: MeshInstance3D = $BadgeProp/Mesh
-@onready var badge_hint: MeshInstance3D = $BadgeProp/BadgeHint
+@onready var badge: IntroBadge = $BadgeProp
 @onready var schedule: RigidBody3D = $ScheduleProp
 @onready var slot: MeshInstance3D = $BadgeSlot
 @onready var voice: AudioStreamPlayer = $Voice
 
 var _proceeding: bool = false
-var _badge_held: bool = false
-var _badge_placing: bool = false
-var _badge_placed: bool = false
-var _pick_frame: int = -1
-var _aim_x: float
-var _aim_z: float
-var _slot_blink: Tween
-var _badge_hint_blink: Tween
 
 
 func _ready() -> void:
@@ -53,13 +40,10 @@ func _ready() -> void:
 	badge.visible = false
 	schedule.visible = false
 	slot.visible = false
-	badge_hint.visible = false
+	badge.setup(camera, slot)
 	_build_schedule_cells()
-	badge.freeze = true
-	badge.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	schedule.freeze = true
 	schedule.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-	badge.input_event.connect(_on_badge_input_event)
 	await Transition.fade_in()
 	if _intro_seen_once:
 		await _replay_loop()
@@ -74,17 +58,15 @@ func _first_loop() -> void:
 	await _physics_throw(badge, Vector3.ZERO)
 	_intro_seen_once = true
 	_voice("intro_badge")
-	_start_badge_hint()
-	await _wait_for_badge_placed()
+	badge.start_hint()
+	await badge.placed
 	await _wait(SCHEDULE_DELAY)
 	await _throw_schedule()
 
 
 func _replay_loop() -> void:
 	# Badge already in slot; just wait, then throw schedule.
-	badge.global_position = slot.global_position + Vector3(0, 0.005, 0)
-	badge.visible = true
-	_badge_placed = true
+	badge.place_in_slot()
 	await _wait(1.0)
 	await _throw_schedule()
 
@@ -94,6 +76,8 @@ func _throw_schedule() -> void:
 	await _physics_throw(schedule, SCHEDULE_LAND)
 	_voice("intro_schedule")
 
+
+# ---------------- Schedule ----------------
 
 func _build_schedule_cells() -> void:
 	# 3x2 grid of clickable cells laid out on the schedule board (its children,
@@ -131,81 +115,6 @@ func _build_schedule_cells() -> void:
 			cell.input_event.connect(_on_schedule_input_event)
 			schedule.add_child(cell)
 
-
-# ---------------- Badge interaction ----------------
-
-func _on_badge_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _badge_held or _badge_placing or not badge.freeze:
-		return
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_badge_held = true
-		_pick_frame = Engine.get_process_frames()
-		# Seed the aim with the current rest position so the badge lifts in place.
-		_aim_x = badge.global_position.x
-		_aim_z = badge.global_position.z
-		slot.visible = true
-		_start_slot_blink()
-		_stop_badge_hint()
-
-
-func _physics_process(delta: float) -> void:
-	var f := clampf(delta * 18.0, 0.0, 1.0)
-	var pm: PlaneMesh = badge_mesh.mesh
-	var target := HOLD_MESH_SIZE if _badge_held else REST_MESH_SIZE
-	pm.size = pm.size.lerp(target, f)
-	if not _badge_held:
-		return
-	# Drive the drag on the physics timeline so the body's transform doesn't
-	# fight the physics server (which would jitter when set from _input).
-	var cur := badge.global_position
-	var ty := lerpf(cur.y, HOLD_Y, f)
-	badge.global_position = Vector3(_aim_x, ty, _aim_z)
-
-
-func _input(event: InputEvent) -> void:
-	if not _badge_held:
-		return
-	if event is InputEventMouseMotion:
-		var aim := _mouse_to_plane(event.position, TABLE_Y)
-		if aim != Vector3.INF:
-			_aim_x = clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT)
-			_aim_z = clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if Engine.get_process_frames() == _pick_frame:
-			return  # same frame as the pick press; ignore
-		_badge_held = false
-		_drop_badge()
-
-
-func _drop_badge() -> void:
-	_stop_slot_blink()
-	# Horizontal aim decides the snap; hold height is irrelevant.
-	var sp := slot.global_position
-	var horiz := Vector2(badge.global_position.x - sp.x, badge.global_position.z - sp.z).length()
-	if horiz < SNAP_DISTANCE:
-		_badge_placing = true
-		var snap := create_tween()
-		snap.tween_property(badge, "global_position", sp + Vector3(0, 0.005, 0), 0.22) \
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		await snap.finished
-		_badge_placed = true
-		_badge_placing = false
-		slot.visible = false
-	else:
-		# Let go: free-fall back onto the table, then re-freeze for picking.
-		badge.freeze = false
-		badge.sleeping = false
-		badge.linear_velocity = Vector3.ZERO
-		badge.angular_velocity = Vector3.ZERO
-		await _settle_and_freeze(badge)
-
-
-func _wait_for_badge_placed() -> void:
-	while not _badge_placed:
-		await get_tree().process_frame
-
-
-# ---------------- Schedule interaction ----------------
 
 func _on_schedule_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
 	if _proceeding or not schedule.freeze:
@@ -251,55 +160,6 @@ func _settle_and_freeze(body: RigidBody3D) -> void:
 	body.linear_velocity = Vector3.ZERO
 	body.angular_velocity = Vector3.ZERO
 	body.rotation = Vector3.ZERO
-
-
-func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
-	var from := camera.project_ray_origin(mouse_pos)
-	var dir := camera.project_ray_normal(mouse_pos)
-	if abs(dir.y) < 0.0001:
-		return Vector3.INF
-	var t := (plane_y - from.y) / dir.y
-	if t < 0:
-		return Vector3.INF
-	return from + dir * t
-
-
-func _start_slot_blink() -> void:
-	_stop_slot_blink()
-	var mat: StandardMaterial3D = slot.material_override
-	_slot_blink = create_tween().set_loops()
-	_slot_blink.tween_property(mat, "albedo_color:a", 0.7, 1.0) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_slot_blink.tween_property(mat, "albedo_color:a", 0.3, 1.0) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-
-
-func _stop_slot_blink() -> void:
-	if _slot_blink:
-		_slot_blink.kill()
-		_slot_blink = null
-	var mat: StandardMaterial3D = slot.material_override
-	if mat:
-		var c: Color = mat.albedo_color
-		c.a = 0.4
-		mat.albedo_color = c
-
-
-func _start_badge_hint() -> void:
-	badge_hint.visible = true
-	var mat: ShaderMaterial = badge_hint.material_override
-	_badge_hint_blink = create_tween().set_loops()
-	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.7, 1.0) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_badge_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.3, 1.0) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-
-
-func _stop_badge_hint() -> void:
-	if _badge_hint_blink:
-		_badge_hint_blink.kill()
-		_badge_hint_blink = null
-	badge_hint.visible = false
 
 
 func _wait(t: float) -> void:
