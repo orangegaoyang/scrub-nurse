@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://beqf5qviglybc"]
 
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
+[ext_resource type="Script" uid="uid://dvm2tefqsfs2v" path="res://scripts/intro_badge.gd" id="1_intro_badge"]
 [ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
 [ext_resource type="PackedScene" uid="uid://cmcb4lwimkavj" path="res://assets/models/intro/small_table.glb" id="3_272cy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
@@ -125,6 +126,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7233057, 0)
 collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_badge")
 continuous_cd = true
+script = ExtResource("1_intro_badge")
 
 [node name="Mesh" type="MeshInstance3D" parent="BadgeProp" unique_id=1479370712]
 material_override = SubResource("Mat_badge")
