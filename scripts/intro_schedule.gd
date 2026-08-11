@@ -14,6 +14,7 @@ const CELL_MARGIN := 0.03
 const CELL_LABELS := ["手术 1", "手术 2", "手术 3", "手术 4", "手术 5", "手术 6"]
 
 var _proceeding: bool = false
+@onready var voice: AudioStreamPlayer = $"../Voice"
 
 
 func _ready() -> void:
@@ -27,6 +28,13 @@ func reveal() -> void:
 	# Drop onto the table; the Intro scene's Table Area3D freezes us on contact.
 	visible = true
 	freeze = false
+	# Voice line plays on every reveal (first loop and replay).
+	var path := "res://assets/audio/intro_schedule.wav"
+	if ResourceLoader.exists(path):
+		var s = load(path)
+		if s is AudioStream:
+			voice.stream = s
+			voice.play()
 
 
 # ---------------- Cells ----------------

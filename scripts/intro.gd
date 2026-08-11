@@ -46,19 +46,14 @@ func _first_loop() -> void:
 	badge.start_hint()
 	await badge.placed
 	await _wait(SCHEDULE_DELAY)
-	_throw_schedule()
+	schedule.reveal()
 
 
 func _replay_loop() -> void:
-	# Badge already in slot; just wait, then throw schedule.
+	# Badge already in slot; just wait, then drop schedule.
 	badge.place_in_slot()
 	await _wait(1.0)
-	_throw_schedule()
-
-
-func _throw_schedule() -> void:
 	schedule.reveal()
-	_voice("intro_schedule")
 
 
 # ---------------- Table contact ----------------
