@@ -11,6 +11,7 @@ const ROWS := 3
 const COLS := 2
 const CELL_MARGIN := 0.03
 const CELL_LABELS := ["手术 1", "手术 2", "手术 3", "手术 4", "手术 5", "手术 6"]
+const VOICE_KEY := "intro_schedule"
 
 @onready var mesh: MeshInstance3D = $Mesh
 
@@ -34,12 +35,7 @@ func reveal() -> void:
 	visible = true
 	freeze = false
 	# Voice line plays on every reveal (first loop and replay).
-	var path := "res://assets/audio/intro_schedule.wav"
-	if ResourceLoader.exists(path):
-		var s = load(path)
-		if s is AudioStream:
-			_voice.stream = s
-			_voice.play()
+	Util.play_voice(_voice, VOICE_KEY)
 
 
 # ---------------- Cells ----------------

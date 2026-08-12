@@ -16,6 +16,7 @@ const HOLD_Y := 1.65
 const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
+const VOICE_KEY := "intro_badge"
 
 @onready var mesh: MeshInstance3D = $Mesh
 @onready var hint: MeshInstance3D = $BadgeHint
@@ -54,12 +55,7 @@ func drop() -> void:
 	# First-ever open: reveal, release physics so the badge drops in, voice it.
 	visible = true
 	freeze = false
-	var path := "res://assets/audio/intro_badge.wav"
-	if ResourceLoader.exists(path):
-		var s = load(path)
-		if s is AudioStream:
-			_voice.stream = s
-			_voice.play()
+	Util.play_voice(_voice, VOICE_KEY)
 	start_hint()
 
 

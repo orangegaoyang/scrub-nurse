@@ -80,18 +80,7 @@ func _pick_up(inst: Instrument) -> void:
 	inst.freeze = true
 	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
 	GameState.set_held(inst)
-	_play_voice(inst.instrument_id)
-
-
-func _play_voice(id: String) -> void:
-	# Plays assets/audio/<id>.wav if present; silent otherwise (audio TBD).
-	var path := "res://assets/audio/%s.wav" % id
-	if not ResourceLoader.exists(path):
-		return
-	var stream = load(path)
-	if stream is AudioStream:
-		voice.stream = stream
-		voice.play()
+	Util.play_voice(voice, inst.instrument_id)
 
 
 func _place_in_slot(slot: TableSlot) -> void:
