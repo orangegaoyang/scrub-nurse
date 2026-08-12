@@ -13,6 +13,12 @@ const HOLD_Y := 1.65
 const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
+# Height the badge rests at when placed: table top (1.2) + half the collision
+# box thickness. Placing at the exact rest height and freezing the body keeps
+# it from ever falling/sinking into the table (a live dynamic body with a
+# 0.005-thick box settles partially inside the StaticBody on every drop and
+# the mesh ends up under the table surface — the badge "disappears").
+const REST_Y := 1.2025
 const VOICE_KEY := "intro_badge"
 
 @onready var mesh: MeshInstance3D = $Mesh
@@ -58,14 +64,14 @@ func drop() -> void:
 
 func place_in_slot() -> void:
 	# Replay path: badge already belongs in the slot.
-	global_position = _slot.global_position + Vector3(0, 0.005, 0)
+	global_position = Vector3(_slot.global_position.x, REST_Y, _slot.global_position.z)
 	visible = true
 
 
 # ---------------- Interaction ----------------
 
 func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _held or _placing :
+	if _held or _placing:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_held = true
@@ -101,11 +107,9 @@ func _input(event: InputEvent) -> void:
 	if not _held:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		#if Engine.get_process_frames() == _pick_frame:
-			#return  # same frame as the pick press; ignore
+		if Engine.get_process_frames() == _pick_frame:
+			return  # same frame as the pick press; ignore
 		_held = false
-		freeze = false
-	
 		_stop_slot_blink()
 		_drop()
 
@@ -115,32 +119,33 @@ func _drop() -> void:
 	# spot. The badge hovers at HOLD_Y, so its own x/z is parallax-offset from
 	# where the cursor points on the table — comparing badge.xz to the slot
 	# (the old code) made the snap miss even when the cursor was right on it.
-	var tp := _mouse_to_plane(get_viewport().get_mouse_position(), _slot.position.y)
+	var tp := _mouse_to_plane(get_viewport().get_mouse_position(), REST_Y)
 	if tp == Vector3.INF:
 		return  # cursor off the table plane — nowhere to drop
 	var sp := _slot.global_position
 	var horiz := Vector2(tp.x - sp.x, tp.z - sp.z).length()
+	_placing = true
 	if horiz < SNAP_DISTANCE:
-		_placing = true
+		# Freeze at the rest height so the badge never falls into the table
+		# (see REST_Y). The 0-duration tween keeps _placing set through the
+		# same press's input_event step, so the drop can't double as a pick.
 		var snap := create_tween()
-		snap.tween_property(self, "global_position", sp + Vector3(0, 0.005, 0), 0) \
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		snap.tween_property(self, "global_position", Vector3(sp.x, REST_Y, sp.z), 0)
 		await snap.finished
+		freeze = true
 		_slot.visible = false
 		placed.emit()
-		_placing = false
 	else:
 		# Missed the slot: lower the badge to where the cursor points on the table.
-		_placing = true
 		var land := create_tween()
 		land.tween_property(self, "global_position", Vector3(
 			clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
-			_slot.position.y,
+			REST_Y,
 			clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await land.finished
-		_placing = false
-	
+		freeze = true
+	_placing = false
 
 
 # ---------------- Helpers ----------------
