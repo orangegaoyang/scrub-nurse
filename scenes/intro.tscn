@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Script" uid="uid://dvm2tefqsfs2v" path="res://scripts/intro_badge.gd" id="1_intro_badge"]
-[ext_resource type="Script" path="res://scripts/intro_schedule.gd" id="1_intro_schedule"]
+[ext_resource type="Script" uid="uid://bktojxmn22ln3" path="res://scripts/intro_schedule.gd" id="1_intro_schedule"]
 [ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
 [ext_resource type="PackedScene" uid="uid://cmcb4lwimkavj" path="res://assets/models/intro/small_table.glb" id="3_272cy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
@@ -47,7 +47,7 @@ transparency = 1
 albedo_texture = ExtResource("5_badge")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_cf6u3"]
-size = Vector2(0.15, 0.09)
+size = Vector2(0.15, 0.11)
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
