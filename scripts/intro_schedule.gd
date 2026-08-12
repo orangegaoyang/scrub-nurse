@@ -67,6 +67,9 @@ func _build_cells() -> void:
 			lbl.font_size = 32
 			lbl.pixel_size = 0.001
 			lbl.modulate = Color(0.2, 0.2, 0.2)
+			# Draw on top of the board (Mat_schedule render_priority = 1); without
+			# this the transparent board sorts over the labels and hides them.
+			lbl.render_priority = 2
 			if font:
 				lbl.font = font
 			cell.add_child(lbl)
