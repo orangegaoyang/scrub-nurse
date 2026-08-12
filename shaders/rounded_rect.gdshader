@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode unshaded, blend_mix, depth_draw_never;
 
-uniform vec4 color : source_color = vec4(0.514, 0.576, 0.588, 1.0);
+uniform vec4 color : source_color = vec4(0, 0, 0, 1.0);
 uniform float alpha : hint_range(0.0, 1.0) = 0.0;
 uniform vec2 size = vec2(0.19, 0.13);
 uniform float corner_radius = 0.025;

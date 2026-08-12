@@ -46,6 +46,7 @@ func _ready() -> void:
 func setup(camera: Camera3D, slot: MeshInstance3D, voice: AudioStreamPlayer) -> void:
 	_camera = camera
 	_slot = slot
+	_slot.visible = false
 	_voice = voice
 
 
@@ -59,7 +60,6 @@ func drop() -> void:
 		if s is AudioStream:
 			_voice.stream = s
 			_voice.play()
-	
 	start_hint()
 
 
@@ -71,6 +71,7 @@ func place_in_slot() -> void:
 
 
 func start_hint() -> void:
+	Util.wait(2)
 	hint.visible = true
 	var mat: ShaderMaterial = hint.material_override
 	_hint_blink = create_tween().set_loops()
@@ -172,6 +173,7 @@ func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
 
 func _start_slot_blink() -> void:
 	_stop_slot_blink()
+	_slot.visible = true
 	var mat: StandardMaterial3D = _slot.material_override
 	_slot_blink = create_tween().set_loops()
 	_slot_blink.tween_property(mat, "albedo_color:a", 0.7, 1.0) \
@@ -182,6 +184,7 @@ func _start_slot_blink() -> void:
 
 func _stop_slot_blink() -> void:
 	if _slot_blink:
+		_slot.visible = false
 		_slot_blink.kill()
 		_slot_blink = null
 	var mat: StandardMaterial3D = _slot.material_override
