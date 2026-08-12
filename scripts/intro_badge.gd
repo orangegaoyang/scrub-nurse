@@ -1,8 +1,9 @@
 class_name IntroBadge
 extends RigidBody3D
 ## The badge prop in the intro scene. Handles pick-up, drag, drop, and snap
-## into the slot. Emits `placed` when the player drops it close enough to
-## the slot. The intro scene script drives the throw and the overall flow.
+## into the slot. The intro scene calls drop() on the first ever open (badge
+## falls in + voice line) or place_in_slot() on replays; emits `placed` when
+## the player snaps it in.
 
 signal placed
 
@@ -20,8 +21,9 @@ const SETTLE_TIMEOUT := 3.0
 @onready var mesh: MeshInstance3D = $Mesh
 @onready var hint: MeshInstance3D = $BadgeHint
 @onready var slot: MeshInstance3D = $"../BadgeSlot"
+@onready var camera: Camera3D = $"../Camera3D"
+@onready var voice: AudioStreamPlayer = $"../Voice"
 
-var _camera: Camera3D
 var _held: bool = false
 var _placing: bool = false
 var _pick_frame: int = -1
@@ -32,6 +34,7 @@ var _hint_blink: Tween
 
 
 func _ready() -> void:
+	visible = false
 	freeze = true
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	hint.visible = false
@@ -39,8 +42,16 @@ func _ready() -> void:
 	input_event.connect(_on_input_event)
 
 
-func setup(camera: Camera3D) -> void:
-	_camera = camera
+func drop() -> void:
+	# First-ever open: reveal, release physics so the badge drops in, voice it.
+	visible = true
+	freeze = false
+	var path := "res://assets/audio/intro_badge.wav"
+	if ResourceLoader.exists(path):
+		var s = load(path)
+		if s is AudioStream:
+			voice.stream = s
+			voice.play()
 
 
 func place_in_slot() -> void:
@@ -142,8 +153,8 @@ func _settle_and_freeze() -> void:
 
 
 func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
-	var from := _camera.project_ray_origin(mouse_pos)
-	var dir := _camera.project_ray_normal(mouse_pos)
+	var from := camera.project_ray_origin(mouse_pos)
+	var dir := camera.project_ray_normal(mouse_pos)
 	if abs(dir.y) < 0.0001:
 		return Vector3.INF
 	var t := (plane_y - from.y) / dir.y
