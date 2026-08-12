@@ -4,7 +4,7 @@ extends Node3D
 ##   follows on the table plane, click to drop → snap into slot if horizontally
 ##   close, else free-fall back onto the table → wait 1s → drop schedule
 ##   → click schedule → proceed to corridor.
-## Replay (same session): badge already in slot, wait 1s, drop schedule.
+## Replay (intro already seen): badge already in slot, wait 1s, drop schedule.
 ##
 ## Props own their own interaction:
 ##   - BadgeProp    → scripts/intro_badge.gd    (pick-up / drag / snap)
@@ -13,10 +13,6 @@ extends Node3D
 
 const SCHEDULE_DELAY := 1.0
 const THROW_TIMEOUT := 3.0
-
-# Persists across scene reloads within one process: skip the badge drop on
-# replays (badge stays in slot).
-static var _intro_seen_once := false
 
 @onready var camera: Camera3D = $Camera3D
 @onready var badge: IntroBadge = $BadgeProp
@@ -30,7 +26,7 @@ func _ready() -> void:
 	badge.setup(camera)
 	schedule.proceed.connect(_on_schedule_proceed)
 	await Transition.fade_in()
-	if _intro_seen_once:
+	if PlayerProfile.intro_seen:
 		await _replay_loop()
 	else:
 		await _first_loop()
@@ -41,7 +37,7 @@ func _ready() -> void:
 func _first_loop() -> void:
 	badge.visible = true
 	badge.freeze = false
-	_intro_seen_once = true
+	PlayerProfile.mark_intro_seen()
 	_voice("intro_badge")
 	badge.start_hint()
 	await badge.placed

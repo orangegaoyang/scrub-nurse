@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 GameState="*res://scripts/autoload/game_state.gd"
 ProcedureData="*res://scripts/autoload/procedure_data.gd"
 Transition="*res://scripts/autoload/transition.gd"
+PlayerProfile="*res://scripts/autoload/player_profile.gd"
 
 [display]
 
