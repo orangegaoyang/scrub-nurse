@@ -26,8 +26,6 @@ var _rest_size: Vector2
 var _held: bool = false
 var _placing: bool = false
 var _pick_frame: int = -1
-var _aim_x: float
-var _aim_z: float
 var _slot_blink: Tween
 var _hint_blink: Tween
 
@@ -89,9 +87,6 @@ func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vecto
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_held = true
 		_pick_frame = Engine.get_process_frames()
-		# Seed the aim with the current rest position so the badge lifts in place.
-		_aim_x = global_position.x
-		_aim_z = global_position.z
 		_slot.visible = true
 		_start_slot_blink()
 		_stop_hint_blink()
@@ -104,22 +99,24 @@ func _physics_process(delta: float) -> void:
 	pm.size = pm.size.lerp(target, f)
 	if not _held:
 		return
-	# Drive the drag on the physics timeline so the body's transform doesn't
-	# fight the physics server (which would jitter when set from _input).
+	# Track the cursor every physics frame, projecting onto the badge's own
+	# rising height — this keeps it glued through the lift (parallax shifts as
+	# it rises) without relying on mouse-motion events, which arrived too late
+	# and caused a visible jump after the pickup "lift in place".
 	var cur := global_position
 	var ty := lerpf(cur.y, HOLD_Y, f)
-	global_position = Vector3(_aim_x, ty, _aim_z)
+	var aim := _mouse_to_plane(get_viewport().get_mouse_position(), ty)
+	if aim != Vector3.INF:
+		global_position = Vector3(
+			clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
+			ty,
+			clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT))
 
 
 func _input(event: InputEvent) -> void:
 	if not _held:
 		return
-	if event is InputEventMouseMotion:
-		var aim := _mouse_to_plane(event.position, global_position.y)
-		if aim != Vector3.INF:
-			_aim_x = clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT)
-			_aim_z = clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Engine.get_process_frames() == _pick_frame:
 			return  # same frame as the pick press; ignore
 		_held = false
