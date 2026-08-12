@@ -7,11 +7,12 @@ extends RigidBody3D
 
 signal proceed
 
-const BOARD_SIZE := Vector2(0.369, 0.45)
 const ROWS := 3
 const COLS := 2
 const CELL_MARGIN := 0.03
 const CELL_LABELS := ["手术 1", "手术 2", "手术 3", "手术 4", "手术 5", "手术 6"]
+
+@onready var mesh: MeshInstance3D = $Mesh
 
 var _proceeding: bool = false
 var _voice: AudioStreamPlayer
@@ -47,11 +48,12 @@ func _build_cells() -> void:
 	# 3x2 grid of clickable cells laid out on the board (children, so they
 	# ride along the drop). Collision boxes poke above the board's physics box
 	# so the pick ray hits the cell, not the board.
+	var board_size := (mesh.mesh as PlaneMesh).size
 	var font := load("res://assets/fonts/ArialUnicode.ttf") as Font
-	var cell_w := (BOARD_SIZE.x - CELL_MARGIN * (COLS + 1)) / COLS
-	var cell_d := (BOARD_SIZE.y - CELL_MARGIN * (ROWS + 1)) / ROWS
-	var x0 := -BOARD_SIZE.x * 0.5 + CELL_MARGIN + cell_w * 0.5
-	var z0 := -BOARD_SIZE.y * 0.5 + CELL_MARGIN + cell_d * 0.5
+	var cell_w := (board_size.x - CELL_MARGIN * (COLS + 1)) / COLS
+	var cell_d := (board_size.y - CELL_MARGIN * (ROWS + 1)) / ROWS
+	var x0 := -board_size.x * 0.5 + CELL_MARGIN + cell_w * 0.5
+	var z0 := -board_size.y * 0.5 + CELL_MARGIN + cell_d * 0.5
 	for row in range(ROWS):
 		for col in range(COLS):
 			var idx := row * COLS + col
