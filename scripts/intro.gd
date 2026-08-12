@@ -32,14 +32,14 @@ func _first_loop() -> void:
 	badge.drop()
 	PlayerProfile.mark_intro_seen()
 	await badge.placed
-	await _wait(SCHEDULE_DELAY)
+	await Util.wait(SCHEDULE_DELAY)
 	schedule.reveal()
 
 
 func _replay_loop() -> void:
 	# Badge already in slot; just wait, then drop schedule.
 	badge.place_in_slot()
-	await _wait(SCHEDULE_DELAY)
+	await Util.wait(SCHEDULE_DELAY)
 	schedule.reveal()
 
 
@@ -55,10 +55,5 @@ func _on_table_area_3d_body_entered(body: Node3D) -> void:
 # ---------------- Schedule transition ----------------
 func _on_schedule_proceed() -> void:
 	await Transition.fade_out()
-	await _wait(SCHEDULE_DELAY)
+	await Util.wait(SCHEDULE_DELAY)
 	get_tree().change_scene_to_file("res://scenes/corridor.tscn")
-
-
-# ---------------- Helpers ----------------
-func _wait(t: float) -> void:
-	await get_tree().create_timer(t).timeout

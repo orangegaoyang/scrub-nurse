@@ -51,7 +51,7 @@ func _spawn_instruments() -> void:
 		_lock_for_drop(inst)
 		inst.freeze = false
 	# Let them settle into a pile, then freeze and release the locks.
-	await get_tree().create_timer(0.5).timeout
+	await Util.wait(0.5)
 	for inst in instruments_parent.get_children():
 		if inst is Instrument:
 			inst.freeze = true

@@ -95,7 +95,7 @@ func _reject() -> void:
 	_move_to(RETRACTED_POS)
 	hand_retracted.emit()
 	_reject_cooldown = true
-	await get_tree().create_timer(0.6).timeout
+	await Util.wait(0.6)
 	_reject_cooldown = false
 	if state == State.DEMANDING:
 		_move_to(EXTENDED_POS)
@@ -106,7 +106,7 @@ func _reject() -> void:
 func _use_sequence() -> void:
 	# 1) Hold the just-received instrument out for a beat so the grab reads,
 	#    then 2) retract to use, then 3) extend again to return it.
-	await get_tree().create_timer(RECEIVE_PAUSE).timeout
+	await Util.wait(RECEIVE_PAUSE)
 	if state != State.USING:
 		return
 	_move_to(RETRACTED_POS)
@@ -114,7 +114,7 @@ func _use_sequence() -> void:
 	var total: int = ProcedureData.demand_sequence.size()
 	var t: float = clampf(float(GameState.current_demand_index) / float(maxi(total - 1, 1)), 0.0, 1.0)
 	var dur: float = lerpf(USE_DURATION_MAX, USE_DURATION_MIN, t)
-	await get_tree().create_timer(dur).timeout
+	await Util.wait(dur)
 	if state == State.USING:
 		state = State.RETURNING
 		_move_to(EXTENDED_POS)

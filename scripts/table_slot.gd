@@ -41,7 +41,7 @@ func set_feedback(correct: bool) -> void:
 	_tint(COLOR_OK if correct else COLOR_BAD)
 	_pop_in()
 	if not correct:
-		await get_tree().create_timer(0.3).timeout
+		await Util.wait(0.3)
 		hide_highlight()
 
 

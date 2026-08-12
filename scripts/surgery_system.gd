@@ -44,7 +44,7 @@ func _schedule_demand(id: String, delay: float, keep_hand_out: bool) -> void:
 		return
 	_deliver_triggered = false
 	_awaiting_demand = true
-	await get_tree().create_timer(delay).timeout
+	await Util.wait(delay)
 	_awaiting_demand = false
 	if GameState.current_phase == GameState.Phase.SURGERY and not surgeon.is_demanding():
 		surgeon.start_demand(id, keep_hand_out)

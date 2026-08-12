@@ -17,6 +17,6 @@ func run() -> void:
 		label.modulate.a = 1.0
 		var tw := create_tween()
 		tw.tween_property(label, "modulate:a", 0.0, 0.9).set_delay(0.1)
-		await get_tree().create_timer(1.0).timeout
+		await Util.wait(1.0)
 	label.visible = false
 	finished.emit()
