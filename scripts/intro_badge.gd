@@ -8,10 +8,7 @@ extends RigidBody3D
 
 signal placed
 
-const DROP_P0 := Vector3(0.0, 2.5, -1.8)
-
 const SNAP_DISTANCE := 0.14
-const TABLE_Y := 1.21
 const HOLD_Y := 1.65
 const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
@@ -56,8 +53,7 @@ func drop() -> void:
 	visible = true
 	freeze = false
 	Util.play_voice(_voice, VOICE_KEY)
-	start_hint()
-
+	_start_hint()
 
 
 func place_in_slot() -> void:
@@ -66,26 +62,16 @@ func place_in_slot() -> void:
 	visible = true
 
 
-func start_hint() -> void:
-	Util.wait(2)
-	hint.visible = true
-	var mat: ShaderMaterial = hint.material_override
-	_hint_blink = create_tween().set_loops()
-	_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.7, 1.0) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.3, 1.0) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-
-
 # ---------------- Interaction ----------------
 
 func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
-	if _held or _placing or not freeze:
+	if _held or _placing :
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_held = true
 		_pick_frame = Engine.get_process_frames()
 		_slot.visible = true
+		freeze = true
 		_start_slot_blink()
 		_stop_hint_blink()
 
@@ -115,19 +101,21 @@ func _input(event: InputEvent) -> void:
 	if not _held:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if Engine.get_process_frames() == _pick_frame:
-			return  # same frame as the pick press; ignore
+		#if Engine.get_process_frames() == _pick_frame:
+			#return  # same frame as the pick press; ignore
 		_held = false
+		freeze = false
+	
+		_stop_slot_blink()
 		_drop()
 
 
 func _drop() -> void:
-	_stop_slot_blink()
 	# Project the cursor onto the table for BOTH the snap check and the landing
 	# spot. The badge hovers at HOLD_Y, so its own x/z is parallax-offset from
 	# where the cursor points on the table — comparing badge.xz to the slot
 	# (the old code) made the snap miss even when the cursor was right on it.
-	var tp := _mouse_to_plane(get_viewport().get_mouse_position(), TABLE_Y)
+	var tp := _mouse_to_plane(get_viewport().get_mouse_position(), _slot.position.y)
 	if tp == Vector3.INF:
 		return  # cursor off the table plane — nowhere to drop
 	var sp := _slot.global_position
@@ -135,7 +123,7 @@ func _drop() -> void:
 	if horiz < SNAP_DISTANCE:
 		_placing = true
 		var snap := create_tween()
-		snap.tween_property(self, "global_position", sp + Vector3(0, 0.005, 0), 0.22) \
+		snap.tween_property(self, "global_position", sp + Vector3(0, 0.005, 0), 0) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await snap.finished
 		_slot.visible = false
@@ -147,11 +135,12 @@ func _drop() -> void:
 		var land := create_tween()
 		land.tween_property(self, "global_position", Vector3(
 			clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
-			TABLE_Y,
+			_slot.position.y,
 			clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await land.finished
 		_placing = false
+	
 
 
 # ---------------- Helpers ----------------
@@ -165,6 +154,17 @@ func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
 	if t < 0:
 		return Vector3.INF
 	return from + dir * t
+
+
+func _start_hint() -> void:
+	Util.wait(2)
+	hint.visible = true
+	var mat: ShaderMaterial = hint.material_override
+	_hint_blink = create_tween().set_loops()
+	_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.7, 1.0) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_hint_blink.tween_property(mat, "shader_parameter/alpha", 0.3, 1.0) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _start_slot_blink() -> void:

@@ -45,11 +45,11 @@ func _replay_loop() -> void:
 
 # ---------------- Table contact ----------------
 
-func _on_table_area_3d_body_entered(body: Node3D) -> void:
-	if body == badge:
-		badge.freeze = true
-	if body == schedule:
-		schedule.freeze = true
+#func _on_table_area_3d_body_entered(body: Node3D) -> void:
+	#if body == badge:
+		#badge.freeze = true
+	#if body == schedule:
+		#schedule.freeze = true
 
 
 # ---------------- Schedule transition ----------------

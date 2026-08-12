@@ -23,8 +23,8 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.7
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_u5myo"]
-friction = 0.0
-bounce = 1.0
+friction = 0.8
+bounce = 0.1
 
 [sub_resource type="BoxShape3D" id="Shape_table"]
 size = Vector3(0.66157836, 0.034692384, 0.5494385)
@@ -38,11 +38,11 @@ albedo_color = Color(0.8666667, 0.8666667, 0.8666667, 0.4)
 size = Vector2(0.15, 0.11)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
-friction = 0.0
-bounce = 1.0
+friction = 0.8
+bounce = 0.1
 
 [sub_resource type="StandardMaterial3D" id="Mat_badge"]
-render_priority = 2
+render_priority = 1
 transparency = 1
 albedo_texture = ExtResource("5_badge")
 
@@ -50,7 +50,7 @@ albedo_texture = ExtResource("5_badge")
 size = Vector2(0.15, 0.11)
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
-size = Vector3(0.3, 0.2, 0.18)
+size = Vector3(0.15, 0.005, 0.11)
 
 [sub_resource type="ShaderMaterial" id="Mat_badge_hint"]
 render_priority = 1
@@ -73,10 +73,10 @@ transparency = 1
 albedo_texture = ExtResource("6_sched")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_schedule"]
-size = Vector2(0.369, 0.45)
+size = Vector2(0.37, 0.45)
 
 [sub_resource type="BoxShape3D" id="Shape_schedule"]
-size = Vector3(0.369, 0.2, 0.45)
+size = Vector3(0.37, 0.005, 0.45)
 
 [node name="Intro" type="Node3D" unique_id=851681118]
 script = ExtResource("1_intro")
@@ -111,10 +111,7 @@ physics_material_override = SubResource("PhysicsMaterial_u5myo")
 
 [node name="small_table" parent="Table" unique_id=1718077058 instance=ExtResource("3_272cy")]
 
-[node name="TableArea3D" type="Area3D" parent="Table" unique_id=1862279667]
-collision_mask = 6
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Table/TableArea3D" unique_id=267645160]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table" unique_id=267645160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0001373589, -0.017346263, 0.0017700195)
 shape = SubResource("Shape_table")
 
@@ -124,13 +121,15 @@ material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
 [node name="BadgeProp" type="RigidBody3D" parent="." unique_id=1756491781]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7233057, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 collision_layer = 2
+collision_mask = 5
 physics_material_override = SubResource("PhysicsMaterial_badge")
 continuous_cd = true
 script = ExtResource("1_intro_badge")
 
 [node name="Mesh" type="MeshInstance3D" parent="BadgeProp" unique_id=1479370712]
+layers = 2
 material_override = SubResource("Mat_badge")
 mesh = SubResource("PlaneMesh_cf6u3")
 
@@ -143,8 +142,9 @@ material_override = SubResource("Mat_badge_hint")
 mesh = SubResource("PlaneMesh_badge_hint")
 
 [node name="ScheduleProp" type="RigidBody3D" parent="." unique_id=1900584815]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.050031845, 1.72, 0)
 collision_layer = 4
+collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_schedule")
 continuous_cd = true
 script = ExtResource("1_intro_schedule")
@@ -159,7 +159,6 @@ shape = SubResource("Shape_schedule")
 [node name="Voice" type="AudioStreamPlayer" parent="." unique_id=410251256]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1398449734]
-visible = false
 
 [node name="TopBar" parent="UI" unique_id=597781892 instance=ExtResource("3_topbar")]
 layout_mode = 3
@@ -187,5 +186,3 @@ transform = Transform3D(0.89179754, 0, -0.45243472, 0, 1, 0, 0.45243472, 0, 0.89
 
 [node name="small_pen" parent="Decration" unique_id=244545672 instance=ExtResource("14_u05oh")]
 transform = Transform3D(0.85720664, 0, -0.51497287, 0, 1, 0, 0.51497287, 0, 0.85720664, 0.33765915, 0, -0.026930109)
-
-[connection signal="body_entered" from="Table/TableArea3D" to="." method="_on_table_area_3d_body_entered"]
