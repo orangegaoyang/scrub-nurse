@@ -32,10 +32,10 @@ size = Vector3(0.66157836, 0.034692384, 0.5494385)
 [sub_resource type="StandardMaterial3D" id="Mat_slot"]
 render_priority = 1
 transparency = 1
-albedo_color = Color(0.933, 0.933, 0.933, 0.4)
+albedo_color = Color(0.8666667, 0.8666667, 0.8666667, 0.4)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_slot"]
-size = Vector2(0.16, 0.1)
+size = Vector2(0.15, 0.11)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
 friction = 0.0
@@ -120,7 +120,6 @@ shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 1.215, -0.16)
-visible = false
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
