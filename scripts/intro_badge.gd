@@ -58,6 +58,9 @@ func drop() -> void:
 		if s is AudioStream:
 			_voice.stream = s
 			_voice.play()
+	
+	start_hint()
+
 
 
 func place_in_slot() -> void:

@@ -31,7 +31,6 @@ func _ready() -> void:
 func _first_loop() -> void:
 	badge.drop()
 	PlayerProfile.mark_intro_seen()
-	badge.start_hint()
 	await badge.placed
 	await _wait(SCHEDULE_DELAY)
 	schedule.reveal()
@@ -40,7 +39,7 @@ func _first_loop() -> void:
 func _replay_loop() -> void:
 	# Badge already in slot; just wait, then drop schedule.
 	badge.place_in_slot()
-	await _wait(1.0)
+	await _wait(SCHEDULE_DELAY)
 	schedule.reveal()
 
 
@@ -54,26 +53,12 @@ func _on_table_area_3d_body_entered(body: Node3D) -> void:
 
 
 # ---------------- Schedule transition ----------------
-
 func _on_schedule_proceed() -> void:
 	await Transition.fade_out()
-	await get_tree().create_timer(0.8).timeout
+	await _wait(SCHEDULE_DELAY)
 	get_tree().change_scene_to_file("res://scenes/corridor.tscn")
 
 
 # ---------------- Helpers ----------------
-func _settle_and_freeze(body: RigidBody3D) -> void:
-	var elapsed := 0.0
-	while not body.sleeping and elapsed < THROW_TIMEOUT:
-		await get_tree().physics_frame
-		elapsed += get_physics_process_delta_time()
-	body.freeze = true
-	body.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-	body.linear_velocity = Vector3.ZERO
-	body.angular_velocity = Vector3.ZERO
-	body.rotation = Vector3.ZERO
-
-
 func _wait(t: float) -> void:
 	await get_tree().create_timer(t).timeout
-
