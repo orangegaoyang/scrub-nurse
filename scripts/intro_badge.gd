@@ -13,8 +13,7 @@ const DROP_P0 := Vector3(0.0, 2.5, -1.8)
 const SNAP_DISTANCE := 0.14
 const TABLE_Y := 1.21
 const HOLD_Y := 1.65
-const REST_MESH_SIZE := Vector2(0.15, 0.09)
-const HOLD_MESH_SIZE := Vector2(0.3, 0.18)
+const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
 const SETTLE_TIMEOUT := 3.0
@@ -25,6 +24,7 @@ const SETTLE_TIMEOUT := 3.0
 var _slot: MeshInstance3D
 var _camera: Camera3D
 var _voice: AudioStreamPlayer
+var _rest_size: Vector2
 var _held: bool = false
 var _placing: bool = false
 var _pick_frame: int = -1
@@ -40,6 +40,10 @@ func _ready() -> void:
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	hint.visible = false
 	input_event.connect(_on_input_event)
+	# Cache the mesh's authored rest size from the scene before _physics_process
+	# starts overwriting it with the lerp.
+	var pm: PlaneMesh = mesh.mesh
+	_rest_size = pm.size
 
 
 func setup(camera: Camera3D, slot: MeshInstance3D, voice: AudioStreamPlayer) -> void:
@@ -98,7 +102,7 @@ func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vecto
 func _physics_process(delta: float) -> void:
 	var f := clampf(delta * 18.0, 0.0, 1.0)
 	var pm: PlaneMesh = mesh.mesh
-	var target := HOLD_MESH_SIZE if _held else REST_MESH_SIZE
+	var target := (_rest_size * HOLD_SCALE) if _held else _rest_size
 	pm.size = pm.size.lerp(target, f)
 	if not _held:
 		return

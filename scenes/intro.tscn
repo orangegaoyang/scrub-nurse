@@ -47,6 +47,7 @@ transparency = 1
 albedo_texture = ExtResource("5_badge")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_cf6u3"]
+size = Vector2(0.15, 0.09)
 
 [sub_resource type="BoxShape3D" id="Shape_badge"]
 size = Vector3(0.3, 0.2, 0.18)
