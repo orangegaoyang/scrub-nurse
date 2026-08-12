@@ -11,6 +11,7 @@ signal placed
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
 
 const SNAP_DISTANCE := 0.14
+const TABLE_Y := 1.21
 const HOLD_Y := 1.65
 const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
@@ -138,11 +139,19 @@ func _drop() -> void:
 		placed.emit()
 		_placing = false
 	else:
-		# Let go: free-fall back onto the table; TableArea3D re-freezes on contact.
-		freeze = false
-		sleeping = false
-		linear_velocity = Vector3.ZERO
-		angular_velocity = Vector3.ZERO
+		# Missed the slot: lower the badge to where the cursor points on the
+		# table (no free-fall — feels like setting it down, not dropping it).
+		_placing = true
+		var tp := _mouse_to_plane(get_viewport().get_mouse_position(), TABLE_Y)
+		if tp != Vector3.INF:
+			var land := create_tween()
+			land.tween_property(self, "global_position", Vector3(
+				clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
+				TABLE_Y,
+				clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			await land.finished
+		_placing = false
 
 
 # ---------------- Helpers ----------------
