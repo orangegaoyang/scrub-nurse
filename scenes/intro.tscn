@@ -119,6 +119,7 @@ shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 1.215, -0.16)
+visible = false
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 

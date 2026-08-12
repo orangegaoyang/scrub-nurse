@@ -3,7 +3,8 @@ extends RigidBody3D
 ## The badge prop in the intro scene. Handles pick-up, drag, drop, and snap
 ## into the slot. The intro scene calls drop() on the first ever open (badge
 ## falls in + voice line) or place_in_slot() on replays; emits `placed` when
-## the player snaps it in.
+## the player snaps it in. Dependencies (camera, slot, voice) are injected via
+## setup().
 
 signal placed
 
@@ -20,10 +21,10 @@ const SETTLE_TIMEOUT := 3.0
 
 @onready var mesh: MeshInstance3D = $Mesh
 @onready var hint: MeshInstance3D = $BadgeHint
-@onready var slot: MeshInstance3D = $"../BadgeSlot"
-@onready var camera: Camera3D = $"../Camera3D"
-@onready var voice: AudioStreamPlayer = $"../Voice"
 
+var _slot: MeshInstance3D
+var _camera: Camera3D
+var _voice: AudioStreamPlayer
 var _held: bool = false
 var _placing: bool = false
 var _pick_frame: int = -1
@@ -38,8 +39,13 @@ func _ready() -> void:
 	freeze = true
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	hint.visible = false
-	slot.visible = false
 	input_event.connect(_on_input_event)
+
+
+func setup(camera: Camera3D, slot: MeshInstance3D, voice: AudioStreamPlayer) -> void:
+	_camera = camera
+	_slot = slot
+	_voice = voice
 
 
 func drop() -> void:
@@ -50,13 +56,13 @@ func drop() -> void:
 	if ResourceLoader.exists(path):
 		var s = load(path)
 		if s is AudioStream:
-			voice.stream = s
-			voice.play()
+			_voice.stream = s
+			_voice.play()
 
 
 func place_in_slot() -> void:
 	# Replay path: badge already belongs in the slot.
-	global_position = slot.global_position + Vector3(0, 0.005, 0)
+	global_position = _slot.global_position + Vector3(0, 0.005, 0)
 	visible = true
 
 
@@ -81,7 +87,7 @@ func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vecto
 		# Seed the aim with the current rest position so the badge lifts in place.
 		_aim_x = global_position.x
 		_aim_z = global_position.z
-		slot.visible = true
+		_slot.visible = true
 		_start_slot_blink()
 		_stop_hint_blink()
 
@@ -118,7 +124,7 @@ func _input(event: InputEvent) -> void:
 func _drop() -> void:
 	_stop_slot_blink()
 	# Horizontal aim decides the snap; hold height is irrelevant.
-	var sp := slot.global_position
+	var sp := _slot.global_position
 	var horiz := Vector2(global_position.x - sp.x, global_position.z - sp.z).length()
 	if horiz < SNAP_DISTANCE:
 		_placing = true
@@ -126,7 +132,7 @@ func _drop() -> void:
 		snap.tween_property(self, "global_position", sp + Vector3(0, 0.005, 0), 0.22) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		await snap.finished
-		slot.visible = false
+		_slot.visible = false
 		placed.emit()
 		_placing = false
 	else:
@@ -153,8 +159,8 @@ func _settle_and_freeze() -> void:
 
 
 func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
-	var from := camera.project_ray_origin(mouse_pos)
-	var dir := camera.project_ray_normal(mouse_pos)
+	var from := _camera.project_ray_origin(mouse_pos)
+	var dir := _camera.project_ray_normal(mouse_pos)
 	if abs(dir.y) < 0.0001:
 		return Vector3.INF
 	var t := (plane_y - from.y) / dir.y
@@ -165,7 +171,7 @@ func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
 
 func _start_slot_blink() -> void:
 	_stop_slot_blink()
-	var mat: StandardMaterial3D = slot.material_override
+	var mat: StandardMaterial3D = _slot.material_override
 	_slot_blink = create_tween().set_loops()
 	_slot_blink.tween_property(mat, "albedo_color:a", 0.7, 1.0) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -177,7 +183,7 @@ func _stop_slot_blink() -> void:
 	if _slot_blink:
 		_slot_blink.kill()
 		_slot_blink = null
-	var mat: StandardMaterial3D = slot.material_override
+	var mat: StandardMaterial3D = _slot.material_override
 	if mat:
 		var c: Color = mat.albedo_color
 		c.a = 0.4

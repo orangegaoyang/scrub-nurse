@@ -8,11 +8,16 @@ extends Node3D
 const SCHEDULE_DELAY := 1.0
 const THROW_TIMEOUT := 3.0
 
+@onready var camera: Camera3D = $Camera3D
+@onready var slot: MeshInstance3D = $BadgeSlot
+@onready var voice: AudioStreamPlayer = $Voice
 @onready var badge: IntroBadge = $BadgeProp
 @onready var schedule: IntroSchedule = $ScheduleProp
 
 
 func _ready() -> void:
+	badge.setup(camera, slot, voice)
+	schedule.setup(voice)
 	schedule.proceed.connect(_on_schedule_proceed)
 	await Transition.fade_in()
 	if PlayerProfile.intro_seen:

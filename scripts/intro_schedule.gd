@@ -14,7 +14,7 @@ const CELL_MARGIN := 0.03
 const CELL_LABELS := ["手术 1", "手术 2", "手术 3", "手术 4", "手术 5", "手术 6"]
 
 var _proceeding: bool = false
-@onready var voice: AudioStreamPlayer = $"../Voice"
+var _voice: AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -22,6 +22,10 @@ func _ready() -> void:
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	visible = false
 	_build_cells()
+
+
+func setup(voice: AudioStreamPlayer) -> void:
+	_voice = voice
 
 
 func reveal() -> void:
@@ -33,8 +37,8 @@ func reveal() -> void:
 	if ResourceLoader.exists(path):
 		var s = load(path)
 		if s is AudioStream:
-			voice.stream = s
-			voice.play()
+			_voice.stream = s
+			_voice.play()
 
 
 # ---------------- Cells ----------------
