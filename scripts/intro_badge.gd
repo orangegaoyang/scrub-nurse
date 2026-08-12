@@ -126,9 +126,15 @@ func _input(event: InputEvent) -> void:
 
 func _drop() -> void:
 	_stop_slot_blink()
-	# Horizontal aim decides the snap; hold height is irrelevant.
+	# Project the cursor onto the table for BOTH the snap check and the landing
+	# spot. The badge hovers at HOLD_Y, so its own x/z is parallax-offset from
+	# where the cursor points on the table — comparing badge.xz to the slot
+	# (the old code) made the snap miss even when the cursor was right on it.
+	var tp := _mouse_to_plane(get_viewport().get_mouse_position(), TABLE_Y)
+	if tp == Vector3.INF:
+		return  # cursor off the table plane — nowhere to drop
 	var sp := _slot.global_position
-	var horiz := Vector2(global_position.x - sp.x, global_position.z - sp.z).length()
+	var horiz := Vector2(tp.x - sp.x, tp.z - sp.z).length()
 	if horiz < SNAP_DISTANCE:
 		_placing = true
 		var snap := create_tween()
@@ -139,18 +145,15 @@ func _drop() -> void:
 		placed.emit()
 		_placing = false
 	else:
-		# Missed the slot: lower the badge to where the cursor points on the
-		# table (no free-fall — feels like setting it down, not dropping it).
+		# Missed the slot: lower the badge to where the cursor points on the table.
 		_placing = true
-		var tp := _mouse_to_plane(get_viewport().get_mouse_position(), TABLE_Y)
-		if tp != Vector3.INF:
-			var land := create_tween()
-			land.tween_property(self, "global_position", Vector3(
-				clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
-				TABLE_Y,
-				clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
-				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-			await land.finished
+		var land := create_tween()
+		land.tween_property(self, "global_position", Vector3(
+			clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
+			TABLE_Y,
+			clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		await land.finished
 		_placing = false
 
 
