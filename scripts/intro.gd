@@ -30,8 +30,8 @@ func _ready() -> void:
 
 func _first_loop() -> void:
 	badge.drop()
-	PlayerProfile.mark_intro_seen()
 	await badge.placed
+	PlayerProfile.mark_intro_seen()
 	await Util.wait(SCHEDULE_DELAY)
 	schedule.reveal()
 
