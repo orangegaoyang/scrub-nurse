@@ -11,7 +11,6 @@ signal placed
 const DROP_P0 := Vector3(0.0, 2.5, -1.8)
 
 const SNAP_DISTANCE := 0.14
-const TABLE_Y := 1.21
 const HOLD_Y := 1.65
 const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
@@ -116,7 +115,7 @@ func _input(event: InputEvent) -> void:
 	if not _held:
 		return
 	if event is InputEventMouseMotion:
-		var aim := _mouse_to_plane(event.position, TABLE_Y)
+		var aim := _mouse_to_plane(event.position, global_position.y)
 		if aim != Vector3.INF:
 			_aim_x = clampf(aim.x, -HOLD_X_LIMIT, HOLD_X_LIMIT)
 			_aim_z = clampf(aim.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)
