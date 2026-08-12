@@ -67,12 +67,12 @@ func _build_cells() -> void:
 			lbl.font_size = 32
 			lbl.pixel_size = 0.001
 			lbl.modulate = Color(0.2, 0.2, 0.2)
-			# The paper uses a transparent material, so its transparent pass can
-			# otherwise draw over Label3D. Keep the text on top of the paper.
+
 			lbl.no_depth_test = true
 			lbl.render_priority = 1
 			lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
 			if font:
 				lbl.font = font
 			cell.add_child(lbl)
