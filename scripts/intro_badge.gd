@@ -16,7 +16,6 @@ const HOLD_Y := 1.65
 const HOLD_SCALE := 2.0
 const HOLD_X_LIMIT := 0.45
 const HOLD_Z_LIMIT := 0.4
-const SETTLE_TIMEOUT := 3.0
 
 @onready var mesh: MeshInstance3D = $Mesh
 @onready var hint: MeshInstance3D = $BadgeHint
@@ -143,27 +142,14 @@ func _drop() -> void:
 		placed.emit()
 		_placing = false
 	else:
-		# Let go: free-fall back onto the table, then re-freeze for picking.
+		# Let go: free-fall back onto the table; TableArea3D re-freezes on contact.
 		freeze = false
 		sleeping = false
 		linear_velocity = Vector3.ZERO
 		angular_velocity = Vector3.ZERO
-		await _settle_and_freeze()
 
 
 # ---------------- Helpers ----------------
-
-func _settle_and_freeze() -> void:
-	var elapsed := 0.0
-	while not sleeping and elapsed < SETTLE_TIMEOUT:
-		await get_tree().physics_frame
-		elapsed += get_physics_process_delta_time()
-	freeze = true
-	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-	linear_velocity = Vector3.ZERO
-	angular_velocity = Vector3.ZERO
-	rotation = Vector3.ZERO
-
 
 func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
 	var from := _camera.project_ray_origin(mouse_pos)
