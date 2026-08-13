@@ -7,10 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://cmcb4lwimkavj" path="res://assets/models/intro/small_table.glb" id="3_272cy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
 [ext_resource type="Texture2D" uid="uid://cnsaxhb4rx23r" path="res://assets/2D/intro/badge.png" id="5_badge"]
-[ext_resource type="Texture2D" uid="uid://bv1b5bv566dyx" path="res://assets/2D/intro/today's surgery.png" id="6_sched"]
 [ext_resource type="Shader" uid="uid://c6xu4jianqll4" path="res://shaders/rounded_rect.gdshader" id="7_hint"]
 [ext_resource type="PackedScene" uid="uid://b52sedwsi0x7n" path="res://assets/models/intro/small_pen_holder.glb" id="8_37iue"]
 [ext_resource type="PackedScene" uid="uid://bduevxrpwqv43" path="res://assets/models/intro/small_pant.glb" id="8_bu1yb"]
+[ext_resource type="Texture2D" uid="uid://b0wyk0as4lr5r" path="res://assets/2D/intro/surgery.png" id="8_u05oh"]
 [ext_resource type="PackedScene" uid="uid://vclnehkyo6ch" path="res://assets/models/intro/small_card_holder.glb" id="8_xwriy"]
 [ext_resource type="PackedScene" uid="uid://hg8bcgrwcplh" path="res://assets/models/intro/small_mug.glb" id="9_272cy"]
 [ext_resource type="PackedScene" uid="uid://45rxuvx706tt" path="res://assets/models/intro/small_book.glb" id="9_u5myo"]
@@ -70,10 +70,10 @@ bounce = 0.1
 [sub_resource type="StandardMaterial3D" id="Mat_schedule"]
 render_priority = 1
 transparency = 1
-albedo_texture = ExtResource("6_sched")
+albedo_texture = ExtResource("8_u05oh")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_schedule"]
-size = Vector2(0.37, 0.45)
+size = Vector2(0.42, 0.5)
 
 [sub_resource type="BoxShape3D" id="Shape_schedule"]
 size = Vector3(0.37, 0.005, 0.45)
@@ -116,7 +116,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0001373589, -0.017346263, 0
 shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 1.215, -0.16)
+transform = Transform3D(0.9819615, 0, -0.18908101, 0, 1, 0, 0.18908101, 0, 0.9819615, 0.22, 1.215, -0.18697643)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 

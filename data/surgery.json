@@ -1,0 +1,26 @@
+[
+    {
+        "procedure": "Appendectomy",
+        "type": "General Surgery",
+        "surgeon": "Dr. Green",
+        "scrub nurse level": 1
+    },
+    {
+        "procedure": "Total Knee Replacement",
+        "type": "Orthopedics",
+        "surgeon": "Dr. Kim",
+        "scrub nurse level": 2
+    },
+    {
+        "procedure": "C-Section",
+        "type": "Obstetrics",
+        "surgeon": "Dr. Jeffson",
+        "scrub nurse level": 2
+    },
+    {
+        "procedure": "Craniotomy",
+        "type": "Neurosurgery",
+        "surgeon": "Dr. Park",
+        "scrub nurse level": 3
+    }
+]
