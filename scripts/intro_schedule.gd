@@ -8,7 +8,7 @@ extends RigidBody3D
 
 signal proceed
 
-const SURGERY_LIST := preload("res://scripts/ui/surgery_list.gd")
+const SURGERY_LIST := preload("res://scenes/ui/surgery_list.tscn")
 const VIEW_SIZE := Vector2i(934, 1010)  # matches surgery.png
 const VOICE_KEY := "intro_schedule"
 
@@ -45,8 +45,7 @@ func _build_list() -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	add_child(viewport)
 
-	var list: Control = SURGERY_LIST.new()
-	list.size = Vector2(VIEW_SIZE)
+	var list: Control = SURGERY_LIST.instantiate()
 	viewport.add_child(list)
 
 	var mat := StandardMaterial3D.new()

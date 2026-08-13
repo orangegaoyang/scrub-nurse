@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/surgery_row.gd" id="1_row"]
+[ext_resource type="FontFile" uid="uid://dqvwydma62wwf" path="res://assets/fonts/PatrickHand-Regular.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_badge"]
+bg_color = Color(0.835294, 0.823529, 0.678431, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_left = 20
+corner_radius_bottom_right = 20
+content_margin_left = 18.0
+content_margin_top = 6.0
+content_margin_right = 18.0
+content_margin_bottom = 6.0
+
+[node name="SurgeryRow" type="HBoxContainer"]
+theme_override_constants/separation = 14
+theme_override_fonts/font = ExtResource("2_font")
+script = ExtResource("1_row")
+
+[node name="TypeIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+stretch_mode = 5
+
+[node name="NameBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+theme_override_constants/separation = 0
+
+[node name="ProcedureLabel" type="Label" parent="NameBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.42, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 40
+text = "Appendectomy"
+
+[node name="TypeLabel" type="Label" parent="NameBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.7, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "General Surgery"
+
+[node name="SurgeonIcon" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+stretch_mode = 5
+
+[node name="SurgeonLabel" type="Label" parent="."]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.42, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
+text = "Dr. Green"
+
+[node name="LevelBadge" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBox_badge")
+
+[node name="LevelLabel" type="Label" parent="LevelBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.42, 0.52, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "Level I"
