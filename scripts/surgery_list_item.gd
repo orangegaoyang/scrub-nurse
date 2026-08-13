@@ -16,7 +16,8 @@ const INK := Color(0.35, 0.42, 0.52)
 
 const FONT_SIZE := 26
 const PIXEL_SIZE := 0.0006
-# max width of the procedure text before it wraps to a second line
+# max width of the procedure text before it wraps to a second line, in world
+# units. Label3D.width is in font pixels, so it's converted below (/ PIXEL_SIZE).
 const PROCEDURE_WRAP := 0.115
 
 # type string -> icon file basename (in ICON_DIR, without extension)
@@ -51,9 +52,9 @@ func _ready() -> void:
 	_style_label(procedure_label, font, HORIZONTAL_ALIGNMENT_LEFT)
 	_style_label(surgeon_label, font, HORIZONTAL_ALIGNMENT_LEFT)
 	_style_label(level_label, font, HORIZONTAL_ALIGNMENT_CENTER)
-	procedure_label.width = PROCEDURE_WRAP
+	procedure_label.width = PROCEDURE_WRAP / PIXEL_SIZE
 	procedure_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	level_label.width = BADGE_SIZE.x
+	level_label.width = BADGE_SIZE.x / PIXEL_SIZE
 	surgeon_icon.material_override = _make_icon_material(_make_person_icon())
 	$ClickArea.input_event.connect(_on_input_event)
 
