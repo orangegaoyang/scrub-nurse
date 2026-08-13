@@ -135,16 +135,16 @@ func _drop() -> void:
 		freeze = true
 		_slot.visible = false
 		placed.emit()
-	else:
-		# Missed the slot: lower the badge to where the cursor points on the table.
-		var land := create_tween()
-		land.tween_property(self, "global_position", Vector3(
-			clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
-			REST_Y,
-			clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		await land.finished
-		freeze = true
+	#else:
+		## Missed the slot: lower the badge to where the cursor points on the table.
+		#var land := create_tween()
+		#land.tween_property(self, "global_position", Vector3(
+			#clampf(tp.x, -HOLD_X_LIMIT, HOLD_X_LIMIT),
+			#REST_Y,
+			#clampf(tp.z, -HOLD_Z_LIMIT, HOLD_Z_LIMIT)), 0.2) \
+			#.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		#await land.finished
+		#freeze = true
 	_placing = false
 
 

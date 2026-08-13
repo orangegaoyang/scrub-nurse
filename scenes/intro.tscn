@@ -3,17 +3,17 @@
 [ext_resource type="Script" uid="uid://c6inont0cveg1" path="res://scripts/intro.gd" id="1_intro"]
 [ext_resource type="Script" uid="uid://dvm2tefqsfs2v" path="res://scripts/intro_badge.gd" id="1_intro_badge"]
 [ext_resource type="Script" uid="uid://bktojxmn22ln3" path="res://scripts/intro_schedule.gd" id="1_intro_schedule"]
-[ext_resource type="Texture2D" uid="uid://bclr7yqpl1gsp" path="res://assets/2D/intro/bg.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://btf4g68043dap" path="res://assets/2D/intro/bg.png" id="2_bg"]
 [ext_resource type="PackedScene" uid="uid://cmcb4lwimkavj" path="res://assets/models/intro/small_table.glb" id="3_272cy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
 [ext_resource type="Texture2D" uid="uid://cnsaxhb4rx23r" path="res://assets/2D/intro/badge.png" id="5_badge"]
-[ext_resource type="Texture2D" uid="uid://dj8mesle4p3v2" path="res://assets/2D/intro/today's surgery.png" id="6_sched"]
+[ext_resource type="Texture2D" uid="uid://bv1b5bv566dyx" path="res://assets/2D/intro/today's surgery.png" id="6_sched"]
 [ext_resource type="Shader" uid="uid://c6xu4jianqll4" path="res://shaders/rounded_rect.gdshader" id="7_hint"]
 [ext_resource type="PackedScene" uid="uid://b52sedwsi0x7n" path="res://assets/models/intro/small_pen_holder.glb" id="8_37iue"]
 [ext_resource type="PackedScene" uid="uid://bduevxrpwqv43" path="res://assets/models/intro/small_pant.glb" id="8_bu1yb"]
 [ext_resource type="PackedScene" uid="uid://vclnehkyo6ch" path="res://assets/models/intro/small_card_holder.glb" id="8_xwriy"]
 [ext_resource type="PackedScene" uid="uid://hg8bcgrwcplh" path="res://assets/models/intro/small_mug.glb" id="9_272cy"]
-[ext_resource type="PackedScene" uid="uid://c1ihagjnkycso" path="res://assets/models/intro/small_book.glb" id="9_u5myo"]
+[ext_resource type="PackedScene" uid="uid://45rxuvx706tt" path="res://assets/models/intro/small_book.glb" id="9_u5myo"]
 [ext_resource type="PackedScene" uid="uid://b6vhd4pdybco2" path="res://assets/models/intro/small_notebook.glb" id="10_37iue"]
 [ext_resource type="PackedScene" uid="uid://d1dhy7n4b3ru4" path="res://assets/models/intro/small_pen.glb" id="14_u05oh"]
 
@@ -123,7 +123,6 @@ mesh = SubResource("PlaneMesh_slot")
 [node name="BadgeProp" type="RigidBody3D" parent="." unique_id=1756491781]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 collision_layer = 2
-collision_mask = 5
 physics_material_override = SubResource("PhysicsMaterial_badge")
 continuous_cd = true
 script = ExtResource("1_intro_badge")
@@ -144,7 +143,6 @@ mesh = SubResource("PlaneMesh_badge_hint")
 [node name="ScheduleProp" type="RigidBody3D" parent="." unique_id=1900584815]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.050031845, 1.72, 0)
 collision_layer = 4
-collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_schedule")
 continuous_cd = true
 script = ExtResource("1_intro_schedule")
