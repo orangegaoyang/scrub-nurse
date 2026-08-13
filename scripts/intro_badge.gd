@@ -64,7 +64,7 @@ func drop() -> void:
 
 func place_in_slot() -> void:
 	# Replay path: badge already belongs in the slot.
-	global_position = Vector3(_slot.global_position.x, REST_Y, _slot.global_position.z)
+	_snap_to_slot()
 	visible = true
 
 
@@ -133,6 +133,7 @@ func _drop() -> void:
 		snap.tween_property(self, "global_position", Vector3(sp.x, REST_Y, sp.z), 0)
 		await snap.finished
 		freeze = true
+		_snap_to_slot()
 		_slot.visible = false
 		placed.emit()
 	#else:
@@ -149,6 +150,13 @@ func _drop() -> void:
 
 
 # ---------------- Helpers ----------------
+
+func _snap_to_slot() -> void:
+	# Position at the slot's x/z and match its yaw so the badge lands at the
+	# angle the slot was rotated to in the editor. Keep it flat on the table.
+	global_position = Vector3(_slot.global_position.x, REST_Y, _slot.global_position.z)
+	global_rotation = Vector3(0, _slot.global_rotation.y, 0)
+
 
 func _mouse_to_plane(mouse_pos: Vector2, plane_y: float) -> Vector3:
 	var from := _camera.project_ray_origin(mouse_pos)
