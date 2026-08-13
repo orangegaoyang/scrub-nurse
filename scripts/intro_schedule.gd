@@ -45,9 +45,7 @@ func _build_list() -> void:
 	var surgeries := _load_surgeries()
 	for i in surgeries.size():
 		var item: SurgeryListItem = ITEM_SCENE.instantiate()
-		# Parent under the board Mesh so items follow any rotation applied to
-		# the paper in the editor (they are laid on the paper, not beside it).
-		mesh.add_child(item)
+		add_child(item)
 		item.position = Vector3(0, 0, ROW_Z0 + i * ROW_SPACING)
 		item.setup(
 			surgeries[i]["procedure"],
