@@ -1,45 +1,47 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://b4nbvx2ih00fr"]
 
-[ext_resource type="Script" path="res://scripts/surgery_list_item.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://cdo126hyow0cs" path="res://scripts/surgery_list_item.gd" id="1_item"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_type_icon"]
-size = Vector2(0.05, 0.05)
+size = Vector2(0.025, 0.025)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_surgeon_icon"]
-size = Vector2(0.045, 0.045)
+size = Vector2(0.02, 0.02)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_badge"]
-size = Vector2(0.11, 0.05)
+size = Vector2(0.05, 0.025)
 
 [sub_resource type="BoxShape3D" id="BoxShape_row"]
-size = Vector3(0.42, 0.1, 0.11)
+size = Vector3(0.4, 0.05, 0.02)
 
-[node name="SurgeryListItem" type="Node3D"]
+[node name="SurgeryListItem" type="Node3D" unique_id=1043188487]
 script = ExtResource("1_item")
 
-[node name="TypeIcon" type="MeshInstance3D" parent="."]
-position = Vector3(-0.16, 0.01, 0)
+[node name="TypeIcon" type="MeshInstance3D" parent="." unique_id=255189367]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, 0.01, 0)
 mesh = SubResource("PlaneMesh_type_icon")
 
-[node name="ProcedureLabel" type="Label3D" parent="."]
-position = Vector3(-0.13, 0.012, 0)
+[node name="ProcedureLabel" type="Label3D" parent="." unique_id=245944679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13, 0.012, 0)
+pixel_size = 0.0005
 
-[node name="SurgeonIcon" type="MeshInstance3D" parent="."]
-position = Vector3(0.03, 0.01, 0)
+[node name="SurgeonIcon" type="MeshInstance3D" parent="." unique_id=1840369268]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03, 0.01, 0)
 mesh = SubResource("PlaneMesh_surgeon_icon")
 
-[node name="SurgeonLabel" type="Label3D" parent="."]
-position = Vector3(0.055, 0.012, 0)
+[node name="SurgeonLabel" type="Label3D" parent="." unique_id=2137883017]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.055, 0.012, 0)
 
-[node name="LevelBadge" type="MeshInstance3D" parent="."]
-position = Vector3(0.155, 0.007, 0)
+[node name="LevelBadge" type="MeshInstance3D" parent="." unique_id=745668933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155, 0.007, 0)
 mesh = SubResource("PlaneMesh_badge")
 
-[node name="LevelLabel" type="Label3D" parent="."]
-position = Vector3(0.155, 0.013, 0)
+[node name="LevelLabel" type="Label3D" parent="." unique_id=1139251527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.155, 0.013, 0)
+pixel_size = 0.0005
 
-[node name="ClickArea" type="Area3D" parent="."]
+[node name="ClickArea" type="Area3D" parent="." unique_id=664094609]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ClickArea"]
-position = Vector3(0, 0.05, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ClickArea" unique_id=534361198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024180572, 0)
 shape = SubResource("BoxShape_row")

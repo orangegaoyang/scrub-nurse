@@ -116,7 +116,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0001373589, -0.017346263, 0
 shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
-transform = Transform3D(0.9819615, 0, -0.18908101, 0, 1, 0, 0.18908101, 0, 0.9819615, 0.22, 1.215, -0.18697643)
+transform = Transform3D(0.9819615, 0, -0.18908101, 0, 1, 0, 0.18908101, 0, 0.9819615, 0.22, 1.2252346, -0.202946)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
@@ -142,12 +142,14 @@ mesh = SubResource("PlaneMesh_badge_hint")
 
 [node name="ScheduleProp" type="RigidBody3D" parent="." unique_id=1900584815]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.050031845, 1.72, 0)
+visible = false
 collision_layer = 4
 physics_material_override = SubResource("PhysicsMaterial_schedule")
 continuous_cd = true
 script = ExtResource("1_intro_schedule")
 
 [node name="Mesh" type="MeshInstance3D" parent="ScheduleProp" unique_id=1981621084]
+transform = Transform3D(0.99667805, 0, 0.081442475, 0, 1, 0, -0.081442475, 0, 0.99667805, 0, 0, 0)
 material_override = SubResource("Mat_schedule")
 mesh = SubResource("PlaneMesh_schedule")
 

@@ -10,8 +10,8 @@ signal proceed
 
 const SURGERY_JSON := "res://data/surgery.json"
 const ITEM_SCENE := preload("res://scenes/surgery_list_item.tscn")
-const ROW_SPACING := 0.12
-const ROW_Z0 := -0.18
+const ROW_SPACING := 0.06
+const ROW_Z0 := -0.01
 const VOICE_KEY := "intro_schedule"
 
 @onready var mesh: MeshInstance3D = $Mesh

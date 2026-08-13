@@ -32,9 +32,9 @@ const TYPE_ICON := {
 
 # scrub nurse level -> { label text, background colour }
 const LEVEL_STYLE := {
-	1: {"label": "Level I",   "bg": Color(0.70, 0.87, 0.66)},   # light green
-	2: {"label": "Level II",  "bg": Color(0.95, 0.90, 0.60)},   # light yellow
-	3: {"label": "Level III", "bg": Color(0.82, 0.76, 0.93)},   # light purple
+	1: {"label": "Level I",   "bg": Color("#d5d2ad")},   # light green
+	2: {"label": "Level II",  "bg": Color("#ecd3a4")},   # light yellow
+	3: {"label": "Level III", "bg": Color("#dac9cf")},   # light purple
 }
 
 const BADGE_SIZE := Vector2(0.11, 0.05)
