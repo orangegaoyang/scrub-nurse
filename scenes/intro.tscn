@@ -73,10 +73,10 @@ transparency = 1
 albedo_texture = ExtResource("8_u05oh")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_schedule"]
-size = Vector2(0.42, 0.5)
+size = Vector2(0.42, 0.454)
 
 [sub_resource type="BoxShape3D" id="Shape_schedule"]
-size = Vector3(0.37, 0.005, 0.45)
+size = Vector3(0.37, 0.005, 0.4)
 
 [node name="Intro" type="Node3D" unique_id=851681118]
 script = ExtResource("1_intro")

@@ -1,17 +1,15 @@
 class_name IntroSchedule
 extends RigidBody3D
-## The surgery list board in the intro scene. Builds one list item per entry in
-## data/surgery.json (type icon + procedure, person icon + surgeon, Level
-## badge). Call reveal() to drop it onto the table; emits `proceed` when the
-## player clicks any row — the intro scene owns the actual transition to the
-## corridor.
+## The surgery list board in the intro scene. Renders a 2D SurgeryList (paper
+## background + one row per entry in data/surgery.json) into a SubViewport and
+## displays it on the board mesh. Call reveal() to drop it onto the table;
+## emits `proceed` when the player clicks the board — the intro scene owns the
+## actual transition to the corridor.
 
 signal proceed
 
-const SURGERY_JSON := "res://data/surgery.json"
-const ITEM_SCENE := preload("res://scenes/surgery_list_item.tscn")
-const ROW_SPACING := 0.06
-const ROW_Z0 := -0.01
+const SURGERY_LIST := preload("res://scripts/ui/surgery_list.gd")
+const VIEW_SIZE := Vector2i(934, 1010)  # matches surgery.png
 const VOICE_KEY := "intro_schedule"
 
 @onready var mesh: MeshInstance3D = $Mesh
@@ -24,6 +22,7 @@ func _ready() -> void:
 	freeze = true
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	visible = false
+	input_event.connect(_on_input_event)
 	_build_list()
 
 
@@ -39,45 +38,28 @@ func reveal() -> void:
 	Util.play_voice(_voice, VOICE_KEY)
 
 
-# ---------------- List ----------------
-
 func _build_list() -> void:
-	var surgeries := _load_surgeries()
-	for i in surgeries.size():
-		var item: SurgeryListItem = ITEM_SCENE.instantiate()
-		add_child(item)
-		item.position = Vector3(0, 0, ROW_Z0 + i * ROW_SPACING)
-		item.setup(
-			surgeries[i]["procedure"],
-			surgeries[i]["type"],
-			surgeries[i]["surgeon"],
-			surgeries[i]["level"])
-		item.clicked.connect(_on_item_clicked)
+	var viewport := SubViewport.new()
+	viewport.size = VIEW_SIZE
+	viewport.transparent_bg = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	add_child(viewport)
+
+	var list: Control = SURGERY_LIST.new()
+	list.size = Vector2(VIEW_SIZE)
+	viewport.add_child(list)
+
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_texture = viewport.get_texture()
+	mat.render_priority = 1
+	mesh.material_override = mat
 
 
-func _load_surgeries() -> Array:
-	var list: Array = []
-	if not FileAccess.file_exists(SURGERY_JSON):
-		push_error("IntroSchedule: surgery.json not found at %s" % SURGERY_JSON)
-		return list
-	var file := FileAccess.open(SURGERY_JSON, FileAccess.READ)
-	var parsed = JSON.parse_string(file.get_as_text())
-	file.close()
-	if typeof(parsed) != TYPE_ARRAY:
-		push_error("IntroSchedule: failed to parse surgery.json")
-		return list
-	for entry in parsed:
-		list.append({
-			"procedure": entry.get("procedure", ""),
-			"type": entry.get("type", ""),
-			"surgeon": entry.get("surgeon", ""),
-			"level": int(entry.get("scrub nurse level", 1)),
-		})
-	return list
-
-
-func _on_item_clicked() -> void:
+func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vector3, _idx: int) -> void:
 	if _proceeding:
 		return
-	_proceeding = true
-	proceed.emit()
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_proceeding = true
+		proceed.emit()
