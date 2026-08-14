@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://cmcb4lwimkavj" path="res://assets/models/intro/small_table.glb" id="3_272cy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="3_topbar"]
 [ext_resource type="Texture2D" uid="uid://cnsaxhb4rx23r" path="res://assets/2D/intro/badge.png" id="5_badge"]
-[ext_resource type="Shader" uid="uid://c6xu4jianqll4" path="res://shaders/rounded_rect.gdshader" id="7_hint"]
 [ext_resource type="PackedScene" uid="uid://b52sedwsi0x7n" path="res://assets/models/intro/small_pen_holder.glb" id="8_37iue"]
 [ext_resource type="PackedScene" uid="uid://bduevxrpwqv43" path="res://assets/models/intro/small_pant.glb" id="8_bu1yb"]
 [ext_resource type="Texture2D" uid="uid://b0wyk0as4lr5r" path="res://assets/2D/intro/surgery.png" id="8_u05oh"]
@@ -17,6 +16,8 @@
 [ext_resource type="PackedScene" uid="uid://b6vhd4pdybco2" path="res://assets/models/intro/small_notebook.glb" id="10_37iue"]
 [ext_resource type="PackedScene" uid="uid://d1dhy7n4b3ru4" path="res://assets/models/intro/small_pen.glb" id="14_u05oh"]
 [ext_resource type="AudioStream" uid="uid://coy2vh0x2oquu" path="res://assets/audio/bgm/hospital_day.ogg" id="17_epycs"]
+[ext_resource type="Script" uid="uid://cmkbn2f52ewh5" path="res://scripts/intro_prop.gd" id="18_prop"]
+[ext_resource type="Shader" uid="uid://d31ynq2ndugjc" path="res://shaders/glow.gdshader" id="19_glow"]
 
 [sub_resource type="Environment" id="Env"]
 ambient_light_source = 2
@@ -30,13 +31,16 @@ bounce = 0.1
 [sub_resource type="BoxShape3D" id="Shape_table"]
 size = Vector3(0.66157836, 0.034692384, 0.5494385)
 
-[sub_resource type="StandardMaterial3D" id="Mat_slot"]
+[sub_resource type="ShaderMaterial" id="Mat_slot"]
 render_priority = 1
-transparency = 1
-albedo_color = Color(0.8666667, 0.8666667, 0.8666667, 0.4)
+shader = ExtResource("19_glow")
+shader_parameter/color = Color(0.62, 0.71, 0.82, 1)
+shader_parameter/alpha = 0.0
+shader_parameter/size = Vector2(0.16, 0.11)
+shader_parameter/corner_radius = 0.03
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_slot"]
-size = Vector2(0.15, 0.09)
+size = Vector2(0.17, 0.11)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
 friction = 0.8
@@ -55,14 +59,14 @@ size = Vector3(0.15, 0.005, 0.11)
 
 [sub_resource type="ShaderMaterial" id="Mat_badge_hint"]
 render_priority = 1
-shader = ExtResource("7_hint")
-shader_parameter/color = Color(0.867, 0.867, 0.867, 1)
+shader = ExtResource("19_glow")
+shader_parameter/color = Color(0.62, 0.71, 0.82, 1)
 shader_parameter/alpha = 0.0
-shader_parameter/size = Vector2(0.17, 0.11)
-shader_parameter/corner_radius = 0.025
+shader_parameter/size = Vector2(0.175, 0.125)
+shader_parameter/corner_radius = 0.04
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_badge_hint"]
-size = Vector2(0.17, 0.11)
+size = Vector2(0.215, 0.165)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_schedule"]
 friction = 0.8
@@ -128,7 +132,9 @@ physics_material_override = SubResource("PhysicsMaterial_badge")
 continuous_cd = true
 script = ExtResource("1_intro_badge")
 
-[node name="Mesh" type="MeshInstance3D" parent="BadgeProp" unique_id=1479370712]
+[node name="FX" type="Node3D" parent="BadgeProp" unique_id=412345678]
+
+[node name="Mesh" type="MeshInstance3D" parent="BadgeProp/FX" unique_id=1479370712]
 layers = 2
 material_override = SubResource("Mat_badge")
 mesh = SubResource("PlaneMesh_cf6u3")
@@ -167,26 +173,50 @@ layout_mode = 3
 [node name="Decration" type="Node3D" parent="." unique_id=1065474735]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
-[node name="small_card_holder" parent="Decration" unique_id=1903936460 instance=ExtResource("8_xwriy")]
+[node name="small_card_holder" type="Node3D" parent="Decration" unique_id=1903936460]
 transform = Transform3D(0.73845536, 0, -0.6743024, 0, 1, 0, 0.6743024, 0, 0.73845536, 0.3675419, 0, -0.07909768)
+script = ExtResource("18_prop")
 
-[node name="small_book" parent="Decration" unique_id=235952412 instance=ExtResource("9_u5myo")]
+[node name="Model" parent="Decration/small_card_holder" unique_id=300000001 instance=ExtResource("8_xwriy")]
+
+[node name="small_book" type="Node3D" parent="Decration" unique_id=235952412]
 transform = Transform3D(0.9640954, 0, -0.26555613, 0, 1, 0, 0.26555613, 0, 0.9640954, 0.3161969, 0, 0.13589285)
+script = ExtResource("18_prop")
+parallax_px = 0.2
 
-[node name="small_pen_holder" parent="Decration" unique_id=203044741 instance=ExtResource("8_37iue")]
+[node name="Model" parent="Decration/small_book" unique_id=300000002 instance=ExtResource("9_u5myo")]
+
+[node name="small_pen_holder" type="Node3D" parent="Decration" unique_id=203044741]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34937596, 0, -0.18207043)
+script = ExtResource("18_prop")
 
-[node name="small_pant" parent="Decration" unique_id=1434590661 instance=ExtResource("8_bu1yb")]
+[node name="Model" parent="Decration/small_pen_holder" unique_id=300000003 instance=ExtResource("8_37iue")]
+
+[node name="small_pant" type="Node3D" parent="Decration" unique_id=1434590661]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34329766, 0, -0.100982584)
+script = ExtResource("18_prop")
+parallax_px = 0.5
 
-[node name="small_mug" parent="Decration" unique_id=779773451 instance=ExtResource("9_272cy")]
+[node name="Model" parent="Decration/small_pant" unique_id=300000004 instance=ExtResource("8_bu1yb")]
+
+[node name="small_mug" type="Node3D" parent="Decration" unique_id=779773451]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30633906, 0, -0.016520761)
+script = ExtResource("18_prop")
+parallax_px = 0.3
 
-[node name="small_notebook" parent="Decration" unique_id=394493474 instance=ExtResource("10_37iue")]
+[node name="Model" parent="Decration/small_mug" unique_id=300000005 instance=ExtResource("9_272cy")]
+
+[node name="small_notebook" type="Node3D" parent="Decration" unique_id=394493474]
 transform = Transform3D(0.89179754, 0, -0.45243472, 0, 1, 0, 0.45243472, 0, 0.89179754, -0.3785296, 0, 0.10356772)
+script = ExtResource("18_prop")
 
-[node name="small_pen" parent="Decration" unique_id=244545672 instance=ExtResource("14_u05oh")]
+[node name="Model" parent="Decration/small_notebook" unique_id=300000006 instance=ExtResource("10_37iue")]
+
+[node name="small_pen" type="Node3D" parent="Decration" unique_id=244545672]
 transform = Transform3D(0.85720664, 0, -0.51497287, 0, 1, 0, 0.51497287, 0, 0.85720664, 0.33765915, 0, -0.026930109)
+script = ExtResource("18_prop")
+
+[node name="Model" parent="Decration/small_pen" unique_id=300000007 instance=ExtResource("14_u05oh")]
 
 [node name="BGM" type="AudioStreamPlayer" parent="." unique_id=1735338693]
 stream = ExtResource("17_epycs")

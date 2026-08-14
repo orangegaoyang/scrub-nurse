@@ -23,6 +23,9 @@ const LEVEL_STYLE := {
 
 const INK := Color(0.35, 0.42, 0.52)
 
+const HOVER_SCALE := 1.04  # row pop while the cursor is over it
+const HOVER_TIME := 0.12
+
 @onready var type_icon: TextureRect = $Procedure/TypeIcon
 @onready var procedure_label: Label = $Procedure/ProcedureLabel
 @onready var type_label: Label = $TypeLabel
@@ -30,6 +33,24 @@ const INK := Color(0.35, 0.42, 0.52)
 @onready var surgeon_label: Label = $Surgeon/SurgeonLabel
 @onready var level_badge: PanelContainer = $LevelBadge
 @onready var level_label: Label = $LevelBadge/LevelLabel
+
+var _hover_tw: Tween
+
+
+func set_hovered(on: bool) -> void:
+	## Spring-pop the row up while the cursor is over it, so the per-row
+	## click target reads clearly (the whole-board swell is too vague).
+	if _hover_tw:
+		_hover_tw.kill()
+	pivot_offset = size * 0.5
+	if on:
+		_hover_tw = create_tween()
+		_hover_tw.tween_property(self, "scale", Vector2.ONE * HOVER_SCALE, HOVER_TIME) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	else:
+		_hover_tw = create_tween()
+		_hover_tw.tween_property(self, "scale", Vector2.ONE, HOVER_TIME) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func setup(procedure: String, type: String, surgeon: String, level: int) -> void:

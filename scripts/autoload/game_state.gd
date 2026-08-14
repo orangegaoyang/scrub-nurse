@@ -28,6 +28,13 @@ var current_demand_index: int = 0
 # Currently held instrument (null when nothing held)
 var held_instrument = null
 
+# ---------------- Day selection (intro schedule board) ----------------
+# Set when the player clicks a surgery row on the intro schedule; the rest of
+# the day's flow can use it. Not cleared by reset(): the selection is made in
+# the intro scene, and main.gd calls reset() after it.
+var selected_surgery_index: int = -1
+var selected_surgery: Dictionary = {}
+
 const TOTAL_STEPS: int = 6
 
 
