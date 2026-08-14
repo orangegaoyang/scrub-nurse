@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://45rxuvx706tt" path="res://assets/models/intro/small_book.glb" id="9_u5myo"]
 [ext_resource type="PackedScene" uid="uid://b6vhd4pdybco2" path="res://assets/models/intro/small_notebook.glb" id="10_37iue"]
 [ext_resource type="PackedScene" uid="uid://d1dhy7n4b3ru4" path="res://assets/models/intro/small_pen.glb" id="14_u05oh"]
+[ext_resource type="AudioStream" uid="uid://coy2vh0x2oquu" path="res://assets/audio/bgm/hospital_day.ogg" id="17_epycs"]
 
 [sub_resource type="Environment" id="Env"]
 ambient_light_source = 2
@@ -186,3 +187,11 @@ transform = Transform3D(0.89179754, 0, -0.45243472, 0, 1, 0, 0.45243472, 0, 0.89
 
 [node name="small_pen" parent="Decration" unique_id=244545672 instance=ExtResource("14_u05oh")]
 transform = Transform3D(0.85720664, 0, -0.51497287, 0, 1, 0, 0.51497287, 0, 0.85720664, 0.33765915, 0, -0.026930109)
+
+[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=1735338693]
+stream = ExtResource("17_epycs")
+volume_db = -12.692
+autoplay = true
+mix_target = 1
+bus = &"Music"
+parameters/looping = true

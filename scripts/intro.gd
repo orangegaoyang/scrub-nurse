@@ -16,6 +16,7 @@ const THROW_TIMEOUT := 3.0
 
 
 func _ready() -> void:
+	$BGM.play()
 	badge.setup(camera, slot, voice)
 	schedule.setup(voice)
 	schedule.proceed.connect(_on_schedule_proceed)
