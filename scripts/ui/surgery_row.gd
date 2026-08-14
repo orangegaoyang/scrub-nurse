@@ -23,17 +23,13 @@ const LEVEL_STYLE := {
 
 const INK := Color(0.35, 0.42, 0.52)
 
-@onready var type_icon: TextureRect = $TypeIcon
-@onready var procedure_label: Label = $NameBox/ProcedureLabel
-@onready var type_label: Label = $NameBox/TypeLabel
-@onready var surgeon_icon: TextureRect = $SurgeonIcon
-@onready var surgeon_label: Label = $SurgeonLabel
+@onready var type_icon: TextureRect = $Procedure/TypeIcon
+@onready var procedure_label: Label = $Procedure/ProcedureLabel
+@onready var type_label: Label = $TypeLabel
+@onready var surgeon_icon: TextureRect = $Surgeon/SurgeonIcon
+@onready var surgeon_label: Label = $Surgeon/SurgeonLabel
 @onready var level_badge: PanelContainer = $LevelBadge
 @onready var level_label: Label = $LevelBadge/LevelLabel
-
-
-func _ready() -> void:
-	surgeon_icon.texture = _make_person_icon()
 
 
 func setup(procedure: String, type: String, surgeon: String, level: int) -> void:
@@ -64,25 +60,3 @@ func _guess_type_icon(type: String) -> String:
 		if type.contains(icon):
 			return icon
 	return ""
-
-
-func _make_person_icon() -> ImageTexture:
-	# Simple person silhouette (head circle + shoulders dome), tinted with INK.
-	var s := 48
-	var img := Image.create(s, s, false, Image.FORMAT_RGBA8)
-	img.fill(Color(0, 0, 0, 0))
-	var head_c := Vector2(s * 0.5, s * 0.31)
-	var head_r := s * 0.16
-	var shoulder_c := Vector2(s * 0.5, s * 0.48)
-	var rx := s * 0.34
-	var ry := s * 0.30
-	for y in range(s):
-		for x in range(s):
-			var p := Vector2(x + 0.5, y + 0.5)
-			if p.distance_to(head_c) <= head_r:
-				img.set_pixel(x, y, INK)
-			elif p.y >= shoulder_c.y:
-				var e := pow((p.x - shoulder_c.x) / rx, 2.0) + pow((p.y - shoulder_c.y) / ry, 2.0)
-				if e <= 1.0:
-					img.set_pixel(x, y, INK)
-	return ImageTexture.create_from_image(img)

@@ -1,72 +1,87 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://cw512fsyptdip"]
 
-[ext_resource type="Script" path="res://scripts/ui/surgery_row.gd" id="1_row"]
+[ext_resource type="Script" uid="uid://dfniut6ghki3a" path="res://scripts/ui/surgery_row.gd" id="1_row"]
 [ext_resource type="FontFile" uid="uid://dqvwydma62wwf" path="res://assets/fonts/PatrickHand-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://bceqwvckhtck1" path="res://assets/2D/intro/picon.png" id="3_lxdda"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_badge"]
-bg_color = Color(0.835294, 0.823529, 0.678431, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_left = 20
-corner_radius_bottom_right = 20
 content_margin_left = 18.0
 content_margin_top = 6.0
 content_margin_right = 18.0
 content_margin_bottom = 6.0
+bg_color = Color(0.835294, 0.823529, 0.678431, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
-[node name="SurgeryRow" type="HBoxContainer"]
+[node name="SurgeryRow" type="HBoxContainer" unique_id=455483851]
+custom_minimum_size = Vector2(0, 100)
 theme_override_constants/separation = 14
-theme_override_fonts/font = ExtResource("2_font")
 script = ExtResource("1_row")
 
-[node name="TypeIcon" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(48, 48)
+[node name="Procedure" type="HBoxContainer" parent="." unique_id=182709168]
+custom_maximum_size = Vector2(250, 250)
+propagate_maximum_size = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TypeIcon" type="TextureRect" parent="Procedure" unique_id=1729547230]
+custom_minimum_size = Vector2(55, 55)
+custom_maximum_size = Vector2(55, 55)
 layout_mode = 2
 size_flags_vertical = 4
 stretch_mode = 5
 
-[node name="NameBox" type="VBoxContainer" parent="."]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-theme_override_constants/separation = 0
-
-[node name="ProcedureLabel" type="Label" parent="NameBox"]
+[node name="ProcedureLabel" type="Label" parent="Procedure" unique_id=284711669]
+custom_minimum_size = Vector2(200, 0)
+custom_maximum_size = Vector2(200, -1)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.42, 0.52, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 30
 text = "Appendectomy"
+autowrap_mode = 2
 
-[node name="TypeLabel" type="Label" parent="NameBox"]
+[node name="TypeLabel" type="Label" parent="." unique_id=1020097510]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.62, 0.7, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 26
 text = "General Surgery"
 
-[node name="SurgeonIcon" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(40, 40)
+[node name="Surgeon" type="HBoxContainer" parent="." unique_id=1495602907]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SurgeonIcon" type="TextureRect" parent="Surgeon" unique_id=446647837]
+custom_minimum_size = Vector2(25, 25)
+custom_maximum_size = Vector2(25, 25)
 layout_mode = 2
 size_flags_vertical = 4
+texture = ExtResource("3_lxdda")
 stretch_mode = 5
 
-[node name="SurgeonLabel" type="Label" parent="."]
-custom_minimum_size = Vector2(180, 0)
+[node name="SurgeonLabel" type="Label" parent="Surgeon" unique_id=1685874269]
+custom_minimum_size = Vector2(100, 0)
+custom_maximum_size = Vector2(130, -1)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.42, 0.52, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 26
 text = "Dr. Green"
 
-[node name="LevelBadge" type="PanelContainer" parent="."]
+[node name="LevelBadge" type="PanelContainer" parent="." unique_id=180867013]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBox_badge")
 
-[node name="LevelLabel" type="Label" parent="LevelBadge"]
+[node name="LevelLabel" type="Label" parent="LevelBadge" unique_id=2092110408]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.42, 0.52, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 26
 text = "Level I"
