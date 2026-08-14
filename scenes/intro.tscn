@@ -35,7 +35,7 @@ transparency = 1
 albedo_color = Color(0.8666667, 0.8666667, 0.8666667, 0.4)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_slot"]
-size = Vector2(0.15, 0.11)
+size = Vector2(0.15, 0.09)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_badge"]
 friction = 0.8
@@ -116,7 +116,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0001373589, -0.017346263, 0
 shape = SubResource("Shape_table")
 
 [node name="BadgeSlot" type="MeshInstance3D" parent="." unique_id=1769424565]
-transform = Transform3D(0.9819615, 0, -0.18908101, 0, 1, 0, 0.18908101, 0, 0.9819615, 0.22, 1.2252346, -0.202946)
+transform = Transform3D(0.9819615, 0, -0.18908101, 0, 1, 0, 0.18908101, 0, 0.9819615, 0.22, 1.2252346, -0.18995944)
 material_override = SubResource("Mat_slot")
 mesh = SubResource("PlaneMesh_slot")
 
