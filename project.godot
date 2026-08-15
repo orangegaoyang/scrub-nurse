@@ -16,12 +16,18 @@ run/main_scene="res://scenes/intro.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://cfm4qmuishfsq"
+
 [autoload]
 
 GameState="*res://scripts/autoload/game_state.gd"
 ProcedureData="*res://scripts/autoload/procedure_data.gd"
 Transition="*res://scripts/autoload/transition.gd"
 PlayerProfile="*res://scripts/autoload/player_profile.gd"
+Sfx="*res://scripts/autoload/sfx.gd"
+Audio="*res://scripts/autoload/audio.gd"
 
 [display]
 

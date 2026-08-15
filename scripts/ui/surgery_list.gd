@@ -33,15 +33,17 @@ func row_at(point: Vector2) -> int:
 	return -1
 
 
-func set_hover_row(index: int) -> void:
+func set_hover_row(index: int) -> bool:
 	## Move the hover pop to the row under the cursor (-1 clears it).
+	## Returns true when the hovered row actually changed.
 	if index == _hover_index:
-		return
+		return false
 	if _hover_index >= 0 and _hover_index < list.get_child_count():
 		(list.get_child(_hover_index) as SurgeryRow).set_hovered(false)
 	_hover_index = index
 	if index >= 0 and index < list.get_child_count():
 		(list.get_child(index) as SurgeryRow).set_hovered(true)
+	return true
 
 
 func get_entry(index: int) -> Dictionary:

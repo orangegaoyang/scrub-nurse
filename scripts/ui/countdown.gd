@@ -13,6 +13,7 @@ func _ready() -> void:
 func run() -> void:
 	label.visible = true
 	for n in ["3", "2", "1", "开始!"]:
+		Sfx.play("countdown_go" if n == "开始!" else "countdown_beep")
 		label.text = n
 		label.modulate.a = 1.0
 		var tw := create_tween()

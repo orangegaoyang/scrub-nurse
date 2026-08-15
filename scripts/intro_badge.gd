@@ -44,6 +44,7 @@ var _voice: AudioStreamPlayer
 var _held: bool = false
 var _placing: bool = false
 var _settled: bool = false
+var _land_sfx_played: bool = false
 var _pick_frame: int = -1
 var _rest_pos: Vector3
 var _rest_rot: Vector3
@@ -75,6 +76,7 @@ func drop() -> void:
 	# First-ever open: reveal, release physics so the badge drops in, voice it.
 	visible = true
 	freeze = false
+	_land_sfx_played = false
 	Util.play_voice(_voice, VOICE_KEY)
 	_glow.show_when_rested()
 
@@ -99,6 +101,7 @@ func _on_input_event(_cam: Camera3D, event: InputEvent, _pos: Vector3, _n: Vecto
 		freeze = true
 		_glow.slot_on()
 		_glow.dismiss()
+		Sfx.play("badge_pick")
 		_on_pick()
 
 
@@ -123,10 +126,14 @@ func _physics_process(delta: float) -> void:
 	if _settled:
 		_apply_parallax(delta)
 		return
-	# First-open fall: freeze as soon as the badge comes to rest on the table
-	# so the idle state (breathing + parallax) can take over. The height check
-	# keeps the freshly-released body (velocity still zero, still in the air)
-	# from freezing mid-drop.
+	# First-open fall: sound the moment the badge first touches the table,
+	# then freeze once it has actually come to rest so the idle state
+	# (breathing + parallax) can take over. The height check keeps the
+	# freshly-released body (velocity still zero, still in the air) from
+	# freezing mid-drop.
+	if not freeze and not _land_sfx_played and global_position.y <= REST_Y + 0.006:
+		_land_sfx_played = true
+		Sfx.play("badge_land")
 	if not freeze and global_position.y <= REST_Y + 0.005 and linear_velocity.length() < REST_SPEED:
 		freeze = true
 		# Record where the badge landed so right-click cancel can glide back.
@@ -184,6 +191,7 @@ func _cancel_hold() -> void:
 	# Glide the badge back to where it was resting, no snap check, no
 	# `placed` — then resume the idle state (breathing + parallax).
 	_placing = true
+	Sfx.play("badge_cancel")
 	_start_fx_return()
 	var back := create_tween().set_parallel(true)
 	back.tween_property(self, "global_position", Vector3(_rest_pos.x, REST_Y, _rest_pos.z), 0.3) \
@@ -226,6 +234,7 @@ func _drop() -> void:
 		freeze = true
 		_snap_to_slot()
 		_glow.slot_off()
+		Sfx.play("badge_snap")
 		placed.emit()
 		_on_settled()
 	_placing = false

@@ -80,6 +80,7 @@ func _pick_up(inst: Instrument) -> void:
 	inst.freeze = true
 	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
 	GameState.set_held(inst)
+	Sfx.play("instrument_pick")
 	Util.play_voice(voice, inst.instrument_id)
 
 
@@ -95,6 +96,7 @@ func _place_in_slot(slot: TableSlot) -> void:
 		slot.occupied = true
 		slot.current_instrument = inst
 		slot.set_feedback(true)
+		Sfx.play("slot_correct")
 		GameState.set_held(null)
 		GameState.prep_correct += 1
 		GameState.prep_item_secured.emit(inst.instrument_id)
@@ -103,4 +105,5 @@ func _place_in_slot(slot: TableSlot) -> void:
 			GameState.start_countdown()
 	else:
 		slot.set_feedback(false)
+		Sfx.play("slot_wrong")
 		inst.play_reject()

@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://45rxuvx706tt" path="res://assets/models/intro/small_book.glb" id="9_u5myo"]
 [ext_resource type="PackedScene" uid="uid://b6vhd4pdybco2" path="res://assets/models/intro/small_notebook.glb" id="10_37iue"]
 [ext_resource type="PackedScene" uid="uid://d1dhy7n4b3ru4" path="res://assets/models/intro/small_pen.glb" id="14_u05oh"]
-[ext_resource type="AudioStream" uid="uid://coy2vh0x2oquu" path="res://assets/audio/bgm/hospital_day.ogg" id="17_epycs"]
 [ext_resource type="Script" uid="uid://cmkbn2f52ewh5" path="res://scripts/intro_prop.gd" id="18_prop"]
 [ext_resource type="Shader" uid="uid://d31ynq2ndugjc" path="res://shaders/glow.gdshader" id="19_glow"]
 
@@ -217,11 +216,3 @@ transform = Transform3D(0.85720664, 0, -0.51497287, 0, 1, 0, 0.51497287, 0, 0.85
 script = ExtResource("18_prop")
 
 [node name="Model" parent="Decration/small_pen" unique_id=300000007 instance=ExtResource("14_u05oh")]
-
-[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=1735338693]
-stream = ExtResource("17_epycs")
-volume_db = -12.692
-autoplay = true
-mix_target = 1
-bus = &"Music"
-parameters/looping = true

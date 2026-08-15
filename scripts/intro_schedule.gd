@@ -72,6 +72,7 @@ func reveal() -> void:
 	# board stays frozen (kinematic) for the whole scene.
 	visible = true
 	Util.play_voice(_voice, VOICE_KEY)
+	Sfx.play("paper_place")
 	global_position = Vector3(_rest_x, REST_Y - SETTLE_DROP, _rest_z)
 	global_rotation.y = _rest_yaw - deg_to_rad(SETTLE_TILT)
 	_mat.albedo_color.a = 0.0
@@ -108,7 +109,8 @@ func _update_row_hover() -> void:
 			var local := mesh.to_local(tp)
 			if absf(local.x) <= pm.size.x * 0.5 and absf(local.z) <= pm.size.y * 0.5:
 				index = _row_from_local(local)
-	_list.set_hover_row(index)
+	if _list.set_hover_row(index) and index >= 0:
+		Sfx.play("row_hover", -12.0)
 	if index >= 0:
 		# The row pop animates, so the board texture must keep re-rendering.
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -153,6 +155,7 @@ func _on_input_event(_cam: Camera3D, event: InputEvent, pos: Vector3, _n: Vector
 	_proceeding = true
 	_list.set_hover_row(-1)
 	_list.highlight_row(index)
+	Sfx.play("row_click")
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 	proceed.emit(index, _list.get_entry(index))

@@ -28,7 +28,6 @@ const DWELL_MAX := 4.0
 
 
 func _ready() -> void:
-	$BGM.play()
 	badge.setup(camera, slot, voice)
 	schedule.setup(voice, camera)
 	schedule.proceed.connect(_on_schedule_proceed)

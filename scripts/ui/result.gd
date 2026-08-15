@@ -56,6 +56,7 @@ func _show_result() -> void:
 		s.pivot_offset = s.size / 2.0
 		s.scale = Vector2.ZERO
 	# Staged reveal sequence.
+	Sfx.play("result_reveal")
 	var tw := create_tween()
 	tw.tween_property(dim, "color:a", DIM_ALPHA, 0.4)
 	tw.tween_property(card, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -67,6 +68,7 @@ func _show_result() -> void:
 		if i < star_count:
 			tw.tween_property(s, "scale", Vector2(1.25, 1.25), 0.18).set_ease(Tween.EASE_OUT)
 			tw.tween_property(s, "scale", Vector2.ONE, 0.16)
+			tw.tween_callback(func() -> void: Sfx.play("star_pop"))
 		else:
 			tw.tween_property(s, "scale", Vector2.ONE, 0.3)
 	tw.tween_property(grade, "modulate:a", 1.0, 0.3)
