@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dtcou6adocxjo" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="3_mayo"]
+[ext_resource type="PackedScene" uid="uid://n1b228b4pp2y" path="res://assets/models/surgery/small_backtable.glb" id="3_muem4"]
 [ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/pickup_system.gd" id="4_pickup"]
 [ext_resource type="Script" uid="uid://bm5egqk7wbnlr" path="res://scripts/surgery_system.gd" id="6_surgery"]
 [ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="8_start"]
@@ -10,17 +11,23 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="10_result"]
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
 [ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
-[ext_resource type="Texture2D" uid="uid://dqltxo71hdjuq" path="res://assets/2D/surgery/bg.png" id="14_bg"]
-[ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
 [ext_resource type="PackedScene" path="res://scenes/prep_complete.tscn" id="13_prep"]
-[ext_resource type="PackedScene" path="res://scenes/surgeon.tscn" id="16_surg"]
-[ext_resource type="PackedScene" path="res://scenes/ui/demand_bubble.tscn" id="17_bubble"]
-[ext_resource type="Script" path="res://scripts/inspect_system.gd" id="18_inspect"]
+[ext_resource type="Texture2D" uid="uid://cajynufilq2kt" path="res://assets/2D/surgery/bg.png" id="14_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
+[ext_resource type="PackedScene" uid="uid://dkcsxre2uevh2" path="res://scenes/surgeon.tscn" id="16_surg"]
+[ext_resource type="PackedScene" uid="uid://dflopixtcdaqf" path="res://scenes/ui/demand_bubble.tscn" id="17_bubble"]
+[ext_resource type="Script" uid="uid://c8lhv361oh235" path="res://scripts/inspect_system.gd" id="18_inspect"]
+[ext_resource type="PackedScene" path="res://scenes/neutral_zone.tscn" id="19_zone"]
+[ext_resource type="PackedScene" path="res://scenes/back_zone.tscn" id="20_bzone"]
 
 [sub_resource type="Environment" id="Environment_eb6dy"]
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.5
+ambient_light_energy = 0.6
+tonemap_mode = 3
+
+[sub_resource type="BoxShape3D" id="Shape_backtable"]
+size = Vector3(1.2, 0.1, 0.8)
 
 [node name="Main" type="Node3D" unique_id=869468186]
 script = ExtResource("1_main")
@@ -28,45 +35,105 @@ script = ExtResource("1_main")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2147418366]
 environment = SubResource("Environment_eb6dy")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=557423142]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0.1)
-current = true
-fov = 40.0
+[node name="CameraMayo" type="Camera3D" parent="." unique_id=557423142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.8, 1.15)
+visible = false
+fov = 38.2
 
-[node name="Backdrop" type="Sprite3D" parent="Camera3D" unique_id=1792012406]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-pixel_size = 0.008
-billboard = 1
-texture = ExtResource("14_bg")
-
-[node name="InspectAnchor" type="Marker3D" parent="Camera3D"]
+[node name="InspectAnchor" type="Marker3D" parent="CameraMayo" unique_id=1495439849]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+
+[node name="CameraPrep" type="Camera3D" parent="." unique_id=-1945823610]
+transform = Transform3D(1, 0, 0, 0, 0.6547408, 0.7558535, 0, -0.7558535, 0.6547408, 0.25429687, 1.4118652, 5.122861)
+current = true
+fov = 64.5
+
+[node name="CameraBackTable" type="Camera3D" parent="." unique_id=451434729]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 3.15)
+visible = false
+fov = 38.2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1179227863]
 transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 6, 2)
-light_energy = 0.2
+light_energy = 0.0
+
+[node name="RoomBackdrop" type="Sprite3D" parent="." unique_id=555658194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.7, -7)
+visible = false
+pixel_size = 0.02
+billboard = 1
+texture = ExtResource("14_bg")
 
 [node name="InstrumentLamp" type="SpotLight3D" parent="." unique_id=366324443]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2, 0)
 shadow_enabled = true
 spot_angle = 75.0
 
+[node name="PrepLamp" type="SpotLight3D" parent="." unique_id=-1914493671]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.4, 2.4, 4.5)
+light_energy = 1.3
+shadow_enabled = true
+spot_angle = 80.0
+
+[node name="small_backtable" parent="." unique_id=2111433644 instance=ExtResource("3_muem4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0018463135, 0, 4.5)
+
+[node name="BackTableZones" type="Node3D" parent="." unique_id=-337505095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.5)
+
+[node name="CuttingZone" parent="BackTableZones" unique_id=532478101 instance=ExtResource("20_bzone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.48, 0.89, 0)
+category = "cutting"
+
+[node name="ClampingZone" parent="BackTableZones" unique_id=1959890089 instance=ExtResource("20_bzone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24, 0.89, 0)
+category = "clamping"
+
+[node name="GraspingZone" parent="BackTableZones" unique_id=843546921 instance=ExtResource("20_bzone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+category = "grasping"
+
+[node name="SuturingZone" parent="BackTableZones" unique_id=675374528 instance=ExtResource("20_bzone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 0.89, 0)
+category = "suturing"
+
+[node name="DressingZone" parent="BackTableZones" unique_id=1264703673 instance=ExtResource("20_bzone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48, 0.89, 0)
+category = "dressing"
+
+[node name="BackTableCollision" type="StaticBody3D" parent="." unique_id=-69586200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 4.5)
+collision_layer = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BackTableCollision" unique_id=1457632884]
+shape = SubResource("Shape_backtable")
+
+[node name="BackTableInstruments" type="Node3D" parent="." unique_id=1293847502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 4.5)
+
 [node name="MayoStand" parent="." unique_id=347040338 instance=ExtResource("3_mayo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.79755855, 0.081, 4.5)
+
+[node name="NeutralZone" parent="MayoStand" unique_id=-578417476 instance=ExtResource("19_zone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.442, 0.889, 0.027)
+visible = false
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=454209940]
 
-[node name="PrepComplete" parent="." instance=ExtResource("13_prep")]
+[node name="Voice" type="AudioStreamPlayer" parent="." unique_id=1793297617]
+
+[node name="PrepComplete" parent="." unique_id=209847960 instance=ExtResource("13_prep")]
+visible = false
 
 [node name="Player" parent="." unique_id=978976225 instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
-[node name="Surgeon" parent="." instance=ExtResource("16_surg")]
+[node name="Surgeon" parent="." unique_id=1879711375 instance=ExtResource("16_surg")]
 
 [node name="PickupSystem" type="Node" parent="." unique_id=293766964]
 script = ExtResource("4_pickup")
 
-[node name="InspectSystem" type="Node" parent="."]
+[node name="InspectSystem" type="Node" parent="." unique_id=1448411982]
 script = ExtResource("18_inspect")
 
 [node name="SurgerySystem" type="Node" parent="." unique_id=962743578]
@@ -75,6 +142,7 @@ script = ExtResource("6_surgery")
 [node name="UI" type="CanvasLayer" parent="." unique_id=1810462951]
 
 [node name="TopBar" parent="UI" unique_id=546803864 instance=ExtResource("15_topbar")]
+visible = false
 layout_mode = 3
 
 [node name="StartButton" parent="UI" unique_id=1917777412 instance=ExtResource("8_start")]
@@ -92,5 +160,6 @@ layout_mode = 3
 [node name="HeldInfo" parent="UI" unique_id=1139997355 instance=ExtResource("12_held")]
 layout_mode = 3
 
-[node name="DemandBubble" parent="UI" instance=ExtResource("17_bubble")]
-layout_mode = 3
+[node name="DemandBubble" parent="UI" unique_id=254617567 instance=ExtResource("17_bubble")]
+grow_horizontal = 2
+grow_vertical = 2

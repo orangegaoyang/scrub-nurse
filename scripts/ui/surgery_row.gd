@@ -19,6 +19,7 @@ const LEVEL_STYLE := {
 	1: {"label": "Level I",   "bg": Color("#d5d2ad")},   # light green
 	2: {"label": "Level II",  "bg": Color("#ecd3a4")},   # light yellow
 	3: {"label": "Level III", "bg": Color("#dac9cf")},   # light purple
+	4: {"label": "Level IV",  "bg": Color("#d8c3c3")},   # faded red — display only
 }
 
 const INK := Color(0.35, 0.42, 0.52)
@@ -51,6 +52,12 @@ func set_hovered(on: bool) -> void:
 		_hover_tw = create_tween()
 		_hover_tw.tween_property(self, "scale", Vector2.ONE, HOVER_TIME) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func set_locked(locked: bool) -> void:
+	## Rows above the player's global level (e.g. the display-only Level IV)
+	## read as unavailable.
+	modulate = Color(1, 1, 1, 0.4) if locked else Color(1, 1, 1, 1)
 
 
 func setup(procedure: String, type: String, surgeon: String, level: int) -> void:

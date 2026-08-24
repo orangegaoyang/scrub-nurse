@@ -1,5 +1,7 @@
 extends Node
-## Pickup system (prep phase): grab from tray, follow cursor, place in correct slot.
+## Pickup system (prep phase): instruments are scattered carelessly on the
+## back table ("someone left a mess"); pick each one up and organize it onto
+## its Mayo slot (sequence order, hard slots).
 
 const SNAP_DIST := 0.08
 
@@ -16,8 +18,7 @@ func _ready() -> void:
 	held_parent = get_parent().get_node("HeldParent")
 	slots_parent = get_parent().get_node("MayoStand/SlotsParent")
 	inspect = get_parent().get_node_or_null("InspectSystem")
-	voice = AudioStreamPlayer.new()
-	add_child(voice)
+	voice = get_parent().get_node("Voice")
 	player.interact_pressed.connect(_on_interact)
 	player.inspect_pressed.connect(_on_inspect)
 
@@ -54,9 +55,12 @@ func _on_interact(_target: Node) -> void:
 		if inst != null and inst.state == Instrument.State.IN_TRAY:
 			_pick_up(inst)
 	else:
-		var slot := player.get_cursor_slot() as TableSlot
-		if slot != null and not slot.occupied:
-			_place_in_slot(slot)
+		var hit: Node = player.get_cursor_slot()
+		if hit is TableSlot and not hit.occupied \
+				and held_instrument.def.slot_index < 6:
+			_place_in_slot(hit as TableSlot)
+		elif hit is BackZone and held_instrument.def.slot_index >= 6:
+			_place_in_zone(hit as BackZone)
 
 
 func _on_inspect() -> void:
@@ -101,9 +105,31 @@ func _place_in_slot(slot: TableSlot) -> void:
 		GameState.prep_correct += 1
 		GameState.prep_item_secured.emit(inst.instrument_id)
 		GameState.score_updated.emit()
-		if GameState.prep_correct >= ProcedureData.demand_sequence.size():
+		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
 			GameState.start_countdown()
 	else:
 		slot.set_feedback(false)
+		Sfx.play("slot_wrong")
+		inst.play_reject()
+
+
+func _place_in_zone(bzone: BackZone) -> void:
+	## Prep: instruments that live on the back table (slot_index >= 6) are
+	## organized into their category zones instead of mayo slots.
+	var inst: Instrument = held_instrument
+	if bzone.can_accept(inst) and not bzone.is_full():
+		held_instrument = null
+		bzone.place_instrument(inst)
+		inst.collision_layer = 1
+		bzone.set_feedback(true)
+		GameState.set_held(null)
+		Sfx.play("slot_correct")
+		GameState.prep_back_correct += 1
+		GameState.prep_back_item_secured.emit(inst.instrument_id)
+		GameState.score_updated.emit()
+		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
+			GameState.start_countdown()
+	else:
+		bzone.set_feedback(false)
 		Sfx.play("slot_wrong")
 		inst.play_reject()

@@ -12,15 +12,15 @@
         "scrub nurse level": 2
     },
     {
-        "procedure": "C-Section",
-        "type": "Obstetrics",
-        "surgeon": "Dr. Jeffson",
-        "scrub nurse level": 2
-    },
-    {
         "procedure": "Craniotomy",
         "type": "Neurosurgery",
         "surgeon": "Dr. Park",
         "scrub nurse level": 3
+    },
+    {
+        "procedure": "C-Section",
+        "type": "Obstetrics",
+        "surgeon": "Dr. Jeffson",
+        "scrub nurse level": 4
     }
 ]

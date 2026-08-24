@@ -1,0 +1,24 @@
+{
+  "procedure_id": "craniotomy",
+  "procedure_name": "开颅手术",
+  "procedure_name_en": "Craniotomy",
+  "neutral_zone": true,
+  "back_table": true,
+  "surgery_free_mayo": true,
+  "instruments": [
+	{ "id": "scalpel", "name_cn": "手术刀", "name_en": "Scalpel", "category": "cutting", "purpose": "切皮", "color_r": 0.90, "color_g": 0.20, "color_b": 0.20, "uses": 1, "slot_index": 0 },
+	{ "id": "hemostat", "name_cn": "止血钳", "name_en": "Hemostat", "category": "clamping", "purpose": "钳夹止血", "color_r": 0.20, "color_g": 0.50, "color_b": 0.90, "uses": 2, "slot_index": 1 },
+	{ "id": "forceps", "name_cn": "组织镊", "name_en": "Tissue Forceps", "category": "grasping", "purpose": "夹持组织", "color_r": 0.20, "color_g": 0.80, "color_b": 0.30, "uses": 1, "slot_index": 2 },
+	{ "id": "scissors", "name_cn": "组织剪", "name_en": "Tissue Scissors", "category": "cutting", "purpose": "分离切除", "color_r": 0.95, "color_g": 0.75, "color_b": 0.15, "uses": 2, "slot_index": 3 },
+	{ "id": "gauze", "name_cn": "纱布", "name_en": "Gauze", "category": "dressing", "purpose": "擦血", "color_r": 0.92, "color_g": 0.92, "color_b": 0.92, "uses": 2, "slot_index": 4, "count": 2, "discard": true },
+	{ "id": "needle_holder", "name_cn": "持针器", "name_en": "Needle Holder", "category": "suturing", "purpose": "缝合", "color_r": 0.65, "color_g": 0.30, "color_b": 0.80, "uses": 1, "slot_index": 5 },
+	{ "id": "retractor", "name_cn": "拉钩", "name_en": "Retractor", "category": "grasping", "purpose": "牵开暴露", "color_r": 0.55, "color_g": 0.55, "color_b": 0.70, "uses": 1, "slot_index": 6 },
+	{ "id": "towel_clamp", "name_cn": "布巾钳", "name_en": "Towel Clamp", "category": "clamping", "purpose": "固定布巾", "color_r": 0.75, "color_g": 0.60, "color_b": 0.25, "uses": 1, "slot_index": 7 },
+	{ "id": "suction", "name_cn": "吸引器", "name_en": "Suction", "category": "dressing", "purpose": "吸除渗液", "color_r": 0.30, "color_g": 0.75, "color_b": 0.85, "uses": 1, "slot_index": 8 }
+  ],
+  "sequence": [
+	"scalpel", "towel_clamp", "hemostat", "forceps", "retractor",
+	"scissors", "gauze", "suction", "needle_holder", "hemostat",
+	"scissors", "gauze"
+  ]
+}

@@ -1,47 +1,58 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://7y0smwwrnoqq"]
 
-[ext_resource type="Script" path="res://scripts/corridor.gd" id="1_corr"]
-[ext_resource type="Texture2D" path="res://assets/2D/common/mayo.png" id="2_mayo"]
+[ext_resource type="Script" uid="uid://fdcbwwsd1wm1" path="res://scripts/corridor.gd" id="1_corr"]
+[ext_resource type="PackedScene" uid="uid://p8ihco7f1jyj" path="res://assets/models/corridor/left_door.glb" id="2_door_l"]
+[ext_resource type="PackedScene" uid="uid://bepwqlycuv8mp" path="res://assets/models/corridor/right_door.glb" id="3_door_r"]
+[ext_resource type="PackedScene" uid="uid://dg48v0uraobgb" path="res://assets/models/corridor/hospital_mesh_no_door.glb" id="4_hosp"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.83, 0.84, 0.85, 1)
+sky_horizon_color = Color(0.9, 0.9, 0.9, 1)
+ground_bottom_color = Color(0.42, 0.42, 0.42, 1)
+ground_horizon_color = Color(0.7, 0.7, 0.7, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
 
 [sub_resource type="Environment" id="Env"]
-ambient_light_source = 2
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 1.0
+ambient_light_energy = 0.8
+tonemap_mode = 3
+ssao_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="Mat_floor"]
-roughness = 1.0
-uv1_scale = Vector3(2, 4, 1)
-
-[sub_resource type="QuadMesh" id="Mesh_floor"]
-size = Vector2(14, 8)
-
-[sub_resource type="StandardMaterial3D" id="Mat_mayo"]
-transparency = 2
-alpha_scissor_threshold = 0.5
-cull_mode = 2
-albedo_texture = ExtResource("2_mayo")
-roughness = 0.8
-
-[sub_resource type="PlaneMesh" id="Mesh_mayo"]
-size = Vector2(0.9, 0.506)
-
-[node name="Corridor" type="Node3D"]
+[node name="Corridor" type="Node3D" unique_id=948471141]
 script = ExtResource("1_corr")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1422766841]
 environment = SubResource("Env")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0.1)
-fov = 40.0
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1995498525]
+transform = Transform3D(0.93969, 0.19617, -0.28015, 0, 0.81915, 0.57358, 0.34202, -0.53899, 0.76975, 0, 5.5, 12)
+light_angular_distance = 2.5
+shadow_enabled = true
+
+[node name="Hospital" parent="." unique_id=1048772037 instance=ExtResource("4_hosp")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0.3757)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=305875067]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 10)
 current = true
+fov = 40.0
 
-[node name="Floor" type="MeshInstance3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-material_override = SubResource("Mat_floor")
-mesh = SubResource("Mesh_floor")
+[node name="DoorRig" type="Node3D" parent="." unique_id=202886360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.071774185)
 
-[node name="Mayo" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-material_override = SubResource("Mat_mayo")
-mesh = SubResource("Mesh_mayo")
+[node name="HingeLeft" type="Node3D" parent="DoorRig" unique_id=203014883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.407, 0, -0.5103)
+
+[node name="Door" parent="DoorRig/HingeLeft" unique_id=474519868 instance=ExtResource("2_door_l")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.407, 0, 0.886)
+
+[node name="HingeRight" type="Node3D" parent="DoorRig" unique_id=30431270]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.369, 0, -0.5103)
+
+[node name="Door" parent="DoorRig/HingeRight" unique_id=1094467215 instance=ExtResource("3_door_r")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.369, 0, 0.886)

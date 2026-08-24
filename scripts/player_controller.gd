@@ -4,7 +4,8 @@ extends CharacterBody3D
 ## slot areas that overlap them), placing hits slots, delivery hits the hand.
 
 const REACH: float = 6.0
-const HOLD_Y: float = 1.35  # held instruments float above the tray so they clear it and other instruments
+const HOLD_Y: float = 1.15  # surgery/tidy hold plane (above the mayo, near the hand)
+const PREP_HOLD_Y: float = 1.05  # prep hold plane (just above the tables, top-down view)
 
 signal interact_pressed(target: Node)
 signal inspect_pressed()
@@ -54,13 +55,27 @@ func get_cursor_hand() -> Node:
 	return _ray(4, true, false).get("collider", null)
 
 
+func get_cursor_tray_point() -> Vector3:
+	# Where the cursor hits the MAYO tray surface (layer 8). Returns
+	# Vector3.INF when the cursor is over anything else (the back table's
+	# own collision is ignored by name).
+	var hit: Dictionary = _ray(8, false, true)
+	var collider: Node = hit.get("collider")
+	if collider != null and collider.name == "TrayCollision":
+		return hit["position"]
+	return Vector3.INF
+
+
 func get_cursor_point() -> Vector3:
-	# A held instrument follows the cursor on a horizontal plane at HOLD_Y.
+	# A held instrument follows the cursor on a horizontal plane. Prep uses a
+	# lower plane (top-down view, tables right below); surgery/tidy uses the
+	# higher one (the surgeon's hand lives at 1.22).
 	var cam: Camera3D = get_viewport().get_camera_3d()
 	var mp: Vector2 = get_viewport().get_mouse_position()
 	var o: Vector3 = cam.project_ray_origin(mp)
 	var d: Vector3 = cam.project_ray_normal(mp)
+	var hold_y: float = PREP_HOLD_Y if GameState.current_phase == GameState.Phase.PREP else HOLD_Y
 	if abs(d.y) < 0.001:
 		return o + d * 1.5
-	var t: float = (HOLD_Y - o.y) / d.y
+	var t: float = (hold_y - o.y) / d.y
 	return o + d * t

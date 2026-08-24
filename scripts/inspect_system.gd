@@ -12,7 +12,7 @@ class_name InspectSystem
 
 signal exited
 
-@onready var anchor: Node3D = get_parent().get_node("Camera3D/InspectAnchor")
+@onready var anchor: Node3D = get_parent().get_node("CameraMayo/InspectAnchor")
 
 var _item: Node3D = null
 var _orig_parent: Node3D = null

@@ -60,7 +60,7 @@ func _build_list() -> void:
 	var top_y := 0.045
 	var step := 0.027
 	var i := 0
-	for id in ProcedureData.demand_sequence:
+	for id in ProcedureData.instrument_order:
 		var def = ProcedureData.get_instrument(id)
 		var unchecked := "%d. %s — %s" % [i + 1, def.name_cn, def.purpose]
 		var checked := "✓ %d. %s — %s" % [i + 1, def.name_cn, def.purpose]

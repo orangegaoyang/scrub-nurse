@@ -73,11 +73,11 @@ func setup(camera: Camera3D, slot: MeshInstance3D, voice: AudioStreamPlayer) -> 
 
 
 func drop() -> void:
-	# First-ever open: reveal, release physics so the badge drops in, voice it.
+	# First-ever open: reveal and release physics so the badge drops in.
+	# The land SFX fires at first contact and the voice line once it rests.
 	visible = true
 	freeze = false
 	_land_sfx_played = false
-	Util.play_voice(_voice, VOICE_KEY)
 	_glow.show_when_rested()
 
 
@@ -139,6 +139,7 @@ func _physics_process(delta: float) -> void:
 		# Record where the badge landed so right-click cancel can glide back.
 		# Breathing/parallax start only once the badge is in the slot.
 		_capture_rest_pose()
+		Util.play_voice(_voice, VOICE_KEY)  # "here's your badge", once it has settled
 
 
 func _update_hold(delta: float) -> void:

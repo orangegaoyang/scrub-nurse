@@ -8,7 +8,7 @@ extends RigidBody3D
 ## start the day with that surgery. The board also has a hover swell and a
 ## faint mouse parallax.
 
-signal proceed(index: int, entry: Dictionary)
+signal proceed(index: int, entry: Dictionary, pos: Vector3)
 
 const SURGERY_LIST := preload("res://scenes/ui/surgery_list.tscn")
 const VIEW_SIZE := Vector2i(934, 1010)  # matches surgery.png
@@ -158,7 +158,7 @@ func _on_input_event(_cam: Camera3D, event: InputEvent, pos: Vector3, _n: Vector
 	Sfx.play("row_click")
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
-	proceed.emit(index, _list.get_entry(index))
+	proceed.emit(index, _list.get_entry(index), pos)
 
 
 func _row_at(pos: Vector3) -> int:

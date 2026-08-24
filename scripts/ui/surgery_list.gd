@@ -21,6 +21,7 @@ func _ready() -> void:
 		var row: SurgeryRow = ROW_SCENE.instantiate()
 		list.add_child(row)
 		row.setup(entry["procedure"], entry["type"], entry["surgeon"], entry["level"])
+		row.set_locked(entry["level"] > PlayerProfile.global_level())
 
 
 func row_at(point: Vector2) -> int:

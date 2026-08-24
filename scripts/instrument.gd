@@ -2,7 +2,7 @@ class_name Instrument
 extends RigidBody3D
 ## A single surgical instrument. Metadata loaded from ProcedureData.
 
-enum State { IN_TRAY, HELD, IN_SLOT, IN_SURGEON }
+enum State { IN_TRAY, HELD, IN_SLOT, IN_SURGEON, IN_ZONE, IN_BASIN, ON_MAYO }
 
 # Per-id 3D models (Blender-generated GLB). Ids not listed fall back to the
 # coloured box mesh so unmodelled instruments still work.

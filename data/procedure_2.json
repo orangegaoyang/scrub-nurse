@@ -1,0 +1,20 @@
+{
+  "procedure_id": "knee_replacement",
+  "procedure_name": "膝关节置换",
+  "procedure_name_en": "Total Knee Replacement",
+  "neutral_zone": true,
+  "back_table": false,
+  "surgery_free_mayo": true,
+  "instruments": [
+	{ "id": "scalpel", "name_cn": "手术刀", "name_en": "Scalpel", "category": "cutting", "purpose": "切皮", "color_r": 0.90, "color_g": 0.20, "color_b": 0.20, "uses": 1, "slot_index": 0 },
+	{ "id": "hemostat", "name_cn": "止血钳", "name_en": "Hemostat", "category": "clamping", "purpose": "钳夹止血", "color_r": 0.20, "color_g": 0.50, "color_b": 0.90, "uses": 1, "slot_index": 1 },
+	{ "id": "forceps", "name_cn": "组织镊", "name_en": "Tissue Forceps", "category": "grasping", "purpose": "夹持组织", "color_r": 0.20, "color_g": 0.80, "color_b": 0.30, "uses": 1, "slot_index": 2 },
+	{ "id": "scissors", "name_cn": "组织剪", "name_en": "Tissue Scissors", "category": "cutting", "purpose": "分离切除", "color_r": 0.95, "color_g": 0.75, "color_b": 0.15, "uses": 2, "slot_index": 3 },
+	{ "id": "gauze", "name_cn": "纱布", "name_en": "Gauze", "category": "dressing", "purpose": "擦血包扎", "color_r": 0.92, "color_g": 0.92, "color_b": 0.92, "uses": 3, "slot_index": 4, "count": 3, "discard": true },
+	{ "id": "needle_holder", "name_cn": "持针器", "name_en": "Needle Holder", "category": "suturing", "purpose": "缝合", "color_r": 0.65, "color_g": 0.30, "color_b": 0.80, "uses": 1, "slot_index": 5 }
+  ],
+  "sequence": [
+	"scalpel", "hemostat", "forceps", "scissors", "gauze",
+	"needle_holder", "scissors", "gauze", "gauze"
+  ]
+}

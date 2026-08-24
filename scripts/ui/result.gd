@@ -14,6 +14,7 @@ const DIM_ALPHA := 0.6
 @onready var stars_box: HBoxContainer = $Card/StarsBox
 @onready var grade: Label = $Card/GradeLabel
 @onready var stats: Label = $Card/StatsLabel
+@onready var progress: Label = $Card/ProgressLabel
 @onready var restart_button: Button = $Card/RestartButton
 
 var _stars: Array = []
@@ -26,10 +27,15 @@ func _ready() -> void:
 	_stars = [stars_box.get_node("Star0"), stars_box.get_node("Star1"), stars_box.get_node("Star2")]
 
 
-func _on_phase_changed(new_phase: int) -> void:
-	if new_phase == GameState.Phase.RESULT:
-		visible = true
-		_show_result()
+func _on_phase_changed(_new_phase: int) -> void:
+	# Read the authoritative phase instead of the event's: a finish can be
+	# triggered synchronously inside the TIDY emission, so this handler may
+	# run again with TIDY after the nested RESULT already showed the card.
+	var phase: int = GameState.current_phase
+	if phase == GameState.Phase.RESULT:
+		if not visible:
+			visible = true
+			_show_result()
 	else:
 		visible = false
 
@@ -42,6 +48,12 @@ func _show_result() -> void:
 	stats.text = "正确 %d    错误 %d    准确率 %.0f%%    用时 %.1f s" % [
 		GameState.surgery_correct, GameState.surgery_wrong, acc, GameState.surgery_elapsed
 	]
+	var proc_id: String = GameState.current_procedure_id()
+	progress.text = "本台 +%d★  ·  全局 %d★(Level %s)  ·  本术式 %d★(Level %s)" % [
+		GameState.last_stars,
+		PlayerProfile.total_stars, _level_roman(PlayerProfile.global_level()),
+		PlayerProfile.procedure_stars(proc_id), _level_roman(PlayerProfile.procedure_level(proc_id)),
+	]
 	# Reset everything for the entrance.
 	dim.color.a = 0.0
 	card.pivot_offset = card.size / 2.0
@@ -50,6 +62,7 @@ func _show_result() -> void:
 	title.modulate.a = 0.0
 	grade.modulate.a = 0.0
 	stats.modulate.a = 0.0
+	progress.modulate.a = 0.0
 	restart_button.modulate.a = 0.0
 	restart_button.disabled = true
 	for s in _stars:
@@ -73,8 +86,19 @@ func _show_result() -> void:
 			tw.tween_property(s, "scale", Vector2.ONE, 0.3)
 	tw.tween_property(grade, "modulate:a", 1.0, 0.3)
 	tw.tween_property(stats, "modulate:a", 1.0, 0.3)
+	tw.tween_property(progress, "modulate:a", 1.0, 0.3)
 	tw.tween_property(restart_button, "modulate:a", 1.0, 0.4)
 	tw.tween_callback(func(): restart_button.disabled = false)
+
+
+func _level_roman(level: int) -> String:
+	match level:
+		3:
+			return "III"
+		2:
+			return "II"
+		_:
+			return "I"
 
 
 func _grade_text(star_count: int) -> String:
@@ -90,4 +114,6 @@ func _grade_text(star_count: int) -> String:
 
 
 func _on_restart() -> void:
-	get_tree().reload_current_scene()
+	# Settlement done — back to the schedule board to pick the next surgery.
+	Transition.fade_out(0.5)
+	get_tree().change_scene_to_file("res://scenes/intro.tscn")

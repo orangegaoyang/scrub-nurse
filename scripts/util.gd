@@ -9,6 +9,21 @@ static func wait(seconds: float) -> void:
 	await (Engine.get_main_loop() as SceneTree).create_timer(seconds).timeout
 
 
+static func find_ancestor(node: Node, klass: Variant) -> Node:
+	## Walk up to 3 levels looking for an ancestor of the given class (pass a
+	## global class script, e.g. `BackZone`, or a native class name string).
+	## Instruments hang off anchors, which may sit one or two levels below
+	## their table/zone root — this makes parent checks robust to both.
+	var p: Node = node
+	for i in 3:
+		if p == null:
+			return null
+		if is_instance_of(p, klass):
+			return p
+		p = p.get_parent()
+	return null
+
+
 static func mouse_to_plane(camera: Camera3D, mouse_pos: Vector2, plane_y: float) -> Vector3:
 	## Where the cursor ray crosses the horizontal plane at `plane_y`.
 	## Returns Vector3.INF when the ray is parallel to the plane or the
