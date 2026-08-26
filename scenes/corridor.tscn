@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://7y0smwwrnoqq"]
 
-[ext_resource type="Script" uid="uid://fdcbwwsd1wm1" path="res://scripts/corridor.gd" id="1_corr"]
-[ext_resource type="PackedScene" uid="uid://p8ihco7f1jyj" path="res://assets/models/corridor/left_door.glb" id="2_door_l"]
-[ext_resource type="PackedScene" uid="uid://bepwqlycuv8mp" path="res://assets/models/corridor/right_door.glb" id="3_door_r"]
-[ext_resource type="PackedScene" uid="uid://dg48v0uraobgb" path="res://assets/models/corridor/hospital_mesh_no_door.glb" id="4_hosp"]
+[ext_resource type="Script" uid="uid://fdcbwwsd1wm1" path="res://scripts/corridor/corridor.gd" id="1_corr"]
+[ext_resource type="PackedScene" uid="uid://fiow274yonlu" path="res://assets/models/corridor/left_door.glb" id="2_door_l"]
+[ext_resource type="PackedScene" uid="uid://buj77vrtrp3lw" path="res://assets/models/corridor/right_door.glb" id="3_door_r"]
+[ext_resource type="PackedScene" uid="uid://dd3xpcaag0rwk" path="res://assets/models/corridor/hospital_mesh_no_door.glb" id="4_hosp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
 sky_top_color = Color(0.83, 0.84, 0.85, 1)

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/prep_complete.gd" id="1_pc"]
+[ext_resource type="Script" uid="uid://dj4u3hivohc6o" path="res://scripts/main/prep_complete.gd" id="1_pc"]
+
 
 [sub_resource type="QuadMesh" id="Mesh_board"]
 size = Vector2(0.44, 0.31)
@@ -9,7 +10,7 @@ size = Vector2(0.44, 0.31)
 script = ExtResource("1_pc")
 
 [node name="Board" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.838671, -0.544639, 0, 0.544639, 0.838671, 0.5, 1.7, 4.5)
+transform = Transform3D(1, 0, 0, 0, 0.687, -0.727, 0, 0.727, 0.687, 0.9, 1.75, 0.8)
 mesh = SubResource("Mesh_board")
 
 [node name="List" type="Node3D" parent="Board"]

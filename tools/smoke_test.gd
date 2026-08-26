@@ -251,7 +251,7 @@ func _test_s1() -> void:
 	var pickup: Node = s1main.get_node("PickupSystem")
 	var surgery: Node = s1main.get_node("SurgerySystem")
 	var surgeon: Node = s1main.get_node("Surgeon")
-	_check(s1main.get_node("small_backtable").visible, "S1: back table visible as the prep staging surface")
+	_check(s1main.get_node("Backtable/BackTableVisual/backtable").visible, "S1: back table visible as the prep staging surface")
 	_check(not s1main.get_node("MayoStand/NeutralZone").visible, "S1: neutral zone hidden")
 	var tray := _instruments_of(s1main, Instrument.State.IN_TRAY)
 	_check(tray.size() == 4, "S1: 4 instruments scattered on the back table, got %d" % tray.size())
@@ -259,7 +259,7 @@ func _test_s1() -> void:
 		pickup._pick_up(inst)
 		pickup._place_in_slot(_slot_for_in(s1main, inst.def.slot_index))
 	GameState.start_surgery()
-	_check(not s1main.get_node("small_backtable").visible, "S1: back table hidden once surgery starts")
+	_check(not s1main.get_node("Backtable/BackTableVisual/backtable").visible, "S1: back table hidden once surgery starts")
 	# S1 has no intro hint: the surgeon begins on his own clock.
 	_check(await _wait_until(func(): return surgeon.is_demanding(), 6.0), "S1: first demand fired")
 	var expected: Array = ProcedureData.demand_sequence.duplicate()
@@ -307,7 +307,7 @@ func _test_s2() -> void:
 	var surgery: Node = s2main.get_node("SurgerySystem")
 	var surgeon: Node = s2main.get_node("Surgeon")
 	var zone: Node = s2main.get_node("MayoStand/NeutralZone")
-	_check(s2main.get_node("small_backtable").visible, "S2: back table visible during prep")
+	_check(s2main.get_node("Backtable/BackTableVisual/backtable").visible, "S2: back table visible during prep")
 	var tray := _instruments_of(s2main, Instrument.State.IN_TRAY)
 	_check(tray.size() == 6, "S2: 6 instruments scattered, got %d" % tray.size())
 	for inst in tray:
@@ -316,7 +316,7 @@ func _test_s2() -> void:
 	GameState.start_surgery()
 	GameState.surgeon_line_start.emit()  # ack the intro hint
 	await _frames(1)
-	_check(not s2main.get_node("small_backtable").visible, "S2: back table hidden during surgery")
+	_check(not s2main.get_node("Backtable/BackTableVisual/backtable").visible, "S2: back table hidden during surgery")
 	_check(zone.visible, "S2: neutral zone visible during surgery")
 	var on_mayo := _instruments_of(s2main, Instrument.State.ON_MAYO)
 	_check(on_mayo.size() == 8, "S2: prep layout + 2 gauze spares released onto the free tray")
@@ -477,7 +477,7 @@ func _instruments_not_on_back() -> Array:
 
 func _back_zones() -> Array:
 	var out: Array = []
-	for c in main.get_node("BackTableZones").get_children():
+	for c in main.get_node("Backtable/BackTableZones").get_children():
 		if c is BackZone:
 			out.append(c)
 	return out

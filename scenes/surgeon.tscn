@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://dkcsxre2uevh2"]
 
-[ext_resource type="Script" uid="uid://cd1pjb3t3vket" path="res://scripts/surgeon_demand.gd" id="1_surg"]
-[ext_resource type="PackedScene" uid="uid://deaqfw6psklja" path="res://assets/models/hand.glb" id="2_hand"]
+[ext_resource type="Script" uid="uid://cd1pjb3t3vket" path="res://scripts/main/surgeon_demand.gd" id="1_surg"]
+[ext_resource type="PackedScene" uid="uid://d2u7pdjsg4hi5" path="res://assets/models/surgery/hand.glb" id="2_hand"]
+
 
 [sub_resource type="BoxShape3D" id="Shape_hand"]
 size = Vector3(0.4, 0.4, 0.4)

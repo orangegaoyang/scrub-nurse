@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/neutral_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://scripts/main/neutral_zone.gd" id="1_zone"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_tray"]
 size = Vector3(0.48, 0.03, 0.28)

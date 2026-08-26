@@ -9,7 +9,6 @@ extends Node
 class InstrumentDef:
 	var id: String
 	var name_cn: String
-	var name_en: String
 	var category: String
 	var purpose: String
 	var color: Color
@@ -18,13 +17,11 @@ class InstrumentDef:
 	var count: int  # how many instances of this instrument are laid out
 	var discard: bool  # the surgeon throws it away himself after use (gauze)
 
-	func _init(p_id: String, p_name_cn: String, p_name_en: String,
-			   p_category: String, p_purpose: String, p_color: Color,
-			   p_slot_index: int, p_uses: int, p_count: int = 1,
-			   p_discard: bool = false) -> void:
+	func _init(p_id: String, p_name_cn: String, p_category: String,
+			   p_purpose: String, p_color: Color, p_slot_index: int, p_uses: int,
+			   p_count: int = 1, p_discard: bool = false) -> void:
 		id = p_id
 		name_cn = p_name_cn
-		name_en = p_name_en
 		category = p_category
 		purpose = p_purpose
 		color = p_color
@@ -50,8 +47,6 @@ var instrument_order: Array[String] = []
 var demand_sequence: Array[String] = []
 # Procedure title (shown on the intro board / sticker)
 var procedure_id: String = ""
-var procedure_name: String = ""
-var procedure_name_en: String = ""
 # Feature flags: which mechanics this procedure teaches.
 var _neutral_zone: bool = false
 var _back_table: bool = false
@@ -93,8 +88,6 @@ func _load_procedure(path: String) -> void:
 
 	var arr: Array = parsed.get("instruments", [])
 	procedure_id = parsed.get("procedure_id", "")
-	procedure_name = parsed.get("procedure_name", "")
-	procedure_name_en = parsed.get("procedure_name_en", "")
 	_neutral_zone = bool(parsed.get("neutral_zone", false))
 	_back_table = bool(parsed.get("back_table", false))
 	_surgery_free_mayo = bool(parsed.get("surgery_free_mayo", false))
@@ -104,7 +97,7 @@ func _load_procedure(path: String) -> void:
 	for entry in arr:
 		var c: Color = Color(entry["color_r"], entry["color_g"], entry["color_b"])
 		var def := InstrumentDef.new(
-			entry["id"], entry["name_cn"], entry["name_en"],
+			entry["id"], entry["name_cn"],
 			entry["category"], entry["purpose"], c,
 			int(entry["slot_index"]), int(entry.get("uses", 1)),
 			int(entry.get("count", 1)), bool(entry.get("discard", false))

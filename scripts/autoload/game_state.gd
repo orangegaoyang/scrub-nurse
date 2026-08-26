@@ -5,14 +5,12 @@ signal phase_changed(new_phase: int)
 signal prep_completed()
 signal prep_item_secured(instrument_id: String)
 signal prep_back_item_secured(instrument_id: String)
-signal surgery_step_completed(step_index: int)
 signal score_updated()
 signal held_changed(instrument)
 signal tidy_progress_changed(on_back_count: int)
-signal surgery_finished(stars: int)
 signal hint_changed(text: String, ack: bool)
 signal view_switched()
-signal surgeon_line_start()  # player acknowledged the intro hint — surgeon may begin
+signal surgeon_line_start()
 
 enum Phase { PREP, COUNTDOWN, SURGERY, TIDY, RESULT }
 
@@ -37,9 +35,6 @@ var back_table_count: int = 0  # instruments currently placed in back table zone
 var discarded_count: int = 0  # gauze the doctor disposed of himself — already handled
 var tidy_skipped: bool = false
 var last_stars: int = 0
-
-# Currently held instrument (null when nothing held)
-var held_instrument = null
 
 # ---------------- Day selection (intro schedule board) ----------------
 # Set when the player clicks a surgery row on the intro schedule; the rest of
@@ -68,7 +63,6 @@ func reset() -> void:
 
 
 func set_held(inst) -> void:
-	held_instrument = inst
 	held_changed.emit(inst)
 
 
@@ -128,7 +122,6 @@ func finish_surgery(skipped_tidy: bool = false) -> void:
 	last_stars = get_stars()
 	# One star feeds two pools: global seniority + this procedure's familiarity.
 	PlayerProfile.add_surgery_result(current_procedure_id(), last_stars)
-	surgery_finished.emit(last_stars)
 	current_phase = Phase.RESULT
 
 

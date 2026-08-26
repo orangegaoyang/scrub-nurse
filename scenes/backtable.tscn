@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://dc7yoeldyxsa1"]
+
+[ext_resource type="PackedScene" uid="uid://bk7yddqmqtjxl" path="res://assets/models/surgery/back_table.glb" id="1_qhgjs"]
+[ext_resource type="PackedScene" path="res://scenes/back_zone.tscn" id="2_t22lb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r2d76"]
+size = Vector3(0.9424316, 0.08, 0.5369507)
+
+[node name="Backtable" type="Node3D" unique_id=737416205]
+
+[node name="BackTableVisual" parent="." unique_id=1157866709 instance=ExtResource("1_qhgjs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010458231, 0.0031180233, -0.0045120716)
+
+[node name="BackTableZones" type="Node3D" parent="." unique_id=1815387776]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76, 0)
+
+[node name="CuttingZone" parent="BackTableZones" unique_id=2131823193 instance=ExtResource("2_t22lb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34, 0, 0)
+category = "cutting"
+
+[node name="ClampingZone" parent="BackTableZones" unique_id=324488735 instance=ExtResource("2_t22lb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17, 0, 0)
+category = "clamping"
+
+[node name="GraspingZone" parent="BackTableZones" unique_id=251685781 instance=ExtResource("2_t22lb")]
+category = "grasping"
+
+[node name="SuturingZone" parent="BackTableZones" unique_id=1649438821 instance=ExtResource("2_t22lb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1702454, 0, 0)
+category = "suturing"
+
+[node name="DressingZone" parent="BackTableZones" unique_id=952129467 instance=ExtResource("2_t22lb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 0, 0)
+category = "dressing"
+
+[node name="BackTableCollision" type="StaticBody3D" parent="." unique_id=2102831597]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010455847, 0.7487709, 0.0035414696)
+collision_layer = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BackTableCollision" unique_id=1766782867]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0029052794, 0, -0.010784924)
+shape = SubResource("BoxShape3D_r2d76")
+
+[node name="BackTableInstruments" type="Node3D" parent="." unique_id=614957787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021954775, 0.74460036, 0.0035412312)

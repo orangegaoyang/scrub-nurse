@@ -118,7 +118,7 @@ func _find_state(id: String, state: int) -> Instrument:
 
 
 func _zone_for(cat: String) -> BackZone:
-	for bz in main.get_node("BackTableZones").get_children():
+	for bz in main.get_node("Backtable/BackTableZones").get_children():
 		if bz is BackZone and bz.category == cat:
 			return bz
 	return null

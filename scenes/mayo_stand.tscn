@@ -1,48 +1,46 @@
 [gd_scene format=3 uid="uid://bjkyabo0ptyil"]
 
-[ext_resource type="PackedScene" uid="uid://bemkawhrc1jxb" path="res://assets/models/surgery/small_mayo.glb" id="1_fvk2y"]
+[ext_resource type="PackedScene" uid="uid://buoi6g1pmb45c" path="res://assets/models/surgery/mayo.glb" id="2_5bv81"]
 [ext_resource type="PackedScene" uid="uid://c4eompo4gl4kd" path="res://scenes/table_slot.tscn" id="3_slot"]
 
 [sub_resource type="BoxShape3D" id="Shape_tray"]
-size = Vector3(0.9, 0.1, 0.6)
+size = Vector3(0.642583, 0.035986327, 0.47)
 
 [node name="MayoStand" type="Node3D" unique_id=1080990136]
 
-[node name="small_mayo" parent="." unique_id=912732788 instance=ExtResource("1_fvk2y")]
-
 [node name="SlotsParent" type="Node3D" parent="." unique_id=2061970712]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8877832, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83795094, 0)
 
 [node name="Slot0" parent="SlotsParent" unique_id=76218999 instance=ExtResource("3_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13749525, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.27, 0, 0)
 slot_index = 0
 
 [node name="Slot1" parent="SlotsParent" unique_id=1031222893 instance=ExtResource("3_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08309828, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.162, 0, 0)
 slot_index = 1
 
 [node name="Slot2" parent="SlotsParent" unique_id=866133692 instance=ExtResource("3_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.026709609, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.054, 0, 0)
 slot_index = 2
 
 [node name="Slot3" parent="SlotsParent" unique_id=421898361 instance=ExtResource("3_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.02794987, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.054, 0, 0)
 slot_index = 3
 
 [node name="Slot4" parent="SlotsParent" unique_id=1366287024 instance=ExtResource("3_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.085352406, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.162, 0, 0)
 slot_index = 4
 
 [node name="Slot5" parent="SlotsParent" unique_id=173162078 instance=ExtResource("3_slot")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14200361, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27, 0, 0)
 slot_index = 5
 
-[node name="InstrumentsParent" type="Node3D" parent="." unique_id=936522280]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0.13952793)
-
 [node name="TrayCollision" type="StaticBody3D" parent="." unique_id=1576288199]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.91, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83644974, 0)
 collision_layer = 8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision" unique_id=1985039294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016115725, -0.0069091916, 0)
 shape = SubResource("Shape_tray")
+
+[node name="MayoVisual" parent="." unique_id=1984454202 instance=ExtResource("2_5bv81")]
