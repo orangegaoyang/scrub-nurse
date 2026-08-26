@@ -1,15 +1,14 @@
 [gd_scene format=3 uid="uid://dc7yoeldyxsa1"]
 
 [ext_resource type="PackedScene" uid="uid://bk7yddqmqtjxl" path="res://assets/models/surgery/back_table.glb" id="1_qhgjs"]
-[ext_resource type="PackedScene" path="res://scenes/back_zone.tscn" id="2_t22lb"]
+[ext_resource type="PackedScene" uid="uid://bli2dobo08afq" path="res://scenes/back_zone.tscn" id="2_t22lb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r2d76"]
-size = Vector3(0.9424316, 0.08, 0.5369507)
+size = Vector3(0.9018677, 0.08, 0.5179871)
 
 [node name="Backtable" type="Node3D" unique_id=737416205]
 
 [node name="BackTableVisual" parent="." unique_id=1157866709 instance=ExtResource("1_qhgjs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010458231, 0.0031180233, -0.0045120716)
 
 [node name="BackTableZones" type="Node3D" parent="." unique_id=1815387776]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76, 0)
@@ -38,7 +37,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010455847, 0.7487709, 0.0
 collision_layer = 8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BackTableCollision" unique_id=1766782867]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0029052794, 0, -0.010784924)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0012511909, 0, -0.0013031065)
 shape = SubResource("BoxShape3D_r2d76")
 
 [node name="BackTableInstruments" type="Node3D" parent="." unique_id=614957787]

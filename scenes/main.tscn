@@ -33,11 +33,11 @@ environment = SubResource("Environment_eb6dy")
 
 [node name="Room" parent="." unique_id=52550198 instance=ExtResource("21_room")]
 
-[node name="Backtable" parent="." instance=ExtResource("22_bt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0.19, -1.21)
+[node name="Backtable" parent="." unique_id=1112774615 instance=ExtResource("22_bt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32258928, 0.19, -1.21)
 
 [node name="CameraMayo" type="Camera3D" parent="." unique_id=557423142]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.85, 1.35)
+transform = Transform3D(0.7380288243, 0.2978941798, -0.6054522991, 0, 0.8972732425, 0.4414756894, 0.6747691631, -0.3258217871, 0.6622135043, 1.1, 1.85, 1.35)
 visible = false
 fov = 38.2
 
@@ -45,28 +45,25 @@ fov = 38.2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
 
 [node name="CameraPrep" type="Camera3D" parent="." unique_id=-1945823610]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.255, 1.5, 0.3)
+transform = Transform3D(1, 0, 0, 0, 0.55337834, 0.8329301, 0, -0.8329301, 0.55337834, 0.62209594, 1.7569672, -0.7939783)
 current = true
-fov = 45.0
+fov = 52.0
 
 [node name="CameraBackTable" type="Camera3D" parent="." unique_id=451434729]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.75, 1.2)
-visible = false
+transform = Transform3D(0.9722406268, -0.0718647242, 0.2226737738, 0, 0.9516655803, 0.3071362376, -0.2339832187, -0.29861033, 0.9252479672, 0.9, 1.75, 1.2)
 fov = 38.2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1179227863]
 transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 6, 2)
-light_energy = 0.0
+light_energy = 0.034
 
 [node name="InstrumentLamp" type="SpotLight3D" parent="." unique_id=366324443]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 1.7, 2.5, 0.3)
-light_energy = 2.0
 shadow_enabled = true
 spot_angle = 75.0
 
 [node name="PrepLamp" type="SpotLight3D" parent="." unique_id=-1914493671]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.9, 3, -0.6)
-light_energy = 2.2
 shadow_enabled = true
 spot_angle = 80.0
 
@@ -76,11 +73,19 @@ light_energy = 1.1
 omni_range = 9.0
 
 [node name="MayoStand" parent="." unique_id=347040338 instance=ExtResource("3_mayo")]
-transform = Transform3D(0.9889187, 0, -0.14845785, 0, 1, 0, 0.14845785, 0, 0.9889187, 1.735, 0.19916615, -1.23)
+transform = Transform3D(0.9889187, 0, -0.14845785, 0, 1, 0, 0.14845785, 0, 0.9889187, 1.0819505, 0.3056138, -1.23)
 
 [node name="NeutralZone" parent="MayoStand" unique_id=-578417476 instance=ExtResource("19_zone")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.85, 0.03)
 visible = false
+
+[node name="DirectorMarkers" type="Node3D" parent="."]
+
+[node name="MayoSurgeryPos" type="Marker3D" parent="DirectorMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.06, 0.306, 0.3)
+
+[node name="EntranceFocus" type="Marker3D" parent="DirectorMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.0, -1.21)
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=454209940]
 

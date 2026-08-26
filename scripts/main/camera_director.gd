@@ -1,9 +1,9 @@
 class_name CameraDirector
 extends RefCounted
 ## 相机调度：开场推镜、切入手术的跟拍、前后视角切换。
+## 空间点位全部来自主场景的 DirectorMarkers 标记，在编辑器里拖动即可调整，
+## 代码里不写任何硬编码坐标。
 
-const MAYO_SURGERY_POS := Vector3(2.06, 0.197, 0.3)
-const MAYO_ROLL_MID := Vector3(2.06, 0.197, -1.23)
 const ROLL_SIDE_TIME := 0.5
 const ROLL_FWD_TIME := 0.9
 const DOLLY_TIME := 1.4
@@ -22,6 +22,9 @@ var _zone: Node3D
 var _surgeon: Node3D
 var _voice: AudioStreamPlayer
 
+var _surgery_pos: Marker3D
+var _entrance_focus: Marker3D
+
 var _on_back_view := false
 var _mayo_rest_pos := Vector3.ZERO
 var _mayo_rest_rot := Vector3.ZERO
@@ -30,7 +33,8 @@ var _prep_rest_fov := 64.5
 
 
 func _init(prep: Camera3D, mayo_cam: Camera3D, back_cam: Camera3D, mayo_stand: Node3D,
-		zone: Node3D, surgeon: Node3D, voice: AudioStreamPlayer) -> void:
+		zone: Node3D, surgeon: Node3D, voice: AudioStreamPlayer,
+		markers: Node3D) -> void:
 	_prep = prep
 	_mayo_cam = mayo_cam
 	_back_cam = back_cam
@@ -38,12 +42,12 @@ func _init(prep: Camera3D, mayo_cam: Camera3D, back_cam: Camera3D, mayo_stand: N
 	_zone = zone
 	_surgeon = surgeon
 	_voice = voice
+	_surgery_pos = markers.get_node("MayoSurgeryPos")
+	_entrance_focus = markers.get_node("EntranceFocus")
 
 
 func prepare() -> void:
-	## 对准目标、记下休整位姿、把编辑器里隐藏的相机打开。
-	_mayo_cam.look_at(Vector3(1.7, 1.02, 0.3))
-	_back_cam.look_at(Vector3(0.9, 0.94, -1.2))
+	## 相机的朝向和位置全部来自编辑器；这里只记下休整位姿并把隐藏的相机打开。
 	_mayo_rest_pos = _mayo_cam.position
 	_mayo_rest_rot = _mayo_cam.rotation_degrees
 	_mayo_rest_fov = _mayo_cam.fov
@@ -56,7 +60,7 @@ func prepare() -> void:
 func entrance_zoom() -> void:
 	## 开场从深处收紧的镜头滑回准备位，然后播一句开场白。
 	var rest_pos := _prep.global_position
-	var focus := Vector3(1.255, 1.0, -1.21)
+	var focus := _entrance_focus.global_position
 	var dir := (rest_pos - focus).normalized()
 	_prep.global_position = rest_pos + dir * ENTRANCE_BACK
 	_prep.fov = _prep_rest_fov * ENTRANCE_FOV_FACTOR
@@ -111,9 +115,13 @@ func push_transition() -> void:
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(_mayo_cam, "fov", _mayo_rest_fov, DOLLY_TIME) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	# 推车两段滚动：先沿墙横移（目标 x、保持当前 y/z），再推向床边标记点。
+	var start := _mayo_stand.global_position
+	var target := _surgery_pos.global_position
+	var mid := Vector3(target.x, start.y, start.z)
 	var roll := _mayo_stand.create_tween()
-	roll.tween_property(_mayo_stand, "global_position", MAYO_ROLL_MID, ROLL_SIDE_TIME) \
+	roll.tween_property(_mayo_stand, "global_position", mid, ROLL_SIDE_TIME) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	roll.tween_property(_mayo_stand, "global_position", MAYO_SURGERY_POS, ROLL_FWD_TIME) \
+	roll.tween_property(_mayo_stand, "global_position", target, ROLL_FWD_TIME) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await tw.finished

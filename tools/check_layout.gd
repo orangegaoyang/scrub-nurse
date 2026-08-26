@@ -35,7 +35,7 @@ func _ready() -> void:
 			_proj(cam_prep, "slot " + str((c as TableSlot).slot_index), c.global_position)
 
 	print("== MAYO frame (surgery pose) ==")
-	mayo.global_position = Vector3(2.06, 0.197, 0.3)
+	mayo.global_position = Vector3(2.06, 0.306, 0.3)
 	var zone: Node3D = main.get_node("MayoStand/NeutralZone")
 	_proj(cam_mayo, "tray center", mayo.global_position)
 	_proj(cam_mayo, "tray L edge", mayo.global_position + Vector3(-0.30, 0.85, 0))

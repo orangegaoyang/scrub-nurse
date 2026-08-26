@@ -16,9 +16,8 @@ var _layout: MayoLayout
 
 func _ready() -> void:
 	ProcedureData.reload_for_selected()
-	RoomSetup.apply(room, $Backtable/BackTableVisual)
 	_camera = CameraDirector.new($CameraPrep, $CameraMayo, $CameraBackTable,
-		mayo, $MayoStand/NeutralZone, surgeon, voice)
+		mayo, $MayoStand/NeutralZone, surgeon, voice, $DirectorMarkers)
 	_camera.prepare()
 	_layout = MayoLayout.new($MayoStand/SlotsParent, back_table, back_zones_parent, mayo)
 	ui.visible = true
