@@ -1,0 +1,11 @@
+ [
+	{ "id": "scalpel", "name_cn": "手术刀", "name_en": "Scalpel", "category": "cutting", "purpose": "切开组织" },
+	{ "id": "hemostat", "name_cn": "止血钳", "name_en": "Hemostat", "category": "clamping", "purpose": "钳夹止血"},
+	{ "id": "forceps", "name_cn": "组织镊", "name_en": "Tissue Forceps", "category": "grasping", "purpose": "夹持组织"},
+	{ "id": "scissors", "name_cn": "组织剪", "name_en": "Suture Scissors", "category": "cutting", "purpose": "分离切除"},
+	{ "id": "gauze", "name_cn": "纱布", "name_en": "Gauze", "category": "dressing", "purpose": "清洁/擦拭", "discard": true },
+	{ "id": "needle_holder", "name_cn": "持针器", "name_en": "Needle Holder", "category": "suturing", "purpose": "缝合伤口"},
+	{ "id": "retractor", "name_cn": "拉钩", "name_en": "Retractor", "category": "grasping", "purpose": "牵开暴露"},
+	{ "id": "towel_clamp", "name_cn": "布巾钳", "name_en": "Towel Clamp", "category": "clamping", "purpose": "固定布巾" },
+	{ "id": "suction", "name_cn": "吸引器", "name_en": "Suction", "category": "dressing", "purpose": "吸除渗液"}
+  ]

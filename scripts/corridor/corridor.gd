@@ -30,7 +30,7 @@ const BOB_AMP := 0.05          # vertical head-bob amplitude at full sprint
 const SPEED_FOV := 4.0         # subtle extra FOV at speed
 const DOOR_OPEN_ANGLE := 105.0
 const DOOR_OPEN_TIME := 0.9
-const MAIN_SCENE := "res://scenes/main.tscn"
+const MAIN_SCENE := "res://scenes/prep.tscn"
 
 @onready var hospital: Node3D = $Hospital
 @onready var camera: Camera3D = $Camera3D

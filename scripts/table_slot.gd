@@ -8,14 +8,12 @@ extends Area3D
 var occupied: bool = false
 var current_instrument: Instrument = null
 
-@onready var highlight: Sprite3D = $Highlight
 
 var _hl: SlotHighlight
+var _ghost: PlacementGhost = null
 
 
 func _ready() -> void:
-	highlight.visible = false
-	_hl = SlotHighlight.new(highlight)
 	GameState.held_changed.connect(_on_held_changed)
 
 
@@ -29,27 +27,33 @@ func can_accept(inst: Instrument) -> bool:
 	return inst.def.slot_index == slot_index
 
 
-func show_place_highlight() -> void:
-	_hl.show_place()
-
-
-func hide_highlight() -> void:
-	_hl.hide()
-
-
-func set_feedback(correct: bool) -> void:
-	_hl.feedback(correct)
-
-
-func clear_feedback() -> void:
-	_hl.hide()
-
-
 func _on_held_changed(inst) -> void:
 	if GameState.current_phase != GameState.Phase.PREP:
-		hide_highlight()
+		_hide_ghost()
 		return
 	if inst != null and can_accept(inst) and not occupied:
-		show_place_highlight()
+		_show_ghost(inst)
 	else:
-		hide_highlight()
+		_hide_ghost()
+
+
+
+func _show_ghost(inst: Instrument) -> void:
+	# Mayo 槽位专用：只对 mayo 器械（slot_index < 6）显示幽灵；back table
+	# 器械不在此显示（can_accept 已保证 slot_index 匹配）。
+	if inst.def.slot_index >= 6:
+		_hide_ghost()
+		return
+	if _ghost == null:
+		_ghost = PlacementGhost.new()
+		_ghost.setup(inst.instrument_id)
+		add_child(_ghost)
+		# 与“放进槽位”时相同的位姿：贴面、转为竖直（长轴沿 X）。
+		_ghost.position = Vector3(0, 0.01, 0)
+		_ghost.rotation_degrees = Vector3(0, 90, 0)
+
+
+func _hide_ghost() -> void:
+	if _ghost != null:
+		_ghost.fade_out()
+		_ghost = null

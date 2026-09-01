@@ -58,9 +58,9 @@ func place_instrument(inst: Instrument) -> bool:
 	var local := inst.position
 	local.x = clampf(local.x, -frame_size.x * 0.5, frame_size.x * 0.5)
 	local.z = clampf(local.z, -frame_size.y * 0.5, frame_size.y * 0.5)
-	local.y = 0.07
+	local.y = 0
 	inst.position = local
-	inst.rotation_degrees = Vector3.ZERO
+	inst.rotation_degrees = Vector3(0, 90, 0)   # 保持“竖着”，别变横
 	inst.collision_layer = 1
 	inst.freeze = true
 	current_instruments.append(inst)

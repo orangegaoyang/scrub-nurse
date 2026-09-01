@@ -3,9 +3,9 @@ extends CharacterBody3D
 ## intent-specific cursor queries so e.g. picking up hits instruments (not the
 ## slot areas that overlap them), placing hits slots, delivery hits the hand.
 
-const REACH: float = 6.0
-const HOLD_Y: float = 1.15  # surgery/tidy hold plane (above the mayo, near the hand)
-const PREP_HOLD_Y: float = 1.05  # prep hold plane (just above the tables, top-down view)
+const REACH: float = 15.0
+const HOLD_Y: float = 1.2  # surgery/tidy hold plane (above the mayo, near the hand)
+const PREP_HOLD_Y: float = 2.3  # prep hold plane (raise the held instrument higher/closer to camera)
 
 signal interact_pressed(target: Node)
 signal inspect_pressed()

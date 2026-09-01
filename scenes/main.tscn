@@ -3,27 +3,29 @@
 [ext_resource type="Script" uid="uid://dtcou6adocxjo" path="res://scripts/main/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="3_mayo"]
-[ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/main/pickup_system.gd" id="4_pickup"]
 [ext_resource type="Script" uid="uid://bm5egqk7wbnlr" path="res://scripts/main/surgery_system.gd" id="6_surgery"]
 [ext_resource type="PackedScene" path="res://scenes/ui/start_button.tscn" id="8_start"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="9_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="10_result"]
 [ext_resource type="PackedScene" path="res://scenes/ui/instrument_list.tscn" id="11_list"]
-[ext_resource type="PackedScene" path="res://scenes/ui/held_info.tscn" id="12_held"]
+[ext_resource type="PackedScene" uid="uid://cyh3nnncx1tb4" path="res://scenes/ui/held_info.tscn" id="12_held"]
 [ext_resource type="PackedScene" path="res://scenes/prep_complete.tscn" id="13_prep"]
 [ext_resource type="PackedScene" path="res://scenes/ui/top_bar.tscn" id="15_topbar"]
 [ext_resource type="PackedScene" uid="uid://dkcsxre2uevh2" path="res://scenes/surgeon.tscn" id="16_surg"]
 [ext_resource type="PackedScene" uid="uid://dflopixtcdaqf" path="res://scenes/ui/demand_bubble.tscn" id="17_bubble"]
-[ext_resource type="Script" uid="uid://c8lhv361oh235" path="res://scripts/main/inspect_system.gd" id="18_inspect"]
-[ext_resource type="PackedScene" path="res://scenes/neutral_zone.tscn" id="19_zone"]
+[ext_resource type="PackedScene" uid="uid://ciwy3oykpfjhx" path="res://scenes/neutral_zone.tscn" id="19_zone"]
 [ext_resource type="PackedScene" uid="uid://dnflb4gj7cat4" path="res://assets/models/surgery/surgery_room.glb" id="21_room"]
 [ext_resource type="PackedScene" uid="uid://dc7yoeldyxsa1" path="res://scenes/backtable.tscn" id="22_bt"]
+[ext_resource type="PackedScene" path="res://scenes/room_dressing.tscn" id="23_dress"]
 
 [sub_resource type="Environment" id="Environment_eb6dy"]
+background_mode = 1
+background_color = Color(0.7, 0.66, 0.62, 1)
 ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.6
+ambient_light_color = Color(1, 0.94, 0.85, 1)
+ambient_light_energy = 0.22
 tonemap_mode = 3
+tonemap_exposure = 0.72
 
 [node name="Main" type="Node3D" unique_id=869468186]
 script = ExtResource("1_main")
@@ -33,77 +35,77 @@ environment = SubResource("Environment_eb6dy")
 
 [node name="Room" parent="." unique_id=52550198 instance=ExtResource("21_room")]
 
-[node name="Backtable" parent="." unique_id=1112774615 instance=ExtResource("22_bt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32258928, 0.19, -1.21)
+[node name="RoomDressing" parent="." unique_id=52550199 instance=ExtResource("23_dress")]
 
 [node name="CameraMayo" type="Camera3D" parent="." unique_id=557423142]
-transform = Transform3D(0.7380288243, 0.2978941798, -0.6054522991, 0, 0.8972732425, 0.4414756894, 0.6747691631, -0.3258217871, 0.6622135043, 1.1, 1.85, 1.35)
-visible = false
+transform = Transform3D(-0.9999844, -0.00244122, -0.0050344355, -0.0055950293, 0.43172613, 0.90198755, -2.8457493e-05, 0.90200156, -0.43173292, 0.45506442, 1.8827454, -0.25507963)
 fov = 38.2
-
-[node name="InspectAnchor" type="Marker3D" parent="CameraMayo" unique_id=1495439849]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
 
 [node name="CameraPrep" type="Camera3D" parent="." unique_id=-1945823610]
-transform = Transform3D(1, 0, 0, 0, 0.55337834, 0.8329301, 0, -0.8329301, 0.55337834, 0.62209594, 1.7569672, -0.7939783)
+transform = Transform3D(1, 0, 0, 0, 0.436449, 0.899729, 0, -0.899729, 0.436449, 0.7508801, 1.6836334, -1.0813527)
 current = true
-fov = 52.0
+fov = 61.0
 
 [node name="CameraBackTable" type="Camera3D" parent="." unique_id=451434729]
-transform = Transform3D(0.9722406268, -0.0718647242, 0.2226737738, 0, 0.9516655803, 0.3071362376, -0.2339832187, -0.29861033, 0.9252479672, 0.9, 1.75, 1.2)
+transform = Transform3D(0.9994534, -0.0023219362, -0.032974776, 0.029616436, 0.5059837, 0.8620344, 0.014683105, -0.86253995, 0.5057759, 0.24603277, 1.796463, -0.70804286)
 fov = 38.2
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1179227863]
-transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 6, 2)
-light_energy = 0.034
 
 [node name="InstrumentLamp" type="SpotLight3D" parent="." unique_id=366324443]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 1.7, 2.5, 0.3)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 0.32
 shadow_enabled = true
 spot_angle = 75.0
 
 [node name="PrepLamp" type="SpotLight3D" parent="." unique_id=-1914493671]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.9, 3, -0.6)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 0.32
 shadow_enabled = true
 spot_angle = 80.0
 
 [node name="RoomFillLight" type="OmniLight3D" parent="." unique_id=366324445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39, 3.5, 0.22)
-light_energy = 1.1
-omni_range = 9.0
+light_color = Color(1, 0.93, 0.84, 1)
+light_energy = 0.28
+shadow_enabled = true
 
 [node name="MayoStand" parent="." unique_id=347040338 instance=ExtResource("3_mayo")]
-transform = Transform3D(0.9889187, 0, -0.14845785, 0, 1, 0, 0.14845785, 0, 0.9889187, 1.0819505, 0.3056138, -1.23)
+transform = Transform3D(0.9998473, 0, 0.017487794, 0, 1, 0, -0.017487794, 0, 0.9998473, 1.1010092, 0.3056138, -1.3762403)
 
-[node name="NeutralZone" parent="MayoStand" unique_id=-578417476 instance=ExtResource("19_zone")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.85, 0.03)
-visible = false
+[node name="Backtable" parent="." unique_id=1112774615 instance=ExtResource("22_bt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3962587, 0.19, -1.3866053)
 
-[node name="DirectorMarkers" type="Node3D" parent="."]
+[node name="NeutralZone" parent="." unique_id=-578417476 instance=ExtResource("19_zone")]
+transform = Transform3D(0.9985687, 0, -0.05348411, 0, 1, 0, 0.05348411, 0, 0.9985687, 0.039989352, 1.156, 0.104601085)
 
-[node name="MayoSurgeryPos" type="Marker3D" parent="DirectorMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.06, 0.306, 0.3)
+[node name="DirectorMarkers" type="Node3D" parent="." unique_id=2089596684]
 
-[node name="EntranceFocus" type="Marker3D" parent="DirectorMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.0, -1.21)
+[node name="MayoSurgeryPos" type="Marker3D" parent="DirectorMarkers" unique_id=1288051517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.61409235, 0.306, 0.007958233)
+
+[node name="EntranceFocus" type="Marker3D" parent="DirectorMarkers" unique_id=620077950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1, -1.21)
 
 [node name="HeldParent" type="Node3D" parent="." unique_id=454209940]
 
 [node name="Voice" type="AudioStreamPlayer" parent="." unique_id=1793297617]
 
 [node name="PrepComplete" parent="." unique_id=209847960 instance=ExtResource("13_prep")]
-visible = false
 
 [node name="Player" parent="." unique_id=978976225 instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 
 [node name="Surgeon" parent="." unique_id=1879711375 instance=ExtResource("16_surg")]
+transform = Transform3D(0.91863716, 0.20030463, -0.34056404, -0.27020666, 0.9473781, -0.17164887, 0.2882609, 0.24970603, 0.9244201, -0.3672905, 1.2956543, 0.21140361)
 
-[node name="PickupSystem" type="Node" parent="." unique_id=293766964]
-script = ExtResource("4_pickup")
+[node name="PoseMarkers" type="Node3D" parent="Surgeon" unique_id=680419544]
 
-[node name="InspectSystem" type="Node" parent="." unique_id=1448411982]
-script = ExtResource("18_inspect")
+[node name="ExtendedPos" type="Marker3D" parent="Surgeon/PoseMarkers" unique_id=680419545]
+transform = Transform3D(0.9999996, 0, -5.9604645e-08, -5.2154064e-08, 0.99999934, -1.0430813e-07, 8.940697e-08, 0, 0.9999996, 0.6512377, 0.09727168, -0.20365523)
+
+[node name="DepositPos" type="Marker3D" parent="Surgeon/PoseMarkers" unique_id=680419546]
+transform = Transform3D(0.9999996, 1.4901161e-08, -2.9802322e-08, 7.450581e-09, 0.99999934, -8.940697e-08, 5.9604645e-08, 0, 0.9999997, 0.3158285, 0.013281822, -0.122635245)
 
 [node name="SurgerySystem" type="Node" parent="." unique_id=962743578]
 script = ExtResource("6_surgery")
@@ -111,7 +113,6 @@ script = ExtResource("6_surgery")
 [node name="UI" type="CanvasLayer" parent="." unique_id=1810462951]
 
 [node name="TopBar" parent="UI" unique_id=546803864 instance=ExtResource("15_topbar")]
-visible = false
 layout_mode = 3
 
 [node name="StartButton" parent="UI" unique_id=1917777412 instance=ExtResource("8_start")]
@@ -127,8 +128,8 @@ layout_mode = 3
 layout_mode = 3
 
 [node name="HeldInfo" parent="UI" unique_id=1139997355 instance=ExtResource("12_held")]
-layout_mode = 3
 
 [node name="DemandBubble" parent="UI" unique_id=254617567 instance=ExtResource("17_bubble")]
+visible = false
 grow_horizontal = 2
 grow_vertical = 2

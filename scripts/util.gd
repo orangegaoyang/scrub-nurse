@@ -2,6 +2,46 @@ class_name Util
 ## Stateless utility helpers shared across scenes.
 
 const VOICE_DIR := "res://assets/audio"
+const TOON_SHADER := preload("res://shaders/toon.gdshader")
+
+
+static func apply_toon(node: Node) -> void:
+	## Recursively swap every MeshInstance3D in the subtree to the shared toon
+	## material, keeping the original albedo texture and base colour. Backfaces
+	## render too (the shader is cull_disabled), which also fixes the room's
+	## see-through backs.
+	if node is MeshInstance3D:
+		var mi := node as MeshInstance3D
+		if mi.mesh != null:
+			for i in mi.mesh.get_surface_count():
+				var mat := mi.get_surface_override_material(i)
+				if mat == null:
+					mat = mi.mesh.surface_get_material(i)
+				var sm := ShaderMaterial.new()
+				sm.shader = TOON_SHADER
+				if mat is StandardMaterial3D:
+					var std := mat as StandardMaterial3D
+					sm.set_shader_parameter("albedo_tex", std.albedo_texture)
+					sm.set_shader_parameter("tint", std.albedo_color)
+				mi.set_surface_override_material(i, sm)
+	for c in node.get_children():
+		apply_toon(c)
+
+
+static func tint_toon(node: Node, tint_color: Color) -> void:
+	## Override the toon material's tint on every MeshInstance3D in the subtree
+	## (after apply_toon has run) — a cheap way to recolor a low-poly model to
+	## match art direction without touching the mesh. Pass a color near 1.0 in
+	## the channels you want to keep (e.g. warm ivory = Color(0.93,0.9,0.83)).
+	if node is MeshInstance3D:
+		var mi := node as MeshInstance3D
+		if mi.mesh != null:
+			for i in mi.mesh.get_surface_count():
+				var mat := mi.get_surface_override_material(i)
+				if mat is ShaderMaterial:
+					(mat as ShaderMaterial).set_shader_parameter("tint", tint_color)
+	for c in node.get_children():
+		tint_toon(c, tint_color)
 
 
 static func wait(seconds: float) -> void:
@@ -73,9 +113,11 @@ static func parallax_offset(camera: Camera3D, plane_y: float, px: float) -> Vect
 	return (right * n.x - up * n.y) * px * world_per_px
 
 
-static func play_voice(player: AudioStreamPlayer, key: String) -> void:
+static func play_voice(player: AudioStreamPlayer,  key: String, sub_path:String="") -> void:
 	## Plays <VOICE_DIR>/<key>.wav on `player` if present; silent otherwise.
-	var path := "%s/%s.wav" % [VOICE_DIR, key]
+	var path = "%s/%s.wav" % [VOICE_DIR, key]
+	if (!sub_path.is_empty()):
+		path = "%s/%s/%s.wav" % [VOICE_DIR, sub_path,key]
 	if not ResourceLoader.exists(path):
 		return
 	var s = load(path)

@@ -78,4 +78,7 @@ func _update_count() -> void:
 
 
 func _on_phase_changed(new_phase: int) -> void:
-	visible = (new_phase == GameState.Phase.PREP)
+	# The instrument list paper appears only once prep is done and the
+	# surgery is underway — during prep the player is guided by the slot
+	# highlights and the held-instrument speech bubble instead.
+	visible = (new_phase == GameState.Phase.SURGERY)

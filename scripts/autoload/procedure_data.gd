@@ -11,20 +11,18 @@ class InstrumentDef:
 	var name_cn: String
 	var category: String
 	var purpose: String
-	var color: Color
 	var slot_index: int
-	var uses: int
+	var uses: int  # total uses, derived from demand-sequence occurrences
 	var count: int  # how many instances of this instrument are laid out
 	var discard: bool  # the surgeon throws it away himself after use (gauze)
 
 	func _init(p_id: String, p_name_cn: String, p_category: String,
-			   p_purpose: String, p_color: Color, p_slot_index: int, p_uses: int,
+			   p_purpose: String, p_slot_index: int, p_uses: int,
 			   p_count: int = 1, p_discard: bool = false) -> void:
 		id = p_id
 		name_cn = p_name_cn
 		category = p_category
 		purpose = p_purpose
-		color = p_color
 		slot_index = p_slot_index
 		uses = p_uses
 		count = p_count
@@ -38,9 +36,14 @@ const FILE_MAP := {
 	"Craniotomy": "res://data/procedure_3.json",
 }
 const DEFAULT_FILE := "res://data/procedure_1.json"
+# Shared instrument catalog: static metadata (name/category/purpose) identical
+# across procedures, stored once here instead of duplicated per procedure file.
+const INSTRUMENTS_PATH := "res://data/instruments.json"
 
 # id -> InstrumentDef
 var instruments: Dictionary = {}
+# id -> raw catalog entry {id,name_cn,name_en,category,purpose} from instruments.json
+var _catalog: Dictionary = {}
 # Unique instrument ids ordered by slot_index (prep layout order).
 var instrument_order: Array[String] = []
 # Demand sequence: ordered list of instrument ids, reuse allowed.
@@ -74,6 +77,26 @@ func surgery_free_mayo() -> bool:
 	return _surgery_free_mayo
 
 
+func _load_catalog() -> void:
+	## Load the static instrument metadata that every procedure shares.
+	_catalog.clear()
+	if not FileAccess.file_exists(INSTRUMENTS_PATH):
+		push_error("ProcedureData: %s not found" % INSTRUMENTS_PATH)
+		return
+	var file := FileAccess.open(INSTRUMENTS_PATH, FileAccess.READ)
+	var text: String = file.get_as_text()
+	file.close()
+	var parsed = JSON.parse_string(text)
+	if typeof(parsed) != TYPE_ARRAY:
+		push_error("ProcedureData: failed to parse %s" % INSTRUMENTS_PATH)
+		return
+	for entry in parsed:
+		var id: String = str(entry.get("id", ""))
+		if id.is_empty():
+			continue
+		_catalog[id] = entry
+
+
 func _load_procedure(path: String) -> void:
 	if not FileAccess.file_exists(path):
 		push_error("ProcedureData: %s not found" % path)
@@ -85,6 +108,7 @@ func _load_procedure(path: String) -> void:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("ProcedureData: failed to parse %s" % path)
 		return
+	_load_catalog()
 
 	var arr: Array = parsed.get("instruments", [])
 	procedure_id = parsed.get("procedure_id", "")
@@ -94,28 +118,54 @@ func _load_procedure(path: String) -> void:
 	instruments.clear()
 	instrument_order.clear()
 	demand_sequence.clear()
+
+	# First pass: collect this procedure's ids + their raw slot_index (needed to
+	# order the legacy no-sequence fallback before defs exist).
+	var raw_order: Array[String] = []
+	var entry_slots: Dictionary = {}
 	for entry in arr:
-		var c: Color = Color(entry["color_r"], entry["color_g"], entry["color_b"])
-		var def := InstrumentDef.new(
-			entry["id"], entry["name_cn"],
-			entry["category"], entry["purpose"], c,
-			int(entry["slot_index"]), int(entry.get("uses", 1)),
-			int(entry.get("count", 1)), bool(entry.get("discard", false))
-		)
-		instruments[entry["id"]] = def
-		instrument_order.append(entry["id"])
+		var id: String = str(entry["id"])
+		raw_order.append(id)
+		entry_slots[id] = int(entry.get("slot_index", 0))
 
-	# Prep layout order = slot_index order.
-	instrument_order.sort_custom(func(a, b): return instruments[a].slot_index < instruments[b].slot_index)
-
-	# Demand sequence: explicit list when present, else one appearance each
-	# in slot order (legacy behaviour).
+	# Demand sequence: explicit list when present, else one appearance per
+	# instrument in slot order (legacy behaviour).
 	var seq: Array = parsed.get("sequence", [])
 	if seq.size() > 0:
 		for id in seq:
 			demand_sequence.append(id)
 	else:
-		demand_sequence = instrument_order.duplicate()
+		var slot_order: Array[String] = raw_order.duplicate()
+		slot_order.sort_custom(func(a, b): return entry_slots[a] < entry_slots[b])
+		demand_sequence = slot_order
+
+	# Total `uses` per instrument = how many times it appears in the demand
+	# sequence, so the per-procedure uses value need not be authored.
+	var use_count: Dictionary = {}
+	for id in demand_sequence:
+		use_count[id] = int(use_count.get(id, 0)) + 1
+
+	# Build defs. Static metadata (name/category/purpose) comes from the shared
+	# catalog; layout (slot_index/count/discard) is per-procedure.
+	for entry in arr:
+		var id: String = str(entry["id"])
+		var cat: Dictionary = _catalog.get(id, {})
+		if cat.is_empty():
+			push_warning("ProcedureData: %s has no entry in %s" % [id, INSTRUMENTS_PATH])
+		var def := InstrumentDef.new(
+			id,
+			str(cat.get("name_cn", "")),
+			str(cat.get("category", "")),
+			str(cat.get("purpose", "")),
+			int(entry.get("slot_index", 0)),
+			int(use_count.get(id, 0)),
+			int(entry.get("count", 1)),
+			bool(cat.get("discard", false))
+		)
+		instruments[id] = def
+		instrument_order.append(id)
+
+	instrument_order.sort_custom(func(a, b): return instruments[a].slot_index < instruments[b].slot_index)
 
 
 func get_instrument(id: String) -> InstrumentDef:

@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://c4eompo4gl4kd"]
 
 [ext_resource type="Script" uid="uid://7pebjf57l7w7" path="res://scripts/table_slot.gd" id="1_slot"]
-[ext_resource type="Texture2D" path="res://assets/2D/common/slot_frame.png" id="2_frame"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_slot"]
-size = Vector3(0.05, 0.1, 0.1)
+size = Vector3(0.05, 0.01, 0.1)
 
 [node name="TableSlot" type="Area3D" unique_id=808810072]
 collision_layer = 2
@@ -13,9 +12,3 @@ script = ExtResource("1_slot")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=88816288]
 shape = SubResource("BoxShape3D_slot")
-
-[node name="Highlight" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.015, 0)
-texture = ExtResource("2_frame")
-pixel_size = 0.001
-no_depth_test = true

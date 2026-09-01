@@ -18,6 +18,11 @@ var _back_zones_parent: Node3D
 var _from_zone := false
 var _zones_lit := false
 
+# 右键取消：记录拿起前的出处（槽位/分区锚点/中立区锚点/mayo），cancel 时放回。
+var _pickup_origin: Node = null
+var _pickup_local := Vector3.ZERO
+var _pickup_rot := Vector3.ZERO
+
 
 func _init(sys: Node, player: CharacterBody3D, surgeon: Surgeon, zone: NeutralZone,
 		mayo: Node3D, held_parent: Node3D, back_zones_parent: Node3D) -> void:
@@ -41,6 +46,9 @@ func note_delivered() -> void:
 func pick_up(inst: Instrument) -> void:
 	_sys.held_instrument = inst
 	_from_zone = inst.state == Instrument.State.IN_ZONE
+	_pickup_origin = inst.get_parent()
+	_pickup_local = inst.position
+	_pickup_rot = inst.rotation_degrees
 	var neutral: NeutralZone = null
 	var parent: Node = inst.get_parent()
 	if parent is TableSlot:
@@ -71,6 +79,7 @@ func pick_up(inst: Instrument) -> void:
 func take_back(inst: Instrument) -> void:
 	## S1：从医生还回来的手里接走用过的器械。
 	_sys.held_instrument = inst
+	_pickup_origin = null  # 接回手里的器械不参与右键取消——必须归位
 	_surgeon.take_back()
 	inst.set_state(Instrument.State.HELD)
 	inst.reparent(_held_parent)
@@ -81,6 +90,56 @@ func take_back(inst: Instrument) -> void:
 	GameState.set_held(inst)
 	Sfx.play("instrument_pick")
 	GameState.hint_changed.emit("放回 Mayo 原槽位", false)
+
+
+func cancel() -> void:
+	## 右键取消：把器械放回拿起前的位置，不带任何放置副作用（不推进医生线、
+	## 不计分）。接回医生手里的器械（take_back）不可取消。
+	var inst: Instrument = _sys.held_instrument
+	if inst == null or _pickup_origin == null or not is_instance_valid(_pickup_origin):
+		return
+	_sys.held_instrument = null
+	var origin: Node = _pickup_origin
+	_pickup_origin = null
+	if origin is TableSlot:
+		var slot := origin as TableSlot
+		inst.set_state(Instrument.State.IN_SLOT)
+		inst.reparent(slot)
+		inst.transform = Transform3D.IDENTITY
+		inst.position = Vector3(0, 0.01, 0)
+		inst.collision_layer = 1
+		inst.freeze = true
+		slot.occupied = true
+		slot.current_instrument = inst
+		if slot.category != "":
+			GameState.set_back_table_count(count_back_table())
+	elif Util.find_ancestor(origin, BackZone) != null:
+		var bzone := Util.find_ancestor(origin, BackZone) as BackZone
+		bzone.place_instrument(inst)
+		inst.collision_layer = 1
+		GameState.set_back_table_count(count_back_table())
+	elif Util.find_ancestor(origin, NeutralZone) != null:
+		var zone := Util.find_ancestor(origin, NeutralZone) as NeutralZone
+		if zone.call("place_instrument", inst) == null:
+			# 医生已经占掉了空出来的锚点——退而求其次放回 Mayo 台面。
+			inst.set_state(Instrument.State.ON_MAYO)
+			inst.reparent(_mayo)
+			inst.position = Vector3(0, TRAY_REST_Y, 0)
+			inst.rotation_degrees = Vector3.ZERO
+			inst.collision_layer = 1
+			inst.freeze = true
+	else:
+		# 从 Mayo 台面拿的：回到托盘上原来的位置。
+		inst.set_state(Instrument.State.ON_MAYO)
+		inst.reparent(origin)
+		inst.position = _pickup_local
+		inst.rotation_degrees = _pickup_rot
+		inst.collision_layer = 1
+		inst.freeze = true
+	_from_zone = false
+	GameState.set_held(null)
+	GameState.hint_changed.emit("", false)
+	Sfx.play("instrument_pick")
 
 
 func place_in_slot(slot: TableSlot) -> void:

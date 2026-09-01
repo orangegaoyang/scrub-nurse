@@ -1,31 +1,31 @@
 extends Node
 ## Pickup system (prep phase): instruments are scattered carelessly on the
 ## back table ("someone left a mess"); pick each one up and organize it onto
-## its Mayo slot (sequence order, hard slots).
+## its Mayo slot (sequence order, hard slots). Prep-only scene.
 
 const SNAP_DIST := 0.08
 
-var player: CharacterBody3D
-var held_parent: Node3D
+@onready var player: CharacterBody3D = get_parent().get_node("Player")
+@onready var held_parent: Node3D = get_parent().get_node("HeldParent")
+@onready var slots_parent: Node3D = get_parent().get_node("MayoStand/SlotsParent")
+@onready var voice: AudioStreamPlayer = get_parent().get_node("Voice")
+
 var held_instrument: Instrument = null
-var voice: AudioStreamPlayer
-var slots_parent: Node3D
-var inspect: InspectSystem
+
+# 右键取消：记录拿起前的出处，cancel 时原样放回。
+var _pickup_origin: Node = null
+var _pickup_global := Vector3.ZERO
+var _pickup_rot := Vector3.ZERO
 
 
 func _ready() -> void:
-	player = get_parent().get_node("Player")
-	held_parent = get_parent().get_node("HeldParent")
-	slots_parent = get_parent().get_node("MayoStand/SlotsParent")
-	inspect = get_parent().get_node_or_null("InspectSystem")
-	voice = get_parent().get_node("Voice")
 	player.interact_pressed.connect(_on_interact)
 	player.inspect_pressed.connect(_on_inspect)
 
 
 func _process(_delta: float) -> void:
 	if held_instrument != null:
-		var target: Vector3 = player.get_cursor_point() + Vector3(0, 0.05, 0)
+		var target: Vector3 = player.get_cursor_point() + Vector3(0, 0, 0)
 		var slot := _highlighted_slot()
 		if slot != null:
 			var d := Vector2(target.x - slot.global_position.x, target.z - slot.global_position.z).length()
@@ -46,10 +46,7 @@ func _highlighted_slot() -> TableSlot:
 
 
 func _on_interact(_target: Node) -> void:
-	if GameState.current_phase != GameState.Phase.PREP:
-		return
-	if inspect != null and inspect.is_inspecting():
-		return
+	# Prep 专用场景：不再判断阶段。
 	if held_instrument == null:
 		var inst := player.get_cursor_instrument() as Instrument
 		if inst != null and inst.state == Instrument.State.IN_TRAY:
@@ -64,28 +61,40 @@ func _on_interact(_target: Node) -> void:
 
 
 func _on_inspect() -> void:
-	# Right-click during prep: bring the instrument under the cursor up for a
-	# close look. Disabled while holding (placing takes priority) or already
-	# inspecting.
-	if GameState.current_phase != GameState.Phase.PREP:
+	# 右键：拿着器械时取消拾取、放回原处；没拿就不处理。
+	if held_instrument != null:
+		cancel_pickup()
+
+
+func cancel_pickup() -> void:
+	## 右键取消：把拿起的器械原样放回散落台上原来的位置。
+	var inst: Instrument = held_instrument
+	if inst == null:
 		return
-	if inspect == null or inspect.is_inspecting() or held_instrument != null:
-		return
-	var inst := player.get_cursor_instrument() as Instrument
-	if inst != null:
-		inspect.inspect(inst)
+	held_instrument = null
+	inst.set_state(Instrument.State.IN_TRAY)
+	inst.reparent(_pickup_origin)
+	inst.global_position = _pickup_global
+	inst.rotation_degrees = _pickup_rot
+	inst.collision_layer = 1
+	inst.freeze = true
+	GameState.set_held(null)
+	Sfx.play("instrument_pick")
 
 
 func _pick_up(inst: Instrument) -> void:
+	_pickup_origin = inst.get_parent()
+	_pickup_global = inst.global_position
+	_pickup_rot = inst.rotation_degrees
 	held_instrument = inst
 	inst.set_state(Instrument.State.HELD)
 	inst.reparent(held_parent)
 	inst.collision_layer = 0
 	inst.freeze = true
-	inst.rotation_degrees = Vector3(15.0, 0.0, 0.0)
+	inst.rotation_degrees = Vector3(15.0, 90.0, 0.0)
 	GameState.set_held(inst)
 	Sfx.play("instrument_pick")
-	Util.play_voice(voice, inst.instrument_id)
+	Util.play_voice(voice, inst.instrument_id, "instruments")
 
 
 func _place_in_slot(slot: TableSlot) -> void:
@@ -94,18 +103,17 @@ func _place_in_slot(slot: TableSlot) -> void:
 		held_instrument = null
 		inst.set_state(Instrument.State.IN_SLOT)
 		inst.reparent(slot)
-		inst.transform = Transform3D.IDENTITY
 		inst.position = Vector3(0, 0.01, 0)
+		inst.rotation_degrees = Vector3(0, 90, 0)   # 保持“竖着”，别变横
 		inst.collision_layer = 1
 		slot.occupied = true
 		slot.current_instrument = inst
-		slot.set_feedback(true)
 		Sfx.play("slot_correct")
 		GameState.set_held(null)
 		GameState.prep_correct += 1
 		GameState.prep_item_secured.emit(inst.instrument_id)
 		GameState.score_updated.emit()
-		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
+		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.total_instances():
 			GameState.start_countdown()
 	else:
 		slot.set_feedback(false)
@@ -127,7 +135,7 @@ func _place_in_zone(bzone: BackZone) -> void:
 		GameState.prep_back_correct += 1
 		GameState.prep_back_item_secured.emit(inst.instrument_id)
 		GameState.score_updated.emit()
-		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
+		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.total_instances():
 			GameState.start_countdown()
 	else:
 		bzone.set_feedback(false)

@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://dehfjunp4dmvk"]
+
+[ext_resource type="Texture2D" uid="uid://cdkoh0wp5jt2f" path="res://assets/2D/prep/bg.png" id="1_iy6xo"]
+[ext_resource type="Script" uid="uid://bygkr18ofns3j" path="res://scripts/prep/prep.gd" id="1_oc61l"]
+[ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="2_oc61l"]
+[ext_resource type="PackedScene" uid="uid://dc7yoeldyxsa1" path="res://scenes/backtable.tscn" id="3_q7hbj"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_q7hbj"]
+[ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/prep/pickup_system.gd" id="6_xw62x"]
+[ext_resource type="PackedScene" uid="uid://cyh3nnncx1tb4" path="res://scenes/ui/held_info.tscn" id="7_ib38y"]
+
+[sub_resource type="Environment" id="Environment_ib38y"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oc61l"]
+transparency = 1
+albedo_color = Color(0.3137255, 0.40784314, 0.57254905, 0.23137255)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_4v2jo"]
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4v2jo"]
+transparency = 1
+albedo_color = Color(0.3137255, 0.40784314, 0.57254905, 0.23137255)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_4yuej"]
+material = SubResource("StandardMaterial3D_4v2jo")
+size = Vector2(1, 0.7)
+
+[node name="Prep" type="Node3D" unique_id=1517100784]
+script = ExtResource("1_oc61l")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1141817333]
+environment = SubResource("Environment_ib38y")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=926738794]
+transform = Transform3D(1, 0, 0, 0, 0.49533775, 0.86870044, 0, -0.86870044, 0.49533775, -0.31443787, 3.3870955, 1.4842172)
+current = true
+fov = 27.1
+
+[node name="BackDrop" type="Sprite3D" parent="Camera3D" unique_id=173978178]
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 1.1920929e-07, -20)
+texture = ExtResource("1_iy6xo")
+
+[node name="MayoStand" parent="." unique_id=1080990136 instance=ExtResource("2_oc61l")]
+transform = Transform3D(0.9859266, 0, 0.16717783, 0, 1, 0, -0.16717783, 0, 0.9859266, 0.32933307, 0, 0)
+
+[node name="Mayo_shadow" type="MeshInstance3D" parent="MayoStand" unique_id=624571809]
+transform = Transform3D(-0.9997879, 0, -0.020599961, 0, 1, 0, 0.020599961, 0, -0.9997879, -0.1393407, 0, -0.09182148)
+material_override = SubResource("StandardMaterial3D_oc61l")
+mesh = SubResource("PlaneMesh_4v2jo")
+
+[node name="Backtable" parent="." unique_id=737416205 instance=ExtResource("3_q7hbj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.49614158, -0.09692383, -0.0067268014)
+
+[node name="Backtable_shadow" type="MeshInstance3D" parent="Backtable" unique_id=1824558737]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22845063, 0, -0.057238042)
+mesh = SubResource("PlaneMesh_4yuej")
+
+[node name="Player" parent="." unique_id=1866177737 instance=ExtResource("5_q7hbj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20879745, 0, 0.40795898)
+
+[node name="HeldParent" type="Node3D" parent="." unique_id=704791207]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1052958124]
+transform = Transform3D(0.649888, -0.3982167, 0.6473555, -0.5713111, 0.3057796, 0.7616446, -0.50124764, -0.864825, -0.028783122, 2.2437515, 5.8924255, -1.2001953)
+light_color = Color(1, 0.9372549, 0.8392157, 1)
+shadow_enabled = true
+sky_mode = 1
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1652490795]
+transform = Transform3D(0.85985225, -0.5105429, -4.3669786e-08, 3.8522998e-08, -2.0655849e-08, 1, -0.5105429, -0.85985225, 1.9066653e-09, -0.16782379, 2.6108918, -0.2053833)
+shadow_enabled = true
+spot_range = 2.526
+spot_angle = 34.25
+
+[node name="AreaLight3D" type="AreaLight3D" parent="." unique_id=1098047156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.059696198, 1.5600281, 0.7872505)
+
+[node name="PickupSystem" type="Node" parent="." unique_id=532111022]
+script = ExtResource("6_xw62x")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=917633046]
+
+[node name="HeldInfo" parent="UI" unique_id=809290927 instance=ExtResource("7_ib38y")]
+
+[node name="Voice" type="AudioStreamPlayer" parent="." unique_id=532397434]
+
+[node name="Voice" type="AudioStreamPlayer" parent="Voice" unique_id=628465524]

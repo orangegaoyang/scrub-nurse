@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b0xe1k6888nsu"]
 
-[ext_resource type="Script" uid="uid://ckg836xvigxjm" path="res://scripts/main/instrument.gd" id="1_inst"]
+[ext_resource type="Script" uid="uid://ckg836xvigxjm" path="res://scripts/prep/instrument.gd" id="1_inst"]
+[ext_resource type="Material" uid="uid://de502b1kl51v0" path="res://assets/material/instrument_material_3d.tres" id="2_k3baj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_body"]
 size = Vector3(0.1, 0.02, 0.14)
@@ -16,10 +17,12 @@ script = ExtResource("1_inst")
 shape = SubResource("BoxShape3D_body")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=583862595]
+material_override = ExtResource("2_k3baj")
 mesh = SubResource("BoxMesh_body")
 
 [node name="NameLabel" type="Label3D" parent="." unique_id=2091599897]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+visible = false
 billboard = 1
 text = "器械"
 font_size = 40

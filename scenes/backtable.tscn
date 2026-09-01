@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bli2dobo08afq" path="res://scenes/back_zone.tscn" id="2_t22lb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r2d76"]
-size = Vector3(0.9018677, 0.08, 0.5179871)
+size = Vector3(0.9, 0.08, 0.52)
 
 [node name="Backtable" type="Node3D" unique_id=737416205]
 
@@ -33,12 +33,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 0, 0)
 category = "dressing"
 
 [node name="BackTableCollision" type="StaticBody3D" parent="." unique_id=2102831597]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010455847, 0.7487709, 0.0035414696)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.749, 0)
 collision_layer = 8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BackTableCollision" unique_id=1766782867]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0012511909, 0, -0.0013031065)
 shape = SubResource("BoxShape3D_r2d76")
 
 [node name="BackTableInstruments" type="Node3D" parent="." unique_id=614957787]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021954775, 0.74460036, 0.0035412312)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.745, 0)

@@ -17,13 +17,23 @@ var _layout: MayoLayout
 func _ready() -> void:
 	ProcedureData.reload_for_selected()
 	_camera = CameraDirector.new($CameraPrep, $CameraMayo, $CameraBackTable,
-		mayo, $MayoStand/NeutralZone, surgeon, voice, $DirectorMarkers)
+		mayo, $NeutralZone, surgeon, voice, $DirectorMarkers)
 	_camera.prepare()
 	_layout = MayoLayout.new($MayoStand/SlotsParent, back_table, back_zones_parent, mayo)
+	# 卡通统一着色:房间、手、器械台、mayo 车全部换 toon 材质(器械在
+	# instrument.gd 里自己换)。
+	Util.apply_toon(room)
+	Util.apply_toon(surgeon.get_node("HandPivot/HandModel"))
+	Util.apply_toon($Backtable/BackTableVisual)
+	Util.apply_toon(mayo.get_node("MayoVisual"))
+	# 暖色基调 + 参考图配色:背台面成青色软垫感,mayo 暖象牙白,房间去冷灰。
+	Util.tint_toon(room, Color(0.9, 0.88, 0.86))
+	Util.tint_toon($Backtable/BackTableVisual, Color(0.52, 0.82, 0.8))
+	Util.tint_toon(mayo.get_node("MayoVisual"), Color(0.94, 0.9, 0.82))
 	ui.visible = true
 	GameState.reset()
 	GameState.phase_changed.connect(_on_phase_changed)
-	$MayoStand/NeutralZone.visible = false
+	$NeutralZone.visible = false
 	surgeon.visible = false
 	_layout.apply_guidance_tier()
 	_layout.apply_back_table_visibility()
@@ -31,7 +41,7 @@ func _ready() -> void:
 		for c in back_zones_parent.get_children():
 			if c is BackZone:
 				(c as BackZone).set_dimmed(false)
-	var spawner := InstrumentSpawner.new($Backtable/BackTableInstruments, mayo)
+	var spawner := InstrumentSpawner.new($Backtable/BackTableInstruments)
 	await spawner.spawn()
 	await _camera.entrance_zoom()
 	Transition.fade_in_from_white(0.5)

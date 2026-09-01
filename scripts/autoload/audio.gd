@@ -13,7 +13,7 @@ var ambience: AudioStreamPlayer
 
 func _ready() -> void:
 	music = _make_player(&"Music", BGM_PATH, -12.7)
-	ambience = _make_player(&"Ambience", AMBIENCE_PATH, -15.0)
+	#ambience = _make_player(&"Ambience", AMBIENCE_PATH, -15.0)
 
 
 func _make_player(bus: StringName, path: String, volume_db: float) -> AudioStreamPlayer:

@@ -9,7 +9,7 @@ size = Vector3(0.642583, 0.035986327, 0.47)
 [node name="MayoStand" type="Node3D" unique_id=1080990136]
 
 [node name="SlotsParent" type="Node3D" parent="." unique_id=2061970712]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83795094, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.81, 0)
 
 [node name="Slot0" parent="SlotsParent" unique_id=76218999 instance=ExtResource("3_slot")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.27, 0, 0)
@@ -36,7 +36,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27, 0, 0)
 slot_index = 5
 
 [node name="TrayCollision" type="StaticBody3D" parent="." unique_id=1576288199]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83644974, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8429805, 0)
 collision_layer = 8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TrayCollision" unique_id=1985039294]
@@ -44,3 +44,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016115725, -0.0069091916, 0
 shape = SubResource("Shape_tray")
 
 [node name="MayoVisual" parent="." unique_id=1984454202 instance=ExtResource("2_5bv81")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)

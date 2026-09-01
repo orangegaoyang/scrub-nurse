@@ -55,7 +55,10 @@ organizer/
 │       ├── game_state.gd
 │       └── procedure_data.gd
 ├── data/
-│   └── procedure.json         # 6 件器械定义 + 6 步需求序列(供 ProcedureData 读取)
+│   ├── instruments.json       # 器械共享目录:id/name_cn/name_en/category/purpose(跨手术共用)
+│   ├── procedure_1.json       # 门诊小手术:器械布局 + 需求序列
+│   ├── procedure_2.json       # 膝关节置换
+│   └── procedure_3.json       # 开颅手术
 └── assets/
 	├── models/
 	├── textures/
@@ -65,22 +68,33 @@ organizer/
 
 ## 数据模型
 
-### Instrument(器械)
-```gdscript
-{
-  "id": "scalpel",
-  "name_cn": "手术刀",
-  "name_en": "Scalpel",
-  "category": "cutting",        # 切开类
-  "purpose": "切皮",
-  "color": Color(0.9, 0.2, 0.2),# 盒体代用颜色
-  "slot_index": 0               # 原槽位(0-5),按使用顺序
-}
+### 器械目录(instruments.json)—— 共享静态元数据
+```json
+{ "id": "scalpel", "name_cn": "手术刀", "name_en": "Scalpel", "category": "cutting", "purpose": "切开组织" }
+{ "id": "gauze",   "name_cn": "纱布",   "name_en": "Gauze",   "category": "dressing", "purpose": "清洁/擦拭", "discard": true }
 ```
 类别:cutting(切开)/ clamping(钳夹)/ grasping(夹持)/ suturing(缝合)/ dressing(敷料)
+器械的静态名称/类别/用途/是否術者丢弃(`discard`)只在这里定义一次,所有手术共用。
 
-### 需求序列
-按槽位顺序 = 使用顺序:`[scalpel, hemostat, forceps, scissors, needle_holder, gauze]`
+### 手术流程(procedure_N.json)—— 每台手术的布局 + 需求
+```json
+{
+  "procedure_id": "appendectomy",
+  "procedure_name": "门诊小手术",
+  "procedure_name_en": "Minor Excision",
+  "neutral_zone": false,
+  "back_table": false,
+  "surgery_free_mayo": false,
+  "instruments": [
+    { "id": "scalpel", "slot_index": 0 },
+    { "id": "gauze", "slot_index": 3, "count": 2, "discard": true }
+  ],
+  "sequence": ["scalpel", "hemostat", "scissors", "gauze", "scissors", "gauze"]
+}
+```
+- `instruments[]` 只写每台手术独有的维护:器械 `id` + `slot_index`(Mayo 槽位 0-5 / back table ≥6),以及可选的 `count`(佈設數量,如纱布多件)。`discard` 已并入器械目录,不再在此写。
+- **`uses` 不手寫** —— 由 procedure_data 依 sequence 中该 id 出现的次数自动统计(`def.uses`)。
+- `sequence`:术中需求序列(可重复出现同一 id,对应多次 `uses`);若省略,则各器械依 slot_index 顺序各出现一次(legacy 行为)。
 
 ## 阶段状态机(GameState)
 ```

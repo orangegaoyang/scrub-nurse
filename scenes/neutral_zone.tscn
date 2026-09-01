@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://ciwy3oykpfjhx"]
 
-[ext_resource type="Script" path="res://scripts/main/neutral_zone.gd" id="1_zone"]
+[ext_resource type="Script" uid="uid://dtnrx4kqihy3m" path="res://scripts/main/neutral_zone.gd" id="1_zone"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_tray"]
 size = Vector3(0.48, 0.03, 0.28)
@@ -10,21 +10,20 @@ albedo_color = Color(0.55, 0.6, 0.65, 1)
 metallic = 0.4
 roughness = 0.6
 
-[node name="NeutralZone" type="Node3D"]
+[node name="NeutralZone" type="Node3D" unique_id=1177749558]
 script = ExtResource("1_zone")
 
-[node name="TrayMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.015, 0)
+[node name="TrayMesh" type="MeshInstance3D" parent="." unique_id=1823317021]
 mesh = SubResource("BoxMesh_tray")
 surface_material_override/0 = SubResource("Material_tray")
 
-[node name="Anchors" type="Node3D" parent="."]
+[node name="Anchors" type="Node3D" parent="." unique_id=1986893727]
 
-[node name="Anchor0" type="Marker3D" parent="Anchors"]
+[node name="Anchor0" type="Marker3D" parent="Anchors" unique_id=793192307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13, 0.04, 0)
 
-[node name="Anchor1" type="Marker3D" parent="Anchors"]
+[node name="Anchor1" type="Marker3D" parent="Anchors" unique_id=1875494025]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 
-[node name="Anchor2" type="Marker3D" parent="Anchors"]
+[node name="Anchor2" type="Marker3D" parent="Anchors" unique_id=933529094]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13, 0.04, 0)

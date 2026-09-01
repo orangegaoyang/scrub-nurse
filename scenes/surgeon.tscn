@@ -3,28 +3,26 @@
 [ext_resource type="Script" uid="uid://cd1pjb3t3vket" path="res://scripts/main/surgeon_demand.gd" id="1_surg"]
 [ext_resource type="PackedScene" uid="uid://d2u7pdjsg4hi5" path="res://assets/models/surgery/hand.glb" id="2_hand"]
 
-
 [sub_resource type="BoxShape3D" id="Shape_hand"]
-size = Vector3(0.4, 0.4, 0.4)
+size = Vector3(0.12230225, 0.07779999, 0.048329927)
 
 [node name="Surgeon" type="Node3D" unique_id=1857129052]
 script = ExtResource("1_surg")
 
 [node name="HandPivot" type="Node3D" parent="." unique_id=1167558948]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 1.7, -0.05)
 
 [node name="HandModel" parent="HandPivot" unique_id=1280865879 instance=ExtResource("2_hand")]
-transform = Transform3D(-0.19995508, -0.0022088885, -0.0036185726, 0.0032570527, 0.029235704, -0.19782487, 0.0027138144, -0.19783929, -0.029193165, -0.052693665, 0.005539894, 0.013061523)
+transform = Transform3D(0.20000002, 0, 0, 0, 0.19999996, 0, 0, 0, 0.20000003, 0, 0, 0)
 
 [node name="HandArea" type="Area3D" parent="HandPivot" unique_id=409280964]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09117681, 0, 0.050862312)
 collision_layer = 4
 collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HandPivot/HandArea" unique_id=1202414634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04551471, -0.039204337, 0.005817618)
 shape = SubResource("Shape_hand")
 
 [node name="HeldAnchor" type="Marker3D" parent="HandPivot" unique_id=19632747]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.099805295, 0, 0.05278164)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.033618808, -0.03361334, 0.0024165474)
 
 [node name="Voice" type="AudioStreamPlayer" parent="." unique_id=247439211]

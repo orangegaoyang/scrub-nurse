@@ -24,9 +24,6 @@ signal hand_retracted()
 
 enum State { IDLE, DEMANDING, USING, RETURNING, DEPOSITING, WAITING }
 
-const EXTENDED_POS := Vector3(1.76, 1.28, 0.33)  # tray's bed edge — demand
-const RETRACTED_POS := Vector3(2.5, 1.65, 0.25)  # behind the right wall, off-frame
-const DEPOSIT_POS := Vector3(1.76, 1.26, 0.33)  # neutral-zone edge — return
 const SLIDE_TIME := 0.25
 const RECEIVE_PAUSE := 1.0  # hand holds the just-received instrument before retracting
 
@@ -39,13 +36,21 @@ var zone: Node3D = null  # NeutralZone, injected by the surgery system
 @onready var hand_area: Area3D = $HandPivot/HandArea
 @onready var held_anchor: Node3D = $HandPivot/HeldAnchor
 @onready var voice: AudioStreamPlayer = $Voice
+# Extended/deposit poses come from the editor: drag the PoseMarkers in the
+# MAIN scene to re-stage the doctor's reach. The retracted pose is the
+# HandPivot's own editor transform — no marker, the editor pose is truth.
+@onready var _extended_pos: Vector3 = $PoseMarkers/ExtendedPos.position
+@onready var _deposit_pos: Vector3 = $PoseMarkers/DepositPos.position
+var _retracted_pos := Vector3.ZERO
 
 var _reject_cooldown: bool = false
 var _move: Tween = null
 
 
 func _ready() -> void:
-	pivot.position = RETRACTED_POS
+	# Capture the HandPivot's editor pose before any move tween touches it:
+	# that pose IS the retracted (using / idle / final) position.
+	_retracted_pos = pivot.position
 
 
 func _move_to(pos: Vector3) -> void:
@@ -62,7 +67,7 @@ func start_demand(id: String) -> void:
 	held_instrument = null
 	# Always slide to the mayo front: first demand comes from the retracted
 	# pose, later ones from the deposit pose at the zone front.
-	_move_to(EXTENDED_POS)
+	_move_to(_extended_pos)
 	demand_changed.emit(id)
 	Util.play_voice(voice, id)
 
@@ -88,7 +93,7 @@ func try_receive(inst: Instrument) -> bool:
 		inst.reparent(held_anchor)
 		inst.transform = Transform3D.IDENTITY
 		state = State.USING
-		_move_to(RETRACTED_POS)
+		_move_to(_retracted_pos)
 		return true
 	else:
 		_reject()
@@ -97,13 +102,13 @@ func try_receive(inst: Instrument) -> bool:
 
 func _reject() -> void:
 	GameState.record_wrong()
-	_move_to(RETRACTED_POS)
+	_move_to(_retracted_pos)
 	hand_retracted.emit()
 	_reject_cooldown = true
 	await Util.wait(0.6)
 	_reject_cooldown = false
 	if state == State.DEMANDING:
-		_move_to(EXTENDED_POS)
+		_move_to(_extended_pos)
 		demand_changed.emit(current_demand_id)
 		Util.play_voice(voice, current_demand_id)
 
@@ -114,7 +119,7 @@ func finish_use() -> void:
 	if state != State.USING or held_instrument == null:
 		return
 	state = State.DEPOSITING
-	_move_to(DEPOSIT_POS)
+	_move_to(_deposit_pos)
 
 
 func return_instrument() -> void:
@@ -123,7 +128,7 @@ func return_instrument() -> void:
 	if state != State.USING or held_instrument == null:
 		return
 	state = State.RETURNING
-	_move_to(EXTENDED_POS)
+	_move_to(_extended_pos)
 	held_instrument.collision_layer = 1
 	returning_instrument.emit(held_instrument.instrument_id)
 
@@ -173,5 +178,5 @@ func retract() -> void:
 	## Doctor's line is finished: pull the hand away.
 	state = State.IDLE
 	held_instrument = null
-	_move_to(RETRACTED_POS)
+	_move_to(_retracted_pos)
 	hand_retracted.emit()

@@ -1,15 +1,14 @@
 extends Control
-## Held-instrument info: shows a one-line description at the bottom of the
-## screen while the player holds an instrument (mirrors the voice line).
+## Held-instrument speech bubble: while the player holds an instrument, show a
+## speech bubble (speaker icon + bilingual line) telling them what it is and
+## what it's used for — the prep-phase teaching prompt. Fades in/out on pickup.
 
 @onready var sentence: Label = $Panel/Sentence
-
 
 func _ready() -> void:
 	visible = false
 	modulate.a = 0.0
 	GameState.held_changed.connect(_on_held_changed)
-
 
 func _on_held_changed(inst) -> void:
 	if inst == null:

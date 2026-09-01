@@ -12,9 +12,12 @@ const MODELS: Dictionary = {
 	"forceps": preload("res://assets/models/instruments/forceps.glb"),
 	"scissors": preload("res://assets/models/instruments/scissors.glb"),
 	"needle_holder": preload("res://assets/models/instruments/needle_holder.glb"),
-	"gauze": preload("res://assets/models/instruments/Gauze.glb"),
+	"gauze": preload("res://assets/models/instruments/gauze.glb"),
 }
-const DEFAULT_MODEL_SCALE := Vector3(0.5, 0.5, 0.5)
+
+# 所有器械共用的材质（assets/material/instrument_material_3d.tres，银色金属）。
+# 真实模型与备用盒体都强制用它，保证观感统一。
+const INSTRUMENT_MATERIAL := preload("res://assets/material/instrument_material_3d.tres")
 
 @export var instrument_id: String = ""
 var def  # ProcedureData.InstrumentDef (untyped to access inner class fields)
@@ -45,21 +48,40 @@ func _apply_model() -> void:
 		# Use the real 3D model; hide the placeholder box.
 		mesh.visible = false
 		var model: Node3D = MODELS[instrument_id].instantiate()
-		model.scale = DEFAULT_MODEL_SCALE
+		#model.scale = DEFAULT_MODEL_SCALE
 		add_child(model)
 		_fit_collision(model)
+		# 纱布（gauze）保留它自己的材质（无菌纱布观感），其余器械强制共享材质。
+		if instrument_id != "gauze":
+			_apply_shared_material(model)
 	else:
-		# Fallback: coloured box.
-		var mat := StandardMaterial3D.new()
-		mat.albedo_color = def.color
-		mesh.material_override = mat
+		# Fallback: box，同样用共享材质，与其它器械观感一致。
+		mesh.material_override = INSTRUMENT_MATERIAL
+
+
+func _apply_shared_material(node: Node) -> void:
+	## 把共享材质打到子树里每一个 MeshInstance3D 上（覆盖该网格面片自身的材质）。
+	if node is MeshInstance3D:
+		var mi := node as MeshInstance3D
+		if mi.mesh != null:
+			mi.material_override = INSTRUMENT_MATERIAL
+	for c in node.get_children():
+		_apply_shared_material(c)
 
 
 func _fit_collision(model: Node3D) -> void:
-	# Size the collision box to the model's real bounding box (in this
-	# instrument's local space) so each instrument's click area matches its
-	# own model. Instruments are frozen, so this only affects raycasts.
-	var aabb := _subtree_aabb(model, Transform3D.IDENTITY)
+	# 把碰撞盒改成和真实模型一样大、一样位置，这样点击判定区（射线捡取）才和看
+	# 到的模型对得上。器械都被 freeze，碰撞盒只用来做 raycast。glb 都是单节点单
+	# 网格；万一 Godot 包了一层 Node3D，就取第一个 MeshInstance3D。
+	var mi := model as MeshInstance3D
+	if mi == null:
+		for c in model.get_children():
+			if c is MeshInstance3D:
+				mi = c
+				break
+	if mi == null:
+		return
+	var aabb := mi.get_aabb()   # 模型无变换，局部 AABB 即真实包围盒
 	if aabb.size.length() < 0.001:
 		return
 	var box := BoxShape3D.new()
@@ -67,47 +89,6 @@ func _fit_collision(model: Node3D) -> void:
 	var col: CollisionShape3D = $CollisionShape3D
 	col.shape = box
 	col.position = aabb.get_center()
-
-
-func _subtree_aabb(node: Node3D, parent_xform: Transform3D) -> AABB:
-	var self_xform: Transform3D = parent_xform * node.transform
-	var result := AABB()
-	var has := false
-	if node is MeshInstance3D:
-		var m := node as MeshInstance3D
-		var transformed := _xform_aabb(m.get_aabb(), self_xform)
-		if transformed.size.length() > 0.001:
-			result = transformed
-			has = true
-	for c in node.get_children():
-		if c is Node3D:
-			var c_aabb := _subtree_aabb(c, self_xform)
-			if c_aabb.size.length() > 0.001:
-				if has:
-					result = result.merge(c_aabb)
-				else:
-					result = c_aabb
-					has = true
-	return result
-
-
-func _xform_aabb(a: AABB, x: Transform3D) -> AABB:
-	var p := a.position
-	var e := a.end
-	var pts: Array[Vector3] = [
-		x * Vector3(p.x, p.y, p.z),
-		x * Vector3(e.x, p.y, p.z),
-		x * Vector3(p.x, e.y, p.z),
-		x * Vector3(e.x, e.y, p.z),
-		x * Vector3(p.x, p.y, e.z),
-		x * Vector3(e.x, p.y, e.z),
-		x * Vector3(p.x, e.y, e.z),
-		x * Vector3(e.x, e.y, e.z),
-	]
-	var out := AABB(pts[0], Vector3.ZERO)
-	for i in range(1, pts.size()):
-		out = out.expand(pts[i])
-	return out
 
 
 func set_state(s: int) -> void:

@@ -41,7 +41,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not visible:
 		return
-	var zone: Node = get_node_or_null("/root/Main/MayoStand/NeutralZone")
+	var zone: Node = get_node_or_null("/root/Main/NeutralZone")
 	if zone != null:
 		capacity_label.text = "中立区 %d/%d" % [zone.count(), zone.capacity]
 		if zone.count() > _last_zone_count:

@@ -18,13 +18,14 @@ func _ready() -> void:
 	_player = get_parent().get_node("Player")
 	_held_parent = get_parent().get_node("HeldParent")
 	_surgeon = get_parent().get_node_or_null("Surgeon")
-	_zone = get_parent().get_node_or_null("MayoStand/NeutralZone")
+	_zone = get_parent().get_node_or_null("NeutralZone")
 	_back_zones_parent = get_parent().get_node_or_null("Backtable/BackTableZones")
 	var mayo: Node3D = get_parent().get_node("MayoStand")
 	_line = SurgeonLine.new(self, _surgeon, _zone)
 	_nurse = NurseActions.new(self, _player, _surgeon, _zone, mayo, _held_parent,
 		_back_zones_parent)
 	_player.interact_pressed.connect(_on_interact)
+	_player.inspect_pressed.connect(_on_inspect)
 	GameState.phase_changed.connect(_on_phase_changed)
 	GameState.surgeon_line_start.connect(_line.on_line_start)
 	if _surgeon != null:
@@ -88,6 +89,19 @@ func _on_interact(_target: Node) -> void:
 				_place_on_mayo(tray_point)
 
 
+func _on_inspect() -> void:
+	cancel_pickup()
+
+
+func cancel_pickup() -> void:
+	## 右键取消：把拿起的器械放回拿起前的位置。
+	var phase: int = GameState.current_phase
+	if phase != GameState.Phase.SURGERY and phase != GameState.Phase.TIDY:
+		return
+	if held_instrument != null:
+		_nurse.cancel()
+
+
 # ---------------- 医生线入口 ----------------
 
 func _check_delivery() -> void:
@@ -115,7 +129,7 @@ func count_back_table() -> int:
 	return _nurse.count_back_table()
 
 
-# ---------------- 护士线转发（smoke_test 也走这里） ----------------
+# ---------------- 护士线转发 ----------------
 
 func _pick_up(inst: Instrument) -> void:
 	_nurse.pick_up(inst)
