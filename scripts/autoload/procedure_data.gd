@@ -9,6 +9,7 @@ extends Node
 class InstrumentDef:
 	var id: String
 	var name_cn: String
+	var name_en: String
 	var category: String
 	var purpose: String
 	var slot_index: int
@@ -16,11 +17,12 @@ class InstrumentDef:
 	var count: int  # how many instances of this instrument are laid out
 	var discard: bool  # the surgeon throws it away himself after use (gauze)
 
-	func _init(p_id: String, p_name_cn: String, p_category: String,
+	func _init(p_id: String, p_name_cn: String,p_name_en: String, p_category: String,
 			   p_purpose: String, p_slot_index: int, p_uses: int,
 			   p_count: int = 1, p_discard: bool = false) -> void:
 		id = p_id
 		name_cn = p_name_cn
+		name_en = p_name_en
 		category = p_category
 		purpose = p_purpose
 		slot_index = p_slot_index
@@ -155,6 +157,7 @@ func _load_procedure(path: String) -> void:
 		var def := InstrumentDef.new(
 			id,
 			str(cat.get("name_cn", "")),
+			str(cat.get("name_en", "")),
 			str(cat.get("category", "")),
 			str(cat.get("purpose", "")),
 			int(entry.get("slot_index", 0)),

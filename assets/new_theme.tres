@@ -1,0 +1,40 @@
+[gd_resource type="Theme" format=3 uid="uid://dkkj034y7v2t3"]
+
+[ext_resource type="FontFile" uid="uid://dqvwydma62wwf" path="res://assets/fonts/PatrickHand-Regular.ttf" id="1_6pma3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kxa5r"]
+content_margin_left = 9.0
+content_margin_top = 9.0
+content_margin_right = 9.0
+content_margin_bottom = 9.0
+bg_color = Color(0.89, 0.86, 0.79, 1)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.55, 0.82, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6fscb"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+
+[resource]
+Label/colors/font_color = Color(0.23137255, 0.31764707, 0.44705883, 1)
+Label/colors/font_outline_color = Color(1, 1, 1, 0)
+Label/colors/font_shadow_color = Color(1, 1, 1, 0)
+Label/constants/line_spacing = 4
+Label/constants/outline_size = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/constants/shadow_outline_size = 1
+Label/fonts/font = ExtResource("1_6pma3")
+Label/styles/focus = SubResource("StyleBoxFlat_kxa5r")
+Label/styles/normal = SubResource("StyleBoxEmpty_6fscb")

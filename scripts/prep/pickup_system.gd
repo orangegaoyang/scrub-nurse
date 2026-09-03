@@ -113,10 +113,9 @@ func _place_in_slot(slot: TableSlot) -> void:
 		GameState.prep_correct += 1
 		GameState.prep_item_secured.emit(inst.instrument_id)
 		GameState.score_updated.emit()
-		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.total_instances():
+		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
 			GameState.start_countdown()
 	else:
-		slot.set_feedback(false)
 		Sfx.play("slot_wrong")
 		inst.play_reject()
 
@@ -129,15 +128,15 @@ func _place_in_zone(bzone: BackZone) -> void:
 		held_instrument = null
 		bzone.place_instrument(inst)
 		inst.collision_layer = 1
-		bzone.set_feedback(true)
+		# bzone.set_feedback(true)
 		GameState.set_held(null)
 		Sfx.play("slot_correct")
 		GameState.prep_back_correct += 1
 		GameState.prep_back_item_secured.emit(inst.instrument_id)
 		GameState.score_updated.emit()
-		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.total_instances():
+		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
 			GameState.start_countdown()
 	else:
-		bzone.set_feedback(false)
+		# bzone.set_feedback(false)
 		Sfx.play("slot_wrong")
 		inst.play_reject()

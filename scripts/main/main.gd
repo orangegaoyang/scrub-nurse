@@ -15,6 +15,8 @@ var _layout: MayoLayout
 
 
 func _ready() -> void:
+	var direct := GameState.enter_surgery_direct
+	GameState.enter_surgery_direct = false
 	ProcedureData.reload_for_selected()
 	_camera = CameraDirector.new($CameraPrep, $CameraMayo, $CameraBackTable,
 		mayo, $NeutralZone, surgeon, voice, $DirectorMarkers)
@@ -43,7 +45,14 @@ func _ready() -> void:
 				(c as BackZone).set_dimmed(false)
 	var spawner := InstrumentSpawner.new($Backtable/BackTableInstruments)
 	await spawner.spawn()
-	await _camera.entrance_zoom()
+	if direct:
+		# Hand-off from the prep check-list: instruments are already organized,
+		# so seat them into their mayo/back slots and start the surgery phase
+		# (the phase handler reveals the surgeon + dollies the mayo in).
+		_seat_instruments()
+		GameState.start_surgery()
+	else:
+		await _camera.entrance_zoom()
 	Transition.fade_in_from_white(0.5)
 
 
@@ -68,3 +77,50 @@ func _on_phase_changed(new_phase: int) -> void:
 		_camera.push_transition()
 	elif new_phase == GameState.Phase.TIDY:
 		_layout.apply_back_table_visibility()
+
+
+func _seat_instruments() -> void:
+	## Hand-off entry from the prep check-list: the instruments were already
+	## organized, so seat each one into its Mayo slot (slot_index < 6) or
+	## back-table category zone (>= 6). Free-Mayo procedures get their slot
+	## items laid onto the tray by release_slot_instruments() during the
+	## SURGERY phase change.
+	var slots: Array[TableSlot] = []
+	for c in $MayoStand/SlotsParent.get_children():
+		if c is TableSlot:
+			slots.append(c)
+	var zones: Array[BackZone] = []
+	for c in back_zones_parent.get_children():
+		if c is BackZone:
+			zones.append(c)
+	var spawned: Array[Node] = $Backtable/BackTableInstruments.get_children()
+	for n in spawned:
+		var inst := n as Instrument
+		if inst == null or inst.def == null:
+			continue
+		var idx: int = inst.def.slot_index
+		if idx < 6:
+			var target: TableSlot = null
+			for s in slots:
+				if s.slot_index == idx:
+					target = s
+					break
+			if target == null:
+				continue
+			inst.set_state(Instrument.State.IN_SLOT)
+			inst.reparent(target)
+			inst.position = Vector3(0, 0.01, 0)
+			inst.rotation_degrees = Vector3(0, 90, 0)
+			inst.collision_layer = 1
+			inst.freeze = true
+			target.occupied = true
+			target.current_instrument = inst
+		else:
+			var bz: BackZone = null
+			for z in zones:
+				if z.category == inst.def.category:
+					bz = z
+					break
+			if bz != null:
+				bz.place_instrument(inst)
+				inst.collision_layer = 1
