@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c4byt8ywf5ms6"]
+
+[ext_resource type="Texture2D" uid="uid://ds2hmh2pao8vd" path="res://assets/2D/surgery/surgery_bg.png" id="1_m6jor"]
+[ext_resource type="Script" uid="uid://jv2x7s0abfeu" path="res://scenes/surgery.gd" id="1_qe6pj"]
+[ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="2_qe6pj"]
+[ext_resource type="PackedScene" uid="uid://dkcsxre2uevh2" path="res://scenes/surgeon.tscn" id="4_c8uar"]
+
+[node name="Surgery" type="Node3D" unique_id=1526836847]
+script = ExtResource("1_qe6pj")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1307549802]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0.27580273, 2.6655645, 0.8012607)
+current = true
+fov = 27.0
+
+[node name="Sprite3D" type="Sprite3D" parent="Camera3D" unique_id=127255666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
+texture = ExtResource("1_m6jor")
+
+[node name="MayoStand" parent="." unique_id=1080990136 instance=ExtResource("2_qe6pj")]
+
+[node name="Surgeon" parent="." unique_id=1857129052 instance=ExtResource("4_c8uar")]
+transform = Transform3D(-1, 7.5710375e-08, 4.37114e-08, 0, 0.5000001, -0.86602575, -8.742278e-08, -0.86602575, -0.5000001, 1.1, 1.3, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=964011513]
+transform = Transform3D(0.649888, -0.3982167, 0.6473555, -0.5713111, 0.3057796, 0.7616446, -0.50124764, -0.864825, -0.028783122, 2.2437515, 5.8924255, -1.2001953)
+light_color = Color(1, 0.9372549, 0.8392157, 1)
+shadow_enabled = true
+sky_mode = 1
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1746616260]
+transform = Transform3D(0.85985225, -0.5105429, -4.3669786e-08, 3.8522998e-08, -2.0655849e-08, 1, -0.5105429, -0.85985225, 1.9066653e-09, -0.16782379, 2.6108918, -0.2053833)
+shadow_enabled = true
+spot_range = 2.526
+spot_angle = 34.25
+
+[node name="AreaLight3D" type="AreaLight3D" parent="." unique_id=1101499709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.059696198, 1.5600281, 0.7872505)

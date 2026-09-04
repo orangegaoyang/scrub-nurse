@@ -12,7 +12,7 @@ extends Control
 
 signal list_presented()
 
-const MAIN_SCENE := "res://scenes/main.tscn"       # surgical hand-off target (for now)
+const MAIN_SCENE := "res://scenes/surgery.tscn"   # surgical hand-off target
 const ROW_SCENE: PackedScene = preload("res://scenes/ui/checklist_row.tscn")
 
 @onready var rows_box: VBoxContainer = $Card/Content/RowsBox

@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_q7hbj"]
 [ext_resource type="Script" uid="uid://ddl6uvs85xi1q" path="res://scripts/prep/pickup_system.gd" id="6_xw62x"]
 [ext_resource type="PackedScene" uid="uid://cyh3nnncx1tb4" path="res://scenes/ui/held_info.tscn" id="7_ib38y"]
-[ext_resource type="PackedScene" path="res://scenes/ui/checklist_overlay.tscn" id="8_checklist"]
+[ext_resource type="PackedScene" uid="uid://drpykfujya5he" path="res://scenes/ui/checklist_overlay.tscn" id="8_checklist"]
 
 [sub_resource type="Environment" id="Environment_ib38y"]
 
@@ -33,9 +33,9 @@ script = ExtResource("1_oc61l")
 environment = SubResource("Environment_ib38y")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=926738794]
-transform = Transform3D(1, 0, 0, 0, 0.49533775, 0.86870044, 0, -0.86870044, 0.49533775, -0.31443787, 3.3870955, 1.4842172)
+transform = Transform3D(1, 0, 0, 0, 0.49999994, 0.8660254, 0, -0.8660254, 0.49999994, -0.31443787, 3.3870955, 1.4842172)
 current = true
-fov = 27.1
+fov = 27.0
 
 [node name="BackDrop" type="Sprite3D" parent="Camera3D" unique_id=173978178]
 transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 1.1920929e-07, -20)
@@ -83,7 +83,7 @@ script = ExtResource("6_xw62x")
 
 [node name="HeldInfo" parent="UI" unique_id=809290927 instance=ExtResource("7_ib38y")]
 
-[node name="ChecklistOverlay" parent="UI" instance=ExtResource("8_checklist")]
+[node name="ChecklistOverlay" parent="UI" unique_id=329325920 instance=ExtResource("8_checklist")]
 
 [node name="Voice" type="AudioStreamPlayer" parent="." unique_id=532397434]
 

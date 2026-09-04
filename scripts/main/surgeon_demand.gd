@@ -39,8 +39,11 @@ var zone: Node3D = null  # NeutralZone, injected by the surgery system
 # Extended/deposit poses come from the editor: drag the PoseMarkers in the
 # MAIN scene to re-stage the doctor's reach. The retracted pose is the
 # HandPivot's own editor transform — no marker, the editor pose is truth.
-@onready var _extended_pos: Vector3 = $PoseMarkers/ExtendedPos.position
-@onready var _deposit_pos: Vector3 = $PoseMarkers/DepositPos.position
+#@onready var _extended_pos: Vector3 = $PoseMarkers/ExtendedPos.position
+var _extended_pos: Vector3 = Vector3(0.8,1.3,0)
+#@onready var _deposit_pos: Vector3 = $PoseMarkers/DepositPos.position
+var _deposit_pos: Vector3 = Vector3(1.1,1.3,0)
+
 var _retracted_pos := Vector3.ZERO
 
 var _reject_cooldown: bool = false
