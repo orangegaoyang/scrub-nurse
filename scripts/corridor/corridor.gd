@@ -2,7 +2,7 @@ extends Node3D
 ## First-person corridor run: after the intro's focus-zoom drops to black,
 ## the camera sprints down the modelled hospital corridor, pushes the OR
 ## doors open and steps into the dark room as the screen fades out and hands
-## off to main.tscn. Pure 3D, so it works on every platform (Web included).
+## off to prep.tscn. Pure 3D, so it works on every platform (Web included).
 ## The corridor is hospital_mesh_no_door.glb; the doors are the matching
 ## left_door.glb / right_door.glb pair (cut from the corridor model with
 ## their world transforms intact, so they already sit in the frame).

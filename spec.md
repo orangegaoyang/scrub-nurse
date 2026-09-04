@@ -29,7 +29,8 @@ organizer/
 ├── spec.md
 ├── todo.md
 ├── scenes/
-│   ├── main.tscn              # 入口,流程控制 + 环境
+│   ├── surgery.tscn           # 手术阶段(递送循环 + 结算)
+│   ├── prep.tscn              # 准备阶段(整理器械台 → 清单 → 进入手术)
 │   ├── player.tscn            # 第一人称玩家(CharacterBody3D + Camera3D)
 │   ├── instrument_table.tscn  # 器械台 + 6 槽位(Area3D)
 │   ├── cart.tscn              # 推车(准备阶段器械来源)
@@ -107,12 +108,11 @@ PREP → COUNTDOWN → SURGERY → RESULT
 
 信号:`phase_changed(new_phase)`、`held_changed(instrument)`、`score_updated()`、`prep_completed()`
 
-## 场景布局(main.tscn)
-- 玩家(护士)立于 Mayo 台前,第一人称面向台面(-Z)
-- **Mayo 台**:病人左手侧,稍偏左 `(-0.3, 0, -0.6)`;6 槽位 + 器械散放区
-- **医生**:站在病人右手侧、Mayo 对面偏右 `(1.0, 0, -1.4)`,旋转约 164° 面向护士;躯干+头+手
-- 医生手:平时在病人腹部(低位 y≈0.9),需求时抬到腰位(y≈1.05)并略前伸
-- 术区/无菌布:暂未做(后续 6B 美术)
+## 场景布局(surgery.tscn)
+- 固定俯视相机,Mayo 台在原点;护士以光标拾取/放置(无第一人称走位)
+- **Mayo 台**:原点,6 槽位 + 器械散放区(TrayCollision 层 8)
+- **医生**:病人右手侧 `(1.1, 1.3, 0)` 附近;手平时收回,需求时伸到 Mayo 前
+- **中立区 / 背台**:按术式显隐(has_neutral_zone / has_back_table);结算卡挂在 UI 层
 
 ## 术中需求节奏(Conductor + surgeon_line.gd)
 - 节拍时钟 `scripts/autoload/conductor.gd`:运行时合成 4/4 单小节鼓点循环
@@ -170,5 +170,5 @@ godot --headless --import
 godot
 
 # 运行指定场景
-godot res://scenes/main.tscn
+godot res://scenes/surgery.tscn
 ```

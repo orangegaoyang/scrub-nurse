@@ -8,7 +8,7 @@ extends Control
 ## drives the presentation — one row per instrument in
 ## ProcedureData.instrument_order (number badge + 名称 + green ✓, no icons),
 ## items fade in one-by-one and get checked, then the button fades in. Pressing
-## the button hands off to the surgery scene (main.tscn for now).
+## the button hands off to the surgery scene.
 
 signal list_presented()
 

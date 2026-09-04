@@ -39,12 +39,12 @@ var last_stars: int = 0
 # ---------------- Day selection (intro schedule board) ----------------
 # Set when the player clicks a surgery row on the intro schedule; the rest of
 # the day's flow can use it. Not cleared by reset(): the selection is made in
-# the intro scene, and main.gd calls reset() after it.
+# the intro scene, and surgery.gd calls reset() after it.
 var selected_surgery_index: int = -1
 var selected_surgery: Dictionary = {}
 
 # Set by the prep check-list's "开始手术" button before switching to the
-# surgery scene, so main.tscn can seat instruments and start in SURGERY
+# surgery scene, so surgery.tscn can seat instruments and start in SURGERY
 # directly instead of replaying the prep arrangement.
 var enter_surgery_direct: bool = false
 
