@@ -1,9 +1,8 @@
 extends Node3D
-## Surgery scene. On hand-off from the prep check-list
-## (GameState.enter_surgery_direct), bring the mayo up at the origin (0,0,0) —
-## where the invisible placeholder sits — and seat the arranged instruments.
-## Running the scene directly (F6) does the same after the fade-in, so the
-## surgery phase is always playable here: SurgerySystem (pickup/delivery) +
+## Surgery scene. Bring the mayo up at the origin (0,0,0) — where the invisible
+## placeholder sits — seat the instruments the player organized in prep, then
+## start the surgery phase. Running the scene directly (F6) does the same, so
+## the surgery phase is always playable here: SurgerySystem (pickup/delivery) +
 ## SurgeonLine (beat-driven demands) are wired as scene nodes, the neutral
 ## zone / back table show per procedure, and the result card lives in UI.
 
@@ -15,16 +14,10 @@ const INSTRUMENT_SCENE: PackedScene = preload("res://scenes/instrument.tscn")
 
 
 func _ready() -> void:
-	var direct := GameState.enter_surgery_direct
-	GameState.enter_surgery_direct = false
 	GameState.reset()
 	ProcedureData.reload_for_selected()
-	if direct:
-		_enter_surgery()
-		Transition.fade_in_from_white(0.5)  # reveal out of the button's white flash
-	else:
-		await Transition.fade_in()
-		_enter_surgery()
+	_enter_surgery()
+	Transition.fade_in_from_white(0.5)  # reveal out of the button's white flash
 
 
 func _enter_surgery() -> void:

@@ -43,15 +43,9 @@ var last_stars: int = 0
 var selected_surgery_index: int = -1
 var selected_surgery: Dictionary = {}
 
-# Set by the prep check-list's "开始手术" button before switching to the
-# surgery scene, so surgery.tscn can seat instruments and start in SURGERY
-# directly instead of replaying the prep arrangement.
-var enter_surgery_direct: bool = false
-
 
 func reset() -> void:
 	current_phase = Phase.PREP
-	enter_surgery_direct = false
 	prep_correct = 0
 	prep_back_correct = 0
 	surgery_correct = 0

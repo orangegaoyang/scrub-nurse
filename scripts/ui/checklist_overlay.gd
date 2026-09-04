@@ -88,9 +88,8 @@ func _build_rows() -> void:
 
 
 func _on_start_pressed() -> void:
-	# Flag the surgery scene to start in SURGERY (seat instruments, reveal the
-	# surgeon) instead of replaying prep, then white-flash hand off.
-	GameState.enter_surgery_direct = true
+	# White-flash hand off: the surgery scene reveals itself from this white
+	# (fade_in_from_white) and seats the instruments the player organized.
 	Sfx.play("surgery_start")
 	await Transition.flash_white(0.25)
 	get_tree().change_scene_to_file(MAIN_SCENE)
