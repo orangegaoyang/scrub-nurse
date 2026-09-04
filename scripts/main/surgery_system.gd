@@ -38,13 +38,11 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _surgeon == null:
 		return
-	var phase: int = GameState.current_phase
-	if phase != GameState.Phase.SURGERY and phase != GameState.Phase.TIDY:
+	if GameState.current_phase != GameState.Phase.SURGERY:
 		return
 	if held_instrument != null:
 		held_instrument.global_position = _player.get_cursor_point() + Vector3(0, 0.05, 0)
-		if phase == GameState.Phase.SURGERY:
-			_check_delivery()
+		_check_delivery()
 		_update_highlights()
 	else:
 		_hide_all_highlights()
@@ -56,13 +54,10 @@ func _on_phase_changed(new_phase: int) -> void:
 	if new_phase == GameState.Phase.SURGERY:
 		_line.on_surgery_start()
 		_nurse.on_surgery_start()
-	elif new_phase == GameState.Phase.TIDY:
-		_line.on_tidy_start()
 
 
 func _on_interact(_target: Node) -> void:
-	var phase: int = GameState.current_phase
-	if phase != GameState.Phase.SURGERY and phase != GameState.Phase.TIDY:
+	if GameState.current_phase != GameState.Phase.SURGERY:
 		return
 	if held_instrument == null:
 		var inst := _player.get_cursor_instrument() as Instrument
@@ -95,8 +90,7 @@ func _on_inspect() -> void:
 
 func cancel_pickup() -> void:
 	## 右键取消：把拿起的器械放回拿起前的位置。
-	var phase: int = GameState.current_phase
-	if phase != GameState.Phase.SURGERY and phase != GameState.Phase.TIDY:
+	if GameState.current_phase != GameState.Phase.SURGERY:
 		return
 	if held_instrument != null:
 		_nurse.cancel()
@@ -123,10 +117,6 @@ func _deliver(inst: Instrument) -> void:
 
 func schedule_after_return() -> void:
 	_line.schedule_after_return()
-
-
-func count_back_table() -> int:
-	return _nurse.count_back_table()
 
 
 # ---------------- 护士线转发 ----------------

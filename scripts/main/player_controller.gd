@@ -4,7 +4,7 @@ extends CharacterBody3D
 ## slot areas that overlap them), placing hits slots, delivery hits the hand.
 
 const REACH: float = 15.0
-const HOLD_Y: float = 1.2  # surgery/tidy hold plane (above the mayo, near the hand)
+const HOLD_Y: float = 1.2  # surgery hold plane (above the mayo, near the hand)
 const PREP_HOLD_Y: float = 2.3  # prep hold plane (raise the held instrument higher/closer to camera)
 
 signal interact_pressed(target: Node)
@@ -66,7 +66,7 @@ func get_cursor_tray_point() -> Vector3:
 
 func get_cursor_point() -> Vector3:
 	# A held instrument follows the cursor on a horizontal plane. Prep uses a
-	# lower plane (top-down view, tables right below); surgery/tidy uses the
+	# lower plane (top-down view, tables right below); surgery uses the
 	# higher one (the surgeon's hand lives at 1.22).
 	var cam: Camera3D = get_viewport().get_camera_3d()
 	var mp: Vector2 = get_viewport().get_mouse_position()

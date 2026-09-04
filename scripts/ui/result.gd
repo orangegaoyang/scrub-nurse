@@ -29,8 +29,8 @@ func _ready() -> void:
 
 func _on_phase_changed(_new_phase: int) -> void:
 	# Read the authoritative phase instead of the event's: a finish can be
-	# triggered synchronously inside the TIDY emission, so this handler may
-	# run again with TIDY after the nested RESULT already showed the card.
+	# triggered synchronously inside another emission, so this handler may
+	# run again after the RESULT already showed the card.
 	var phase: int = GameState.current_phase
 	if phase == GameState.Phase.RESULT:
 		if not visible:

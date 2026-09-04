@@ -4,7 +4,7 @@ extends Node
 ## schedule. Three procedures implement the progression:
 ##   S1 Appendectomy   — Mayo only, slot returns, doctor hands back directly.
 ##   S2 Knee Replacement — + neutral zone, all instruments reusable, free mayo.
-##   S3 Craniotomy      — + back table, full return judgment + tidy-up.
+##   S3 Craniotomy      — + back table, full return judgment.
 
 class InstrumentDef:
 	var id: String
@@ -193,7 +193,7 @@ func demand_count() -> int:
 
 func total_instances() -> int:
 	## Total laid-out instrument instances (unique defs × their count). The
-	## tidy/result totals must use this, not instrument_order.size(), because
+	## result totals must use this, not instrument_order.size(), because
 	## multi-instance items like gauze exist several times.
 	var n: int = 0
 	for id in instrument_order:

@@ -62,25 +62,12 @@ func on_deposited(id: String) -> void:
 	else:
 		_surgeon.retract()
 		Conductor.stop()
-		GameState.start_tidy()
+		GameState.finish_surgery()
 
 
 func on_zone_freed() -> void:
 	if _surgeon != null and _surgeon.hand_waiting():
 		_try_deposit()
-
-
-func on_tidy_start() -> void:
-	if not ProcedureData.has_neutral_zone():
-		GameState.finish_surgery(false)
-		return
-	GameState.set_back_table_count(_sys.count_back_table())
-	if ProcedureData.has_back_table():
-		GameState.hint_changed.emit("收尾:把全部器械归位 back table", false)
-	elif _zone == null or _zone.count() == 0:
-		GameState.finish_surgery(false)
-	else:
-		GameState.hint_changed.emit("收尾:清空中立区,器械归位 Mayo", false)
 
 
 func deliver(inst: Instrument) -> bool:
@@ -101,7 +88,7 @@ func schedule_after_return() -> void:
 		_schedule(ProcedureData.get_demand_at(GameState.current_demand_index))
 	else:
 		Conductor.stop()
-		GameState.finish_surgery(false)
+		GameState.finish_surgery()
 
 
 # ---------------- 节拍调度 ----------------

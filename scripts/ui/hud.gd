@@ -1,8 +1,7 @@
 extends Control
-## HUD: bottom hint bar (return/tidy hints), score top-right, neutral-zone
-## capacity top-left (with a pop when the tray first fills), tidy panel
-## during the final clear-up, and the one-time "back table is behind you
-## (Q)" hint after the push transition.
+## HUD: bottom hint bar (return hints), score top-right, neutral-zone
+## capacity top-left (with a pop when the tray first fills), and the one-time
+## "back table is behind you (Q)" hint after the push transition.
 
 const Q_HINT_DELAY := 2.6  # after the player acknowledges the intro hint
 
@@ -14,9 +13,6 @@ const Q_HINT_DELAY := 2.6  # after the player acknowledges the intro hint
 @onready var score_label: Label = $ScoreLabel
 @onready var capacity_label: Label = $CapacityLabel
 @onready var q_hint: Label = $QHint
-@onready var tidy_panel: Panel = $TidyPanel
-@onready var tidy_label: Label = $TidyPanel/TidyLabel
-@onready var skip_button: Button = $TidyPanel/SkipButton
 @onready var beat_dots: HBoxContainer = $BeatDots
 
 # 四拍指示:弱拍暗白,第 4 拍(呼叫拍)暖红;被击中时点亮回弹。
@@ -34,14 +30,11 @@ func _ready() -> void:
 	visible = false
 	demand_panel.visible = false
 	zone_hint.visible = false
-	tidy_panel.visible = false
 	GameState.phase_changed.connect(_on_phase_changed)
 	GameState.score_updated.connect(_update_score)
 	GameState.hint_changed.connect(_on_hint)
-	GameState.tidy_progress_changed.connect(_on_tidy_progress)
 	GameState.view_switched.connect(_on_view_switched)
 	GameState.surgeon_line_start.connect(_on_surgeon_line_start)
-	skip_button.pressed.connect(_on_skip)
 	zone_got_it_button.pressed.connect(_on_got_it)
 	for c in beat_dots.get_children():
 		var l := c as Label
@@ -85,22 +78,18 @@ func _pop_capacity() -> void:
 
 func _on_phase_changed(_new_phase: int) -> void:
 	# Read the authoritative phase instead of the event's: a finish can be
-	# triggered synchronously inside the TIDY emission (S1/S2 gauze toss
-	# endings, S3 auto-finish), so by the time this handler runs the phase
-	# may already be RESULT — the HUD must not re-show over the result card.
+	# triggered synchronously inside the emission, so by the time this handler
+	# runs the phase may already be RESULT — the HUD must not re-show over
+	# the result card.
 	var phase: int = GameState.current_phase
-	visible = (phase == GameState.Phase.SURGERY or phase == GameState.Phase.TIDY)
-	tidy_panel.visible = (phase == GameState.Phase.TIDY)
+	visible = (phase == GameState.Phase.SURGERY)
 	beat_dots.visible = (phase == GameState.Phase.SURGERY)
 	if phase == GameState.Phase.SURGERY:
 		_reset_dots()
-	if phase == GameState.Phase.SURGERY:
 		demand_panel.visible = false
 		zone_hint.visible = false
 		_last_zone_count = -1  # first deposit (0 -> 1) pops the counter
 		q_hint.visible = false
-	elif phase == GameState.Phase.TIDY:
-		_on_tidy_progress(GameState.back_table_count)
 
 
 func _on_surgeon_line_start() -> void:
@@ -141,8 +130,6 @@ func _on_hint(text: String, ack: bool = false) -> void:
 	else:
 		zone_hint.visible = false
 		demand_label.text = text
-		# The tidy panel owns the bottom of the screen in TIDY; the hint bar
-		# only shows during surgery.
 		demand_panel.visible = text != "" and GameState.current_phase == GameState.Phase.SURGERY
 
 
@@ -150,19 +137,6 @@ func _on_got_it() -> void:
 	zone_hint.visible = false
 	GameState.hint_changed.emit("", false)
 	GameState.surgeon_line_start.emit()
-
-
-func _on_tidy_progress(count: int) -> void:
-	if ProcedureData.has_back_table():
-		tidy_label.text = "收尾清扫:归位 back table  %d / %d" % [
-			count, ProcedureData.total_instances()
-		]
-	else:
-		tidy_label.text = "收尾清扫:清空中立区,器械归位 Mayo"
-
-
-func _on_skip() -> void:
-	GameState.finish_surgery(true)
 
 
 func _update_score() -> void:

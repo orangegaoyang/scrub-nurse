@@ -2,7 +2,7 @@ extends Node
 ## Headless check: SurgeonLine 节拍化全流程。
 ## 假医生/假器械(继承真类以满足类型签名) + 真 Conductor(240bpm) 跑完 S1 全部需求:
 ## 呼叫顺序 = demand_sequence;一次故意超时要触发敲手催促+重新呼叫;
-## 全部递完进入 TIDY 且收拍。
+## 全部递完进入 RESULT(直接结算) 且收拍。
 ## Run: godot --headless res://tools/test_surgeon_line.tscn
 
 var _line: SurgeonLine
@@ -84,7 +84,7 @@ func _drive() -> void:
 	while not _done and Time.get_ticks_msec() < deadline:
 		await get_tree().create_timer(0.03).timeout
 		match GameState.current_phase:
-			GameState.Phase.TIDY:
+			GameState.Phase.RESULT:
 				_done = true
 			GameState.Phase.SURGERY:
 				if _surgeon.state == Surgeon.State.RETURNING:
@@ -104,7 +104,7 @@ func _drive() -> void:
 						_line.deliver(FakeInst.new(seq[idx], ProcedureData.get_instrument(seq[idx])))
 	# 断言
 	if not _done:
-		_fail = "超时未进入 TIDY"
+		_fail = "超时未进入 RESULT"
 	if _surgeon.taps < 1:
 		_fail += " | 没有触发超时催促"
 	# 首件被故意拖超时一次:期望序列 = 首件呼叫两次,其余按序

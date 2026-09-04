@@ -2,8 +2,7 @@ extends Node
 ## Pickup system (prep phase): instruments are scattered carelessly on the
 ## back table ("someone left a mess"); pick each one up and organize it onto
 ## its Mayo slot (sequence order, hard slots). Prep-only scene.
-
-const SNAP_DIST := 0.08
+## 机械操作走 InstrumentOps(与术中护士线共用);这里管 prep 的计分与完成判定。
 
 @onready var player: CharacterBody3D = get_parent().get_node("Player")
 @onready var held_parent: Node3D = get_parent().get_node("HeldParent")
@@ -16,6 +15,8 @@ var held_instrument: Instrument = null
 var _pickup_origin: Node = null
 var _pickup_global := Vector3.ZERO
 var _pickup_rot := Vector3.ZERO
+
+const SNAP_DIST := 0.08
 
 
 func _ready() -> void:
@@ -72,12 +73,9 @@ func cancel_pickup() -> void:
 	if inst == null:
 		return
 	held_instrument = null
-	inst.set_state(Instrument.State.IN_TRAY)
-	inst.reparent(_pickup_origin)
+	InstrumentOps.put_back(inst, _pickup_origin, Instrument.State.IN_TRAY)
 	inst.global_position = _pickup_global
 	inst.rotation_degrees = _pickup_rot
-	inst.collision_layer = 1
-	inst.freeze = true
 	GameState.set_held(null)
 	Sfx.play("instrument_pick")
 
@@ -87,11 +85,7 @@ func _pick_up(inst: Instrument) -> void:
 	_pickup_global = inst.global_position
 	_pickup_rot = inst.rotation_degrees
 	held_instrument = inst
-	inst.set_state(Instrument.State.HELD)
-	inst.reparent(held_parent)
-	inst.collision_layer = 0
-	inst.freeze = true
-	inst.rotation_degrees = Vector3(15.0, 90.0, 0.0)
+	InstrumentOps.attach_to_hand(inst, held_parent, InstrumentOps.HOLD_TILT_PREP)
 	GameState.set_held(inst)
 	Sfx.play("instrument_pick")
 	Util.play_voice(voice, inst.instrument_id, "instruments")
@@ -101,20 +95,10 @@ func _place_in_slot(slot: TableSlot) -> void:
 	var inst: Instrument = held_instrument
 	if slot.can_accept(inst):
 		held_instrument = null
-		inst.set_state(Instrument.State.IN_SLOT)
-		inst.reparent(slot)
-		inst.position = Vector3(0, 0.01, 0)
-		inst.rotation_degrees = Vector3(0, 90, 0)   # 保持“竖着”，别变横
-		inst.collision_layer = 1
-		slot.occupied = true
-		slot.current_instrument = inst
+		InstrumentOps.seat_in_slot(inst, slot)
 		Sfx.play("slot_correct")
 		GameState.set_held(null)
-		GameState.prep_correct += 1
-		GameState.prep_item_secured.emit(inst.instrument_id)
-		GameState.score_updated.emit()
-		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
-			GameState.start_countdown()
+		_secure(inst, false)
 	else:
 		Sfx.play("slot_wrong")
 		inst.play_reject()
@@ -126,17 +110,24 @@ func _place_in_zone(bzone: BackZone) -> void:
 	var inst: Instrument = held_instrument
 	if bzone.can_accept(inst) and not bzone.is_full():
 		held_instrument = null
-		bzone.place_instrument(inst)
-		inst.collision_layer = 1
-		# bzone.set_feedback(true)
+		InstrumentOps.seat_in_back_zone(inst, bzone)
 		GameState.set_held(null)
 		Sfx.play("slot_correct")
-		GameState.prep_back_correct += 1
-		GameState.prep_back_item_secured.emit(inst.instrument_id)
-		GameState.score_updated.emit()
-		if GameState.prep_correct + GameState.prep_back_correct >= ProcedureData.instrument_order.size():
-			GameState.start_countdown()
+		_secure(inst, true)
 	else:
-		# bzone.set_feedback(false)
 		Sfx.play("slot_wrong")
 		inst.play_reject()
+
+
+func _secure(inst: Instrument, back: bool) -> void:
+	## 记一件归位;全部到位 -> 进入 COUNTDOWN(清单展示)。
+	if back:
+		GameState.prep_back_correct += 1
+		GameState.prep_back_item_secured.emit(inst.instrument_id)
+	else:
+		GameState.prep_correct += 1
+		GameState.prep_item_secured.emit(inst.instrument_id)
+	GameState.score_updated.emit()
+	if GameState.prep_correct + GameState.prep_back_correct \
+			>= ProcedureData.instrument_order.size():
+		GameState.start_countdown()

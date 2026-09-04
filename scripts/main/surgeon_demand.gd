@@ -187,7 +187,6 @@ func discard_held() -> void:
 	var inst: Instrument = held_instrument
 	held_instrument = null
 	state = State.IDLE
-	GameState.discarded_count += 1
 	instrument_deposited.emit(inst.instrument_id)
 	inst.queue_free()
 
