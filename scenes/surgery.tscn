@@ -4,6 +4,11 @@
 [ext_resource type="Script" uid="uid://jv2x7s0abfeu" path="res://scenes/surgery.gd" id="1_qe6pj"]
 [ext_resource type="PackedScene" uid="uid://bjkyabo0ptyil" path="res://scenes/mayo_stand.tscn" id="2_qe6pj"]
 [ext_resource type="PackedScene" uid="uid://dkcsxre2uevh2" path="res://scenes/surgeon.tscn" id="4_c8uar"]
+[ext_resource type="Script" path="res://scripts/main/player_controller.gd" id="5_player"]
+[ext_resource type="PackedScene" uid="uid://dc7yoeldyxsa1" path="res://scenes/backtable.tscn" id="6_bt"]
+[ext_resource type="PackedScene" uid="uid://ciwy3oykpfjhx" path="res://scenes/neutral_zone.tscn" id="7_zone"]
+[ext_resource type="PackedScene" path="res://scenes/ui/result.tscn" id="8_result"]
+[ext_resource type="Script" path="res://scripts/main/surgery_system.gd" id="9_sys"]
 
 [node name="Surgery" type="Node3D" unique_id=1526836847]
 script = ExtResource("1_qe6pj")
@@ -36,3 +41,21 @@ spot_angle = 34.25
 
 [node name="AreaLight3D" type="AreaLight3D" parent="." unique_id=1101499709]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.059696198, 1.5600281, 0.7872505)
+
+[node name="Player" type="CharacterBody3D" parent="."]
+script = ExtResource("5_player")
+
+[node name="HeldParent" type="Node3D" parent="."]
+
+[node name="Backtable" parent="." instance=ExtResource("6_bt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0.15, -0.5)
+
+[node name="NeutralZone" parent="." instance=ExtResource("7_zone")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.88, 0.15)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Result" parent="UI" instance=ExtResource("8_result")]
+
+[node name="SurgerySystem" type="Node" parent="."]
+script = ExtResource("9_sys")

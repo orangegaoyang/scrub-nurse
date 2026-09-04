@@ -27,6 +27,17 @@ func can_accept(inst: Instrument) -> bool:
 	return inst.def.slot_index == slot_index
 
 
+func set_feedback(correct: bool) -> void:
+	## 放置对/错的框反馈。高亮系统重构中尚未接回(_hl 暂为空),先保证调用安全。
+	if _hl != null:
+		_hl.feedback(correct)
+
+
+func clear_feedback() -> void:
+	if _hl != null:
+		_hl.hide()
+
+
 func _on_held_changed(inst) -> void:
 	if GameState.current_phase != GameState.Phase.PREP:
 		_hide_ghost()
