@@ -65,6 +65,38 @@ offset_bottom = 50.0
 theme_override_font_sizes/font_size = 20
 text = "知道了"
 
+[node name="BeatDots" type="HBoxContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -78.0
+offset_top = 14.0
+offset_right = 78.0
+offset_bottom = 48.0
+grow_horizontal = 2
+theme_override_constants/separation = 14
+mouse_filter = 2
+
+[node name="Dot1" type="Label" parent="BeatDots"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "●"
+
+[node name="Dot2" type="Label" parent="BeatDots"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "●"
+
+[node name="Dot3" type="Label" parent="BeatDots"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "●"
+
+[node name="Dot4" type="Label" parent="BeatDots"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "●"
+
 [node name="ScoreLabel" type="Label" parent="."]
 anchors_preset = 1
 anchor_left = 1.0

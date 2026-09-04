@@ -28,6 +28,7 @@ Transition="*res://scripts/autoload/transition.gd"
 PlayerProfile="*res://scripts/autoload/player_profile.gd"
 Sfx="*res://scripts/autoload/sfx.gd"
 Audio="*res://scripts/autoload/audio.gd"
+Conductor="*res://scripts/autoload/conductor.gd"
 
 [display]
 

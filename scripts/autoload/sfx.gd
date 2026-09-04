@@ -23,18 +23,37 @@ func _ready() -> void:
 
 
 func play(key: String, volume_db: float = 0.0) -> void:
-	var stream: AudioStream = _cache.get(key)
+	var stream := _get_stream(key)
 	if stream == null:
-		stream = _load_stream(key)
-		if stream == null:
-			return  # asset not added yet — stay silent
-		_cache[key] = stream
+		return
+	_start(stream, volume_db, randf_range(1.0 - PITCH_JITTER, 1.0 + PITCH_JITTER))
+
+
+func play_pitched(key: String, pitch: float = 1.0, volume_db: float = 0.0) -> void:
+	## 固定音高播放(节奏用):递送"啪"按器械类别定音高,操作本身构成旋律。
+	var stream := _get_stream(key)
+	if stream == null:
+		return
+	_start(stream, volume_db, pitch)
+
+
+func _start(stream: AudioStream, volume_db: float, pitch: float) -> void:
 	var p: AudioStreamPlayer = _pool[_next]
 	_next = (_next + 1) % _pool.size()
 	p.stream = stream
 	p.volume_db = volume_db
-	p.pitch_scale = randf_range(1.0 - PITCH_JITTER, 1.0 + PITCH_JITTER)
+	p.pitch_scale = pitch
 	p.play()
+
+
+func _get_stream(key: String) -> AudioStream:
+	var stream: AudioStream = _cache.get(key)
+	if stream == null:
+		stream = _load_stream(key)
+		if stream == null:
+			return null  # asset not added yet — stay silent
+		_cache[key] = stream
+	return stream
 
 
 func _load_stream(key: String) -> AudioStream:

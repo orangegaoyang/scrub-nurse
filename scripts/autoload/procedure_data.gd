@@ -56,6 +56,7 @@ var procedure_id: String = ""
 var _neutral_zone: bool = false
 var _back_table: bool = false
 var _surgery_free_mayo: bool = false
+var _bpm: float = 96.0  # 术中节奏速度:难度即速度
 
 
 func reload_for_selected() -> void:
@@ -77,6 +78,10 @@ func has_back_table() -> bool:
 
 func surgery_free_mayo() -> bool:
 	return _surgery_free_mayo
+
+
+func tempo() -> float:
+	return _bpm
 
 
 func _load_catalog() -> void:
@@ -117,6 +122,7 @@ func _load_procedure(path: String) -> void:
 	_neutral_zone = bool(parsed.get("neutral_zone", false))
 	_back_table = bool(parsed.get("back_table", false))
 	_surgery_free_mayo = bool(parsed.get("surgery_free_mayo", false))
+	_bpm = float(parsed.get("bpm", 96.0))
 	instruments.clear()
 	instrument_order.clear()
 	demand_sequence.clear()

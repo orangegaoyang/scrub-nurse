@@ -5,6 +5,7 @@
   "neutral_zone": true,
   "back_table": false,
   "surgery_free_mayo": true,
+  "bpm": 105,
   "instruments": [
 	{ "id": "scalpel", "slot_index": 0 },
 	{ "id": "hemostat", "slot_index": 1 },

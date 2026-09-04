@@ -17,9 +17,17 @@ const Q_HINT_DELAY := 2.6  # after the player acknowledges the intro hint
 @onready var tidy_panel: Panel = $TidyPanel
 @onready var tidy_label: Label = $TidyPanel/TidyLabel
 @onready var skip_button: Button = $TidyPanel/SkipButton
+@onready var beat_dots: HBoxContainer = $BeatDots
+
+# 四拍指示:弱拍暗白,第 4 拍(呼叫拍)暖红;被击中时点亮回弹。
+const DOT_DIM := Color(1, 1, 1, 0.22)
+const DOT_DIM_CALL := Color(1, 0.5, 0.4, 0.4)
+const DOT_LIT := Color(1, 1, 1, 0.95)
+const DOT_LIT_CALL := Color(1, 0.45, 0.3, 1.0)
 
 var _last_zone_count: int = 0
 var _q_hint_pending: bool = false
+var _dots: Array[Label] = []
 
 
 func _ready() -> void:
@@ -35,6 +43,12 @@ func _ready() -> void:
 	GameState.surgeon_line_start.connect(_on_surgeon_line_start)
 	skip_button.pressed.connect(_on_skip)
 	zone_got_it_button.pressed.connect(_on_got_it)
+	for c in beat_dots.get_children():
+		var l := c as Label
+		if l != null:
+			l.modulate = DOT_DIM
+			_dots.append(l)
+	Conductor.beat.connect(_on_conductor_beat)
 	_update_score()
 
 
@@ -77,6 +91,9 @@ func _on_phase_changed(_new_phase: int) -> void:
 	var phase: int = GameState.current_phase
 	visible = (phase == GameState.Phase.SURGERY or phase == GameState.Phase.TIDY)
 	tidy_panel.visible = (phase == GameState.Phase.TIDY)
+	beat_dots.visible = (phase == GameState.Phase.SURGERY)
+	if phase == GameState.Phase.SURGERY:
+		_reset_dots()
 	if phase == GameState.Phase.SURGERY:
 		demand_panel.visible = false
 		zone_hint.visible = false
@@ -150,3 +167,27 @@ func _on_skip() -> void:
 
 func _update_score() -> void:
 	score_label.text = "正确 %d  错误 %d" % [GameState.surgery_correct, GameState.surgery_wrong]
+
+
+func _on_conductor_beat(global_beat: int) -> void:
+	## 四拍脉冲:每一拍点亮对应圆点,第 4 拍(呼叫拍)红色强调。
+	if not visible or GameState.current_phase != GameState.Phase.SURGERY:
+		return
+	var i := global_beat % Conductor.BEATS_PER_BAR
+	if i >= _dots.size():
+		return
+	var l := _dots[i]
+	var lit := DOT_LIT_CALL if i == Conductor.CALL_BEAT else DOT_LIT
+	var dim := DOT_DIM_CALL if i == Conductor.CALL_BEAT else DOT_DIM
+	l.pivot_offset = l.size * 0.5
+	l.scale = Vector2(1.45, 1.45)
+	l.modulate = lit
+	var tw := create_tween()
+	tw.tween_property(l, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_SINE)
+	tw.parallel().tween_property(l, "modulate", dim, 0.35)
+
+
+func _reset_dots() -> void:
+	for i in _dots.size():
+		_dots[i].modulate = DOT_DIM_CALL if i == Conductor.CALL_BEAT else DOT_DIM
+		_dots[i].scale = Vector2.ONE

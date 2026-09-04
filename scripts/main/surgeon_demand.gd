@@ -48,6 +48,7 @@ var _retracted_pos := Vector3.ZERO
 
 var _reject_cooldown: bool = false
 var _move: Tween = null
+var _tap: Tween = null
 
 
 func _ready() -> void:
@@ -56,11 +57,11 @@ func _ready() -> void:
 	_retracted_pos = pivot.position
 
 
-func _move_to(pos: Vector3) -> void:
+func _move_to(pos: Vector3, duration: float = SLIDE_TIME) -> void:
 	if _move != null and _move.is_valid():
 		_move.kill()
 	_move = create_tween()
-	_move.tween_property(pivot, "position", pos, SLIDE_TIME) \
+	_move.tween_property(pivot, "position", pos, duration) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
@@ -68,11 +69,28 @@ func start_demand(id: String) -> void:
 	current_demand_id = id
 	state = State.DEMANDING
 	held_instrument = null
-	# Always slide to the mayo front: first demand comes from the retracted
-	# pose, later ones from the deposit pose at the zone front.
-	_move_to(_extended_pos)
+	# Slide to the mayo front unless the hand is already there (deadline
+	# re-call: the impatient tap bob plays instead, voice re-fires on beat).
+	if pivot.position.distance_to(_extended_pos) > 0.01:
+		_move_to(_extended_pos)
 	demand_changed.emit(id)
-	Util.play_voice(voice, id)
+	Util.play_voice(voice, id, "instruments")
+
+
+func anticipate(duration: float) -> void:
+	## 节拍预备：呼叫前整整一拍把手抬到伸出位，强音正好人到手到。
+	if state == State.USING or state == State.DEPOSITING or state == State.WAITING:
+		return
+	_move_to(_extended_pos, maxf(duration, 0.05))
+
+
+func impatient_tap() -> void:
+	## 截止催促：在强音拍上快速下上点一下。
+	if _tap != null and _tap.is_valid():
+		_tap.kill()
+	_tap = create_tween()
+	_tap.tween_property(pivot, "position", _extended_pos + Vector3(0, -0.04, 0), 0.08)
+	_tap.tween_property(pivot, "position", _extended_pos, 0.1)
 
 
 func is_demanding() -> bool:
@@ -104,6 +122,8 @@ func try_receive(inst: Instrument) -> bool:
 
 
 func _reject() -> void:
+	## 递错：手收回冷却一下再伸出。重新喊话交给医生线的呼叫循环——
+	## 它会在下一个强音拍上带节拍地重喊，不再各自为政地插一句。
 	GameState.record_wrong()
 	_move_to(_retracted_pos)
 	hand_retracted.emit()
@@ -113,7 +133,6 @@ func _reject() -> void:
 	if state == State.DEMANDING:
 		_move_to(_extended_pos)
 		demand_changed.emit(current_demand_id)
-		Util.play_voice(voice, current_demand_id)
 
 
 func finish_use() -> void:
